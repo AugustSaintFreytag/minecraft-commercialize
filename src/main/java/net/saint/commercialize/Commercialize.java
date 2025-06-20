@@ -23,5 +23,6 @@ public class Commercialize implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Blocks.initialize();
 	}
 }
