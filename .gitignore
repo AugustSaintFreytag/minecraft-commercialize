@@ -1,7 +1,9 @@
 # Project
 
 .gradle
+bin
 run
+build
 
 # System
 
