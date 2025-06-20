@@ -20,17 +20,6 @@ repositories {
 	maven { url 'https://maven.wispforest.io/releases/' }
 }
 
-loom {
-	splitEnvironmentSourceSets()
-
-	mods {
-		"commercialize" {
-			sourceSet sourceSets.client
-			sourceSet sourceSets.main
-		}
-	}
-}
-
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

@@ -23,11 +23,6 @@
 		]
 	},
 	"mixins": [
-		"commercialize.mixins.json",
-		{
-			"config": "commercialize.client.mixins.json",
-			"environment": "client"
-		}
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
