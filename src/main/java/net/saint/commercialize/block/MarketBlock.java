@@ -5,6 +5,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
@@ -19,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.blockentity.MarketBlockEntity;
+import net.saint.commercialize.screen.MarketScreen;
 
 public class MarketBlock extends BlockWithEntity {
 
@@ -72,6 +74,9 @@ public class MarketBlock extends BlockWithEntity {
 		if (!world.isClient()) {
 			return ActionResult.SUCCESS;
 		}
+
+		var client = MinecraftClient.getInstance();
+		client.setScreen(new MarketScreen());
 
 		return ActionResult.PASS;
 	}
