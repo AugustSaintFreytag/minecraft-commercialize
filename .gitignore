@@ -1,0 +1,9 @@
+# Project
+
+.gradle
+run
+
+# System
+
+.DS_Store
+Thumbs.db
