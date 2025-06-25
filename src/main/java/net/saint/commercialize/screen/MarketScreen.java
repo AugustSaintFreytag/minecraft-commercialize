@@ -149,6 +149,20 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
 
+		// Labels
+
+		var totalLabelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.total"));
+		totalLabelComponent.color(Color.ofRgb(0x3F3F3F));
+		totalLabelComponent.positioning(Positioning.absolute(11, 129));
+		totalLabelComponent.horizontalSizing(Sizing.fixed(32));
+		rightSideComponent.child(totalLabelComponent);
+
+		var balanceLabelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.cash"));
+		balanceLabelComponent.color(Color.ofRgb(0x3F3F3F));
+		balanceLabelComponent.positioning(Positioning.absolute(11, 157));
+		balanceLabelComponent.horizontalSizing(Sizing.fixed(32));
+		rightSideComponent.child(balanceLabelComponent);
+
 		// Tabs
 
 		var emptyCardTabButton = makeTabButtonComponent(EMPTY_CART_ICON, component -> {
