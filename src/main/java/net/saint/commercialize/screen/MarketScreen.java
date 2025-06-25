@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.ButtonComponent;
-import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
@@ -22,6 +21,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
