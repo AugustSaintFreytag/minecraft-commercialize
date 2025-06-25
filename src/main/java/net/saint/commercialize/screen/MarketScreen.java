@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.NumericFormattingUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
@@ -151,17 +152,23 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Labels
 
-		var totalLabelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.total"));
-		totalLabelComponent.color(Color.ofRgb(0x3F3F3F));
+		var totalLabelComponent = makeTotalLabelComponent();
 		totalLabelComponent.positioning(Positioning.absolute(11, 129));
-		totalLabelComponent.horizontalSizing(Sizing.fixed(32));
 		rightSideComponent.child(totalLabelComponent);
 
-		var balanceLabelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.cash"));
-		balanceLabelComponent.color(Color.ofRgb(0x3F3F3F));
+		var balanceLabelComponent = makeBalanceLabelComponent();
 		balanceLabelComponent.positioning(Positioning.absolute(11, 157));
-		balanceLabelComponent.horizontalSizing(Sizing.fixed(32));
 		rightSideComponent.child(balanceLabelComponent);
+
+		// Displays
+
+		var totalDisplayComponent = makeTotalDisplayComponent();
+		totalDisplayComponent.positioning(Positioning.absolute(48, 129));
+		rightSideComponent.child(totalDisplayComponent);
+
+		var balanceDisplayComponent = makeBalanceDisplayComponent();
+		balanceDisplayComponent.positioning(Positioning.absolute(48, 157));
+		rightSideComponent.child(balanceDisplayComponent);
 
 		// Tabs
 
@@ -187,6 +194,46 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	}
 
 	// Components
+
+	private Component makeTotalDisplayComponent() {
+		var totalDisplay = Components.label(Text.of(NumericFormattingUtil.formatCurrency(0)));
+
+		totalDisplay.color(Color.WHITE);
+		totalDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
+		totalDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
+		totalDisplay.id("total");
+
+		return totalDisplay;
+	}
+
+	private Component makeBalanceDisplayComponent() {
+		var balanceDisplay = Components.label(Text.of(NumericFormattingUtil.formatCurrency(780_064)));
+
+		balanceDisplay.color(Color.WHITE);
+		balanceDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
+		balanceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
+		balanceDisplay.id("balance");
+
+		return balanceDisplay;
+	}
+
+	private Component makeTotalLabelComponent() {
+		var totalLabel = Components.label(LocalizationUtil.localizedText("gui", "market.total"));
+
+		totalLabel.color(Color.ofRgb(0x3F3F3F));
+		totalLabel.sizing(Sizing.fixed(32), Sizing.fixed(12));
+
+		return totalLabel;
+	}
+
+	private Component makeBalanceLabelComponent() {
+		var balanceLabel = Components.label(LocalizationUtil.localizedText("gui", "market.cash"));
+
+		balanceLabel.color(Color.ofRgb(0x3F3F3F));
+		balanceLabel.sizing(Sizing.fixed(32), Sizing.fixed(12));
+
+		return balanceLabel;
+	}
 
 	private Component makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
