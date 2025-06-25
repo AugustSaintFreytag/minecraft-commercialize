@@ -1,0 +1,32 @@
+package net.saint.commercialize.gui;
+
+import java.util.function.Consumer;
+
+import io.wispforest.owo.ui.component.LabelComponent;
+import io.wispforest.owo.ui.component.TextureComponent;
+import io.wispforest.owo.ui.core.Sizing;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
+public final class Components {
+
+	private Components() {
+	}
+
+	public static TextureComponent texture(Identifier texture, int u, int v, int regionWidth, int regionHeight) {
+		return io.wispforest.owo.ui.component.Components.texture(texture, u, v, regionWidth, regionHeight);
+	}
+
+	public static LabelComponent label(Text text) {
+		return io.wispforest.owo.ui.component.Components.label(text);
+	}
+
+	public static TextBoxComponent textBox(Sizing sizing) {
+		return new TextBoxComponent(sizing);
+	}
+
+	public static ButtonComponent button(Text message, Consumer<io.wispforest.owo.ui.component.ButtonComponent> onPress) {
+		return new ButtonComponent(message, onPress);
+	}
+
+}
