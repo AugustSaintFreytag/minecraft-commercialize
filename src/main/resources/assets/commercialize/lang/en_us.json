@@ -5,5 +5,6 @@
 	"gui.commercialize.market.search_offers.tooltip": "Type to search for offers by name or description.",
 	"gui.commercialize.market.total": "Total:",
 	"gui.commercialize.market.cash": "Cash:",
-	"gui.commercialize.market.bank": "Bank:"
+	"gui.commercialize.market.bank": "Bank:",
+	"text.commercialize.currency": "¤"
 }
