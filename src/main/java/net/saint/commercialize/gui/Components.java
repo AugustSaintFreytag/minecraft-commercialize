@@ -7,6 +7,8 @@ import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.core.Sizing;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.saint.commercialize.gui.common.ButtonComponent;
+import net.saint.commercialize.gui.common.TextBoxComponent;
 
 public final class Components {
 
