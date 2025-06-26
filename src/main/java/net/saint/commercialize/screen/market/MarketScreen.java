@@ -18,8 +18,6 @@ import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -30,25 +28,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// Configuration
 
 	public static final String ID = "market_screen";
-
-	private static final Identifier LEFT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_left_panel.png");
-	private static final Identifier RIGHT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_right_panel.png");
-	private static final Identifier ICON_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_icons.png");
-
-	private static final TextureReference SORT_BY_NAME_ICON = new TextureReference(ICON_TEXTURE, 64, 16, 16, 16);
-	private static final TextureReference SORT_BY_TIME_ICON = new TextureReference(ICON_TEXTURE, 48, 16, 16, 16);
-	private static final TextureReference SORT_BY_PRICE_ICON = new TextureReference(ICON_TEXTURE, 32, 16, 16, 16);
-	private static final TextureReference SORT_BY_PLAYER_ICON = new TextureReference(ICON_TEXTURE, 16, 16, 16, 16);
-	private static final TextureReference FILTER_BY_PRICE_ICON = new TextureReference(ICON_TEXTURE, 16, 32, 16, 16);
-	private static final TextureReference FILTER_BY_ALL_ICON = new TextureReference(ICON_TEXTURE, 32, 32, 16, 16);
-
-	private static final TextureReference EMPTY_CART_ICON = new TextureReference(ICON_TEXTURE, 96, 16, 16, 16);
-	private static final TextureReference CONFIRM_ORDER_ICON = new TextureReference(ICON_TEXTURE, 112, 16, 16, 16);
-	private static final TextureReference WALLET_ICON = new TextureReference(ICON_TEXTURE, 96, 32, 16, 16);
-	private static final TextureReference CARD_ICON = new TextureReference(ICON_TEXTURE, 112, 32, 16, 16);
-
-	private static final TextureReference SORT_ASCENDING_ICON = new TextureReference(ICON_TEXTURE, 16, 0, 16, 16);
-	private static final TextureReference SORT_DESCENDING_ICON = new TextureReference(ICON_TEXTURE, 32, 0, 16, 16);
 
 	// Init
 
@@ -89,7 +68,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private Component makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(202), Sizing.fixed(192));
 
-		var backgroundComponent = Components.texture(LEFT_PANEL_TEXTURE, 0, 0, 202, 192);
+		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL_TEXTURE, 0, 0, 202, 192);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
 
@@ -104,13 +83,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(SORT_BY_NAME_ICON, component -> {
+		var sortingTabButton = makeTabButtonComponent(MarketScreenAssets.SORT_BY_NAME_ICON, component -> {
 		});
 
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(FILTER_BY_ALL_ICON, component -> {
+		var filteringTabButton = makeTabButtonComponent(MarketScreenAssets.FILTER_BY_ALL_ICON, component -> {
 		});
 
 		filteringTabButton.positioning(Positioning.absolute(4, 50));
@@ -124,7 +103,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private Component makeRightSideComponent() {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
 
-		var backgroundComponent = Components.texture(RIGHT_PANEL_TEXTURE, 0, 0, 192, 178);
+		var backgroundComponent = Components.texture(MarketScreenAssets.RIGHT_PANEL_TEXTURE, 0, 0, 192, 178);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
 
@@ -150,19 +129,19 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var emptyCardTabButton = makeTabButtonComponent(EMPTY_CART_ICON, component -> {
+		var emptyCardTabButton = makeTabButtonComponent(MarketScreenAssets.EMPTY_CART_ICON, component -> {
 		});
 
 		emptyCardTabButton.positioning(Positioning.absolute(168, 14));
 		rightSideComponent.child(emptyCardTabButton);
 
-		var orderTabButton = makeTabButtonComponent(CONFIRM_ORDER_ICON, component -> {
+		var orderTabButton = makeTabButtonComponent(MarketScreenAssets.CONFIRM_ORDER_ICON, component -> {
 		});
 
 		orderTabButton.positioning(Positioning.absolute(168, 43));
 		rightSideComponent.child(orderTabButton);
 
-		var cyclePaymentMethodTabButton = makeTabButtonComponent(WALLET_ICON, component -> {
+		var cyclePaymentMethodTabButton = makeTabButtonComponent(MarketScreenAssets.WALLET_ICON, component -> {
 		});
 
 		cyclePaymentMethodTabButton.positioning(Positioning.absolute(168, 72));
