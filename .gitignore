@@ -5,6 +5,10 @@ bin
 run
 build
 
+# File Types
+*.psd*
+*.afphoto*
+
 # System
 
 .DS_Store
