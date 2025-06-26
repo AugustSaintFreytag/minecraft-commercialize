@@ -1,4 +1,4 @@
-package net.saint.commercialize.screen;
+package net.saint.commercialize.screen.market;
 
 import java.util.function.Consumer;
 
