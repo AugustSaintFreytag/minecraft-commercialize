@@ -10,6 +10,8 @@ public final class MarketScreenAssets {
 	public static final Identifier RIGHT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_right_panel.png");
 	public static final Identifier ICON_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_icons.png");
 
+	public static final TextureReference STUB_ICON = new TextureReference(ICON_TEXTURE, 0, 0, 1, 1);
+
 	public static final TextureReference SORT_BY_NAME_ICON = new TextureReference(ICON_TEXTURE, 64, 16, 16, 16);
 	public static final TextureReference SORT_BY_TIME_ICON = new TextureReference(ICON_TEXTURE, 48, 16, 16, 16);
 	public static final TextureReference SORT_BY_PRICE_ICON = new TextureReference(ICON_TEXTURE, 32, 16, 16, 16);
