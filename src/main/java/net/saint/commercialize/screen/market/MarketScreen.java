@@ -6,19 +6,27 @@ import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.ButtonComponent;
+import io.wispforest.owo.ui.component.LabelComponent;
+import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
-import io.wispforest.owo.ui.core.Component;
-import io.wispforest.owo.ui.core.CursorStyle;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
+import net.saint.commercialize.library.OfferFilterMode;
+import net.saint.commercialize.library.OfferSortMode;
+import net.saint.commercialize.library.OfferSortOrder;
+import net.saint.commercialize.library.PaymentMethod;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
@@ -41,7 +49,48 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return false;
 	}
 
+	// State
+
+	private OfferSortMode sortMode = OfferSortMode.TIME_POSTED;
+	private OfferSortOrder sortOrder = OfferSortOrder.DESCENDING;
+	private OfferFilterMode filterMode = OfferFilterMode.ALL;
+	private PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
+
+	// Update
+
+	public void updateDisplay() {
+		var rootComponent = this.uiAdapter.rootComponent;
+
+		var sortModeButton = rootComponent.childById(TabButtonComponent.class, "sort_mode");
+		sortModeButton.sortOrder(sortOrder);
+		sortModeButton.texture(MarketScreenUtil.textureForSortMode(sortMode));
+		sortModeButton.tooltip(MarketScreenUtil.tooltipTextForSortMode(sortMode, sortOrder));
+
+		var filterModeButton = rootComponent.childById(TabButtonComponent.class, "filter_mode");
+		filterModeButton.texture(MarketScreenUtil.textureForFilterMode(filterMode));
+		filterModeButton.tooltip(MarketScreenUtil.tooltipTextForFilterMode(filterMode));
+
+		var paymentMethodButton = rootComponent.childById(TabButtonComponent.class, "payment_method");
+		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(paymentMethod));
+		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(paymentMethod));
+
+		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
+		totalDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
+
+		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
+		balanceLabel.text(MarketScreenUtil.labelTextForBalance(paymentMethod));
+
+		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
+		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
+		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(paymentMethod));
+	}
+
 	// Root
+
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.render(context, mouseX, mouseY, delta);
+	}
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
@@ -61,11 +110,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("market_screen");
+
+		updateDisplay();
 	}
 
 	// Left Side
 
-	private Component makeLeftSideComponent() {
+	private FlowLayout makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(202), Sizing.fixed(192));
 
 		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL_TEXTURE, 0, 0, 202, 192);
@@ -83,15 +134,34 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(MarketScreenAssets.SORT_BY_NAME_ICON, component -> {
-		});
+		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"),
+				MarketScreenUtil.textureForSortMode(sortMode), component -> {
+					// If sprint key is held, toggle sort order.
 
+					var windowHandle = client.getWindow().getHandle();
+					var sprintKeyCode = KeyBindingHelper.getBoundKeyOf(client.options.sprintKey).getCode();
+					var isSprintKeyHeld = InputUtil.isKeyPressed(windowHandle, sprintKeyCode);
+
+					if (isSprintKeyHeld) {
+						sortOrder = sortOrder.next();
+					} else {
+						sortMode = sortMode.next();
+					}
+
+					this.updateDisplay();
+				});
+
+		sortingTabButton.id("sort_mode");
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(MarketScreenAssets.FILTER_BY_ALL_ICON, component -> {
-		});
+		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
+				MarketScreenUtil.textureForFilterMode(filterMode), component -> {
+					filterMode = filterMode.next();
+					this.updateDisplay();
+				});
 
+		filteringTabButton.id("filter_mode");
 		filteringTabButton.positioning(Positioning.absolute(4, 50));
 		leftSideComponent.child(filteringTabButton);
 
@@ -100,7 +170,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	// Right Side
 
-	private Component makeRightSideComponent() {
+	private FlowLayout makeRightSideComponent() {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
 
 		var backgroundComponent = Components.texture(MarketScreenAssets.RIGHT_PANEL_TEXTURE, 0, 0, 192, 178);
@@ -129,21 +199,31 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var emptyCardTabButton = makeTabButtonComponent(MarketScreenAssets.EMPTY_CART_ICON, component -> {
-		});
+		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
+				MarketScreenAssets.EMPTY_CART_ICON, component -> {
+					client.player.sendMessage(Text.of("Requesting to empty cart."));
+				});
 
 		emptyCardTabButton.positioning(Positioning.absolute(168, 14));
+		emptyCardTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.empty_cart.tooltip"));
 		rightSideComponent.child(emptyCardTabButton);
 
-		var orderTabButton = makeTabButtonComponent(MarketScreenAssets.CONFIRM_ORDER_ICON, component -> {
-		});
+		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
+				MarketScreenAssets.CONFIRM_ORDER_ICON, component -> {
+					client.player.sendMessage(Text.of("Requesting to confirm order."));
+				});
 
 		orderTabButton.positioning(Positioning.absolute(168, 43));
+		orderTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.order_cart.tooltip"));
 		rightSideComponent.child(orderTabButton);
 
-		var cyclePaymentMethodTabButton = makeTabButtonComponent(MarketScreenAssets.WALLET_ICON, component -> {
-		});
+		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
+				MarketScreenAssets.STUB_ICON, component -> {
+					paymentMethod = paymentMethod.next();
+					this.updateDisplay();
+				});
 
+		cyclePaymentMethodTabButton.id("payment_method");
 		cyclePaymentMethodTabButton.positioning(Positioning.absolute(168, 72));
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
@@ -152,50 +232,52 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	// Components
 
-	private Component makeTotalDisplayComponent() {
-		var totalDisplay = Components.label(Text.of(NumericFormattingUtil.formatCurrency(0)));
+	private LabelComponent makeTotalDisplayComponent() {
+		var totalDisplay = Components.label(Text.empty());
 
+		totalDisplay.id("total");
+		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 		totalDisplay.color(Color.WHITE);
 		totalDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		totalDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-		totalDisplay.id("total");
 
 		return totalDisplay;
 	}
 
-	private Component makeBalanceDisplayComponent() {
-		var balanceDisplay = Components.label(Text.of(NumericFormattingUtil.formatCurrency(780_064)));
+	private LabelComponent makeBalanceDisplayComponent() {
+		var balanceDisplay = Components.label(Text.empty());
 
+		balanceDisplay.id("balance");
 		balanceDisplay.color(Color.WHITE);
 		balanceDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		balanceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-		balanceDisplay.id("balance");
 
 		return balanceDisplay;
 	}
 
-	private Component makeTotalLabelComponent() {
+	private LabelComponent makeTotalLabelComponent() {
 		var totalLabel = Components.label(LocalizationUtil.localizedText("gui", "market.total"));
 
+		totalLabel.id("total_label");
 		totalLabel.color(Color.ofRgb(0x3F3F3F));
 		totalLabel.sizing(Sizing.fixed(32), Sizing.fixed(12));
 
 		return totalLabel;
 	}
 
-	private Component makeBalanceLabelComponent() {
+	private LabelComponent makeBalanceLabelComponent() {
 		var balanceLabel = Components.label(LocalizationUtil.localizedText("gui", "market.cash"));
 
+		balanceLabel.id("balance_label");
 		balanceLabel.color(Color.ofRgb(0x3F3F3F));
 		balanceLabel.sizing(Sizing.fixed(32), Sizing.fixed(12));
 
 		return balanceLabel;
 	}
 
-	private Component makeSearchBoxComponent() {
+	private TextBoxComponent makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
 
-		offersSearchBox.cursorStyle(CursorStyle.NONE);
 		offersSearchBox.sizing(Sizing.fixed(161), Sizing.fixed(14));
 		offersSearchBox.setPlaceholder(LocalizationUtil.localizedText("gui", "market.search_offers"));
 		offersSearchBox.setTooltip(Tooltip.of(LocalizationUtil.localizedText("gui", "market.search_offers.tooltip")));
@@ -203,16 +285,68 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return offersSearchBox;
 	}
 
-	private Component makeTabButtonComponent(TextureReference texture, Consumer<ButtonComponent> onPress) {
-		var tabButton = Components.button(Text.empty(), onPress);
+	private ButtonComponent makeTabButtonComponent(Text message, TextureReference texture, Consumer<ButtonComponent> onPress) {
+		return new TabButtonComponent(message, texture, onPress);
+	}
 
-		tabButton.sizing(Sizing.fixed(20));
-		tabButton.renderer((context, button, delta) -> {
-			ButtonComponent.Renderer.VANILLA.draw(context, button, delta);
-			texture.draw(context, button.x() + 2, button.y() + 2);
-		});
+	private class TabButtonComponent extends net.saint.commercialize.gui.common.ButtonComponent {
 
-		return tabButton;
+		// Properties
+
+		protected Text narrationMessage;
+		protected TextureReference texture;
+		protected OfferSortOrder sortOrder;
+
+		// Accessors
+
+		public TextureReference texture() {
+			return this.texture;
+		}
+
+		public void texture(TextureReference texture) {
+			this.texture = texture;
+		}
+
+		public OfferSortOrder sortOrder() {
+			return this.sortOrder;
+		}
+
+		public void sortOrder(OfferSortOrder sortOrder) {
+			this.sortOrder = sortOrder;
+		}
+
+		@Override
+		protected MutableText getNarrationMessage() {
+			return this.narrationMessage.copy();
+		}
+
+		// Init
+
+		public TabButtonComponent(Text message, TextureReference texture, Consumer<ButtonComponent> onPress) {
+			super(Text.empty(), onPress);
+
+			this.narrationMessage = message;
+			this.texture = texture;
+			this.sizing(Sizing.fixed(20));
+
+			this.renderer((context, button, delta) -> {
+				ButtonComponent.Renderer.VANILLA.draw(context, button, delta);
+				this.texture.draw(context, button.x() + 2, button.y() + 2);
+				overlayTextureForSortOrder(sortOrder).draw(context, button.x() + 2, button.y() + 2);
+			});
+		}
+
+		private static TextureReference overlayTextureForSortOrder(OfferSortOrder sortOrder) {
+			if (sortOrder == null) {
+				return MarketScreenAssets.STUB_ICON;
+			}
+
+			return switch (sortOrder) {
+			case ASCENDING -> MarketScreenAssets.SORT_ASCENDING_ICON;
+			case DESCENDING -> MarketScreenAssets.SORT_DESCENDING_ICON;
+			};
+		}
+
 	}
 
 }
