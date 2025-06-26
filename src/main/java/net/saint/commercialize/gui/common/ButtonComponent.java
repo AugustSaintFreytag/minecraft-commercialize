@@ -1,4 +1,4 @@
-package net.saint.commercialize.gui;
+package net.saint.commercialize.gui.common;
 
 import java.util.function.Consumer;
 
@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 
 public class ButtonComponent extends io.wispforest.owo.ui.component.ButtonComponent {
 
-	protected ButtonComponent(Text message, Consumer<io.wispforest.owo.ui.component.ButtonComponent> onPress) {
+	public ButtonComponent(Text message, Consumer<io.wispforest.owo.ui.component.ButtonComponent> onPress) {
 		super(message, onPress);
 	}
 

@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.blockentity.MarketBlockEntity;
-import net.saint.commercialize.screen.MarketScreen;
+import net.saint.commercialize.screen.market.MarketScreen;
 
 public class MarketBlock extends BlockWithEntity {
 

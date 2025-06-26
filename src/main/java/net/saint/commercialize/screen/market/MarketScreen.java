@@ -1,4 +1,4 @@
-package net.saint.commercialize.screen;
+package net.saint.commercialize.screen.market;
 
 import java.util.function.Consumer;
 
@@ -16,38 +16,16 @@ import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
+import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
-
-	// Library
-
-	private static class TextureReference {
-		public final Identifier texture;
-		public final int u;
-		public final int v;
-		public final int width;
-		public final int height;
-
-		public TextureReference(Identifier texture, int u, int v, int width, int height) {
-			this.texture = texture;
-			this.u = u;
-			this.v = v;
-			this.width = width;
-			this.height = height;
-		}
-
-		public void draw(DrawContext context, int x, int y) {
-			context.drawTexture(texture, x, y, u, v, width, height);
-		}
-	}
 
 	// Configuration
 
