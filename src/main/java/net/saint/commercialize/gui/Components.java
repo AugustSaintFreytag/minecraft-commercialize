@@ -27,7 +27,7 @@ public final class Components {
 		return new TextBoxComponent(sizing);
 	}
 
-	public static ButtonComponent button(Text message, Consumer<io.wispforest.owo.ui.component.ButtonComponent> onPress) {
+	public static ButtonComponent button(Text message, Consumer<ButtonComponent> onPress) {
 		return new ButtonComponent(message, onPress);
 	}
 
