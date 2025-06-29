@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.gui.common.ButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
+import net.saint.commercialize.library.TextureReference;
 
 public final class Components {
 
@@ -17,6 +18,10 @@ public final class Components {
 
 	public static TextureComponent texture(Identifier texture, int u, int v, int regionWidth, int regionHeight) {
 		return io.wispforest.owo.ui.component.Components.texture(texture, u, v, regionWidth, regionHeight);
+	}
+
+	public static TextureComponent texture(TextureReference texture) {
+		return io.wispforest.owo.ui.component.Components.texture(texture.texture, texture.u, texture.v, texture.width, texture.height);
 	}
 
 	public static LabelComponent label(Text text) {
