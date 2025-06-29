@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.util.math.random.Random;
-import net.saint.commercialize.library.Availability;
+import net.saint.commercialize.data.common.Availability;
 
 public final class OfferTemplateManager {
 

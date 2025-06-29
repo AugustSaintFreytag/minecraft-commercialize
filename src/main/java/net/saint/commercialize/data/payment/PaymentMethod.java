@@ -1,4 +1,4 @@
-package net.saint.commercialize.library;
+package net.saint.commercialize.data.payment;
 
 public enum PaymentMethod {
 	INVENTORY, ACCOUNT;

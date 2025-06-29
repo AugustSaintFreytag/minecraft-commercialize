@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.config.ItemsConfig;
 import net.saint.commercialize.config.OffersConfig;
-import net.saint.commercialize.library.IdentifierAdapter;
+import net.saint.commercialize.data.common.IdentifierAdapter;
 
 public final class ConfigLoadUtil {
 

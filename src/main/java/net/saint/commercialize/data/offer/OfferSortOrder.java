@@ -1,4 +1,4 @@
-package net.saint.commercialize.library;
+package net.saint.commercialize.data.offer;
 
 import net.saint.commercialize.util.LocalizationUtil;
 

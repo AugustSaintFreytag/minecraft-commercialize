@@ -10,9 +10,9 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
-import net.saint.commercialize.library.StackSizeRange;
 
 public final class MarketOfferGenerator {
 

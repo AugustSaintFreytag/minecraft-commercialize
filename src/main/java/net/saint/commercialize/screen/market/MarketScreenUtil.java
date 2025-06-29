@@ -1,10 +1,10 @@
 package net.saint.commercialize.screen.market;
 
 import net.minecraft.text.Text;
-import net.saint.commercialize.library.OfferFilterMode;
-import net.saint.commercialize.library.OfferSortMode;
-import net.saint.commercialize.library.OfferSortOrder;
-import net.saint.commercialize.library.PaymentMethod;
+import net.saint.commercialize.data.offer.OfferFilterMode;
+import net.saint.commercialize.data.offer.OfferSortMode;
+import net.saint.commercialize.data.offer.OfferSortOrder;
+import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
 
