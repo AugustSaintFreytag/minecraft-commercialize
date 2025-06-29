@@ -19,14 +19,17 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.MutableText;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
+import net.saint.commercialize.gui.common.ButtonComponent;
+import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
@@ -83,6 +86,16 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(paymentMethod));
+
+		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
+		offerContainer.clearChildren();
+
+		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen.", Commercialize.MARKET_MANAGER.size());
+
+		Commercialize.MARKET_MANAGER.getOffers().forEach(offer -> {
+			var offerComponent = makeOfferListComponent(offer);
+			offerContainer.child(offerComponent);
+		});
 	}
 
 	// Root
@@ -131,6 +144,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offersSearchBox = makeSearchBoxComponent();
 		offersSearchBox.positioning(Positioning.absolute(32, 17));
 		leftSideComponent.child(offersSearchBox);
+
+		// Offers
+
+		var offerContainer = Containers.verticalFlow(Sizing.fixed(161), Sizing.content()).id("offer_container");
+		var offerScrollView = Containers.verticalScroll(Sizing.fixed(161), Sizing.fixed(148), offerContainer);
+		offerScrollView.positioning(Positioning.absolute(33, 36));
+		leftSideComponent.child(offerScrollView);
 
 		// Tabs
 
@@ -285,17 +305,60 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return offersSearchBox;
 	}
 
-	private ButtonComponent makeTabButtonComponent(Text message, TextureReference texture, Consumer<ButtonComponent> onPress) {
+	private TabButtonComponent makeTabButtonComponent(Text message, TextureReference texture, Consumer<TabButtonComponent> onPress) {
 		return new TabButtonComponent(message, texture, onPress);
 	}
 
+	private OfferListComponent makeOfferListComponent(Offer offer) {
+		var itemStack = offer.stack;
+		var truncatedItemName = itemStack.getName().asTruncatedString(10);
+		var itemDescription = Text.of(truncatedItemName);
+		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
 
+		return new OfferListComponent(itemStack, itemDescription, priceDescription, component -> {
+			// Handle offer selection
+			client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
+		});
+	}
 
+	private static class OfferListComponent extends FlowLayout {
 
+		// Properties
 
+		protected ItemStack itemStack;
+		protected Text itemDescription;
+		protected Text priceDescription;
 
 		// Init
 
+		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, Consumer<ButtonComponent> onPress) {
+			super(Sizing.fixed(154), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
+
+			this.itemStack = itemStack;
+			this.itemDescription = itemDescription;
+			this.priceDescription = priceDescription;
+
+			var textureComponent = Components.texture(MarketScreenAssets.OFFER_LIST_ITEM);
+			textureComponent.positioning(Positioning.absolute(0, 0));
+			textureComponent.sizing(Sizing.fill(100));
+			this.child(textureComponent);
+
+			var itemComponent = Components.item(this.itemStack);
+			itemComponent.showOverlay(true);
+			itemComponent.positioning(Positioning.absolute(3, 0));
+			this.child(itemComponent);
+
+			var itemDescriptionLabel = Components.label(this.itemDescription);
+			itemDescriptionLabel.positioning(Positioning.absolute(28, 5));
+			itemDescriptionLabel.sizing(Sizing.fixed(65), Sizing.fixed(12));
+			itemDescriptionLabel.maxWidth(65);
+			this.child(itemDescriptionLabel);
+
+			var priceDescriptionLabel = Components.label(this.priceDescription).horizontalTextAlignment(HorizontalAlignment.RIGHT);
+			priceDescriptionLabel.positioning(Positioning.absolute(88, 5));
+			priceDescriptionLabel.sizing(Sizing.fixed(50), Sizing.fixed(12));
+			priceDescriptionLabel.maxWidth(42);
+			this.child(priceDescriptionLabel);
 		}
 
 	}
