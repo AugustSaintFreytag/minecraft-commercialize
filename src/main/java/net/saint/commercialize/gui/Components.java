@@ -2,9 +2,11 @@ package net.saint.commercialize.gui;
 
 import java.util.function.Consumer;
 
+import io.wispforest.owo.ui.component.ItemComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.core.Sizing;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.gui.common.ButtonComponent;
@@ -34,6 +36,10 @@ public final class Components {
 
 	public static ButtonComponent button(Text message, Consumer<ButtonComponent> onPress) {
 		return new ButtonComponent(message, onPress);
+	}
+
+	public static ItemComponent item(ItemStack item) {
+		return io.wispforest.owo.ui.component.Components.item(item);
 	}
 
 }
