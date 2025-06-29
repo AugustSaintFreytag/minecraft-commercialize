@@ -4,7 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.saint.commercialize.data.item.ItemManager;
+import net.saint.commercialize.data.market.MarketManager;
+import net.saint.commercialize.data.market.MarketOfferGenerator;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.Blocks;
 import net.saint.commercialize.util.ConfigLoadUtil;
@@ -17,6 +20,8 @@ public class Commercialize implements ModInitializer {
 
 	public static final ItemManager ITEM_MANAGER = new ItemManager();
 	public static final OfferTemplateManager OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
+
+	public static final MarketManager MARKET_MANAGER = new MarketManager();
 
 	// References
 
@@ -51,6 +56,29 @@ public class Commercialize implements ModInitializer {
 
 		Commercialize.LOGGER.info("Loaded {} offer template configs with a total of {} offer(s).", offerTemplateConfigs.size(),
 				OFFER_TEMPLATE_MANAGER.size());
+
+		ServerWorldEvents.LOAD.register((server, template) -> {
+			var world = server.getOverworld();
+
+			if (world == null) {
+				return;
+			}
+
+			MARKET_MANAGER.clearOffers();
+
+			for (int i = 0; i < 4; i++) {
+				var offer = MarketOfferGenerator.generateOffer(world);
+
+				if (offer == null) {
+					continue;
+				}
+
+				MARKET_MANAGER.addOffer(offer);
+			}
+
+			Commercialize.LOGGER.info("Generated {} market offer(s) for world '{}'.", MARKET_MANAGER.size(),
+					world.getRegistryKey().getValue());
+		});
 
 	}
 }
