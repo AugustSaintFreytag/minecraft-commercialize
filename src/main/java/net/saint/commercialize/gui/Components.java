@@ -15,9 +15,6 @@ import net.saint.commercialize.library.TextureReference;
 
 public final class Components {
 
-	private Components() {
-	}
-
 	public static TextureComponent texture(Identifier texture, int u, int v, int regionWidth, int regionHeight) {
 		return io.wispforest.owo.ui.component.Components.texture(texture, u, v, regionWidth, regionHeight);
 	}
