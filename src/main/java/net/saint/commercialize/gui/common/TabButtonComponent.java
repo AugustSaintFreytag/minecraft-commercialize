@@ -54,7 +54,7 @@ public class TabButtonComponent extends net.saint.commercialize.gui.common.Butto
 		this.renderer((context, button, delta) -> {
 			ButtonComponent.Renderer.VANILLA.draw(context, button, delta);
 			this.texture.draw(context, button.x() + 2, button.y() + 2);
-			overlayTextureForSortOrder(sortOrder).draw(context, button.x() + 2, button.y() + 2);
+			overlayTextureForSortOrder(sortOrder).draw(context, button.x() + 1, button.y() + 2);
 		});
 	}
 
