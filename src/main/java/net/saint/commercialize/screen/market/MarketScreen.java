@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
-import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
@@ -28,9 +27,11 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
+import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.common.ButtonComponent;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
 
@@ -107,14 +108,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
-		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(392), Sizing.fixed(192));
+		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(404), Sizing.fixed(192));
 
 		var leftSideComponent = makeLeftSideComponent();
 		leftSideComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.zIndex(2);
 
 		var rightSideComponent = makeRightSideComponent();
-		rightSideComponent.positioning(Positioning.absolute(199, 7));
+		rightSideComponent.positioning(Positioning.absolute(211, 7));
 		rightSideComponent.zIndex(1);
 
 		wrapperComponent.child(leftSideComponent);
@@ -130,9 +131,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// Left Side
 
 	private FlowLayout makeLeftSideComponent() {
-		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(202), Sizing.fixed(192));
+		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(214), Sizing.fixed(192));
 
-		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL_TEXTURE, 0, 0, 202, 192);
+		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL_TEXTURE, 0, 0, 214, 192);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
 
@@ -147,9 +148,12 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Offers
 
-		var offerContainer = Containers.verticalFlow(Sizing.fixed(161), Sizing.content()).id("offer_container");
-		var offerScrollView = Containers.verticalScroll(Sizing.fixed(161), Sizing.fixed(148), offerContainer);
+		var offerContainer = Containers.verticalFlow(Sizing.fixed(166), Sizing.content()).id("offer_container");
+		offerContainer.positioning(Positioning.absolute(0, 0));
+
+		var offerScrollView = Containers.verticalScroll(Sizing.fixed(174), Sizing.fixed(148), offerContainer);
 		offerScrollView.positioning(Positioning.absolute(33, 36));
+
 		leftSideComponent.child(offerScrollView);
 
 		// Tabs
@@ -298,7 +302,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private TextBoxComponent makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
 
-		offersSearchBox.sizing(Sizing.fixed(161), Sizing.fixed(14));
+		offersSearchBox.sizing(Sizing.fixed(174), Sizing.fixed(14));
 		offersSearchBox.setPlaceholder(LocalizationUtil.localizedText("gui", "market.search_offers"));
 		offersSearchBox.setTooltip(Tooltip.of(LocalizationUtil.localizedText("gui", "market.search_offers.tooltip")));
 
@@ -311,8 +315,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private OfferListComponent makeOfferListComponent(Offer offer) {
 		var itemStack = offer.stack;
-		var truncatedItemName = itemStack.getName().asTruncatedString(10);
-		var itemDescription = Text.of(truncatedItemName);
+		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
 
 		return new OfferListComponent(itemStack, itemDescription, priceDescription, component -> {
@@ -332,7 +335,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Init
 
 		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, Consumer<ButtonComponent> onPress) {
-			super(Sizing.fixed(154), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
+			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
 
 			this.itemStack = itemStack;
 			this.itemDescription = itemDescription;
@@ -340,24 +343,22 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 			var textureComponent = Components.texture(MarketScreenAssets.OFFER_LIST_ITEM);
 			textureComponent.positioning(Positioning.absolute(0, 0));
-			textureComponent.sizing(Sizing.fill(100));
+			textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
 			this.child(textureComponent);
 
 			var itemComponent = Components.item(this.itemStack);
 			itemComponent.showOverlay(true);
-			itemComponent.positioning(Positioning.absolute(3, 0));
+			itemComponent.positioning(Positioning.absolute(2, 0));
 			this.child(itemComponent);
 
 			var itemDescriptionLabel = Components.label(this.itemDescription);
 			itemDescriptionLabel.positioning(Positioning.absolute(28, 5));
-			itemDescriptionLabel.sizing(Sizing.fixed(65), Sizing.fixed(12));
-			itemDescriptionLabel.maxWidth(65);
+			itemDescriptionLabel.sizing(Sizing.fixed(70), Sizing.fixed(12));
 			this.child(itemDescriptionLabel);
 
 			var priceDescriptionLabel = Components.label(this.priceDescription).horizontalTextAlignment(HorizontalAlignment.RIGHT);
-			priceDescriptionLabel.positioning(Positioning.absolute(88, 5));
-			priceDescriptionLabel.sizing(Sizing.fixed(50), Sizing.fixed(12));
-			priceDescriptionLabel.maxWidth(42);
+			priceDescriptionLabel.positioning(Positioning.absolute(95, 5));
+			priceDescriptionLabel.sizing(Sizing.fixed(55), Sizing.fixed(12));
 			this.child(priceDescriptionLabel);
 		}
 
