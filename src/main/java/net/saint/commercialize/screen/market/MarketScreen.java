@@ -392,6 +392,12 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			this.child(playerHeadComponent);
 		}
 
+		@Override
+		public boolean onMouseDown(double mouseX, double mouseY, int button) {
+			this.onPress.accept(this);
+			return super.onMouseDown(mouseX, mouseY, button);
+		}
+
 	}
 
 }
