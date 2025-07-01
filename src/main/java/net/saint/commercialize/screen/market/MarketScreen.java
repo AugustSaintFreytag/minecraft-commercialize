@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.mojang.authlib.GameProfile;
+
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
@@ -11,6 +13,7 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
+import io.wispforest.owo.ui.core.OwoUIDrawContext;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
@@ -34,6 +37,7 @@ import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
+import net.saint.commercialize.util.PlayerHeadUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
@@ -317,11 +321,27 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var sellerTexture = profileTextureForOffer(offer);
 
-		return new OfferListComponent(itemStack, itemDescription, priceDescription, component -> {
+		return new OfferListComponent(itemStack, itemDescription, priceDescription, sellerTexture, component -> {
 			// Handle offer selection
 			client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
 		});
+	}
+
+	private TextureReference profileTextureForOffer(Offer offer) {
+		if (offer.isGenerated) {
+			var sellerName = offer.sellerName;
+			var texture = PlayerHeadUtil.playerHeadTextureForName(sellerName);
+
+			return texture;
+		}
+
+		var sellerProfile = new GameProfile(offer.sellerId, offer.sellerName);
+		var textureIdentifier = Commercialize.PLAYER_PROFILE_MANAGER.skinForPlayer(sellerProfile);
+		var texture = new TextureReference(textureIdentifier, 32, 32, 32, 32);
+
+		return texture;
 	}
 
 	private static class OfferListComponent extends FlowLayout {
@@ -331,15 +351,20 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		protected ItemStack itemStack;
 		protected Text itemDescription;
 		protected Text priceDescription;
+		protected TextureReference profileTexture;
+		protected Consumer<OfferListComponent> onPress;
 
 		// Init
 
-		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, Consumer<ButtonComponent> onPress) {
+		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, TextureReference profileTexture,
+				Consumer<OfferListComponent> onPress) {
 			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
 
 			this.itemStack = itemStack;
 			this.itemDescription = itemDescription;
 			this.priceDescription = priceDescription;
+			this.profileTexture = profileTexture;
+			this.onPress = onPress;
 
 			var textureComponent = Components.texture(MarketAssets.OFFER_LIST_ITEM);
 			textureComponent.positioning(Positioning.absolute(0, 0));
@@ -360,6 +385,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			priceDescriptionLabel.positioning(Positioning.absolute(95, 5));
 			priceDescriptionLabel.sizing(Sizing.fixed(55), Sizing.fixed(12));
 			this.child(priceDescriptionLabel);
+
+			var playerHeadComponent = Components.texture(this.profileTexture);
+			playerHeadComponent.positioning(Positioning.absolute(153, 5));
+			playerHeadComponent.sizing(Sizing.fixed(8), Sizing.fixed(8));
+			this.child(playerHeadComponent);
 		}
 
 	}
