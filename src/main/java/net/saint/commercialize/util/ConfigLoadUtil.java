@@ -3,7 +3,6 @@ package net.saint.commercialize.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -119,10 +118,8 @@ public final class ConfigLoadUtil {
 	private static void assertConfigDirectoriesAndFiles() {
 		try {
 			Files.createDirectories(CONFIG_DIR);
-
-			// ensure defaults exist
-			copyIfMissing("items_any.json");
-			copyIfMissing("offers_any.json");
+			// TODO: Add all default config files here to be copied.
+			// TODO: Only copy if master config file is missing.
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create config directory or copy default config files.", e);
 		}
