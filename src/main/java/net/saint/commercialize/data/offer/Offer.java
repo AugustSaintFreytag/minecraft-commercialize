@@ -2,8 +2,6 @@ package net.saint.commercialize.data.offer;
 
 import java.util.UUID;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -17,10 +15,7 @@ public class Offer {
 	public boolean isActive;
 	public boolean isGenerated;
 
-	@Nullable
 	public UUID sellerId;
-
-	@Nullable
 	public String sellerName;
 
 	public long timestamp;
