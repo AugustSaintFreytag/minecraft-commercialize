@@ -13,6 +13,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
+import net.saint.commercialize.util.RandomPlayerUtil;
 
 public final class MarketOfferGenerator {
 
@@ -35,6 +36,7 @@ public final class MarketOfferGenerator {
 		var offer = new Offer();
 		var itemStack = getItemStackForOfferTemplate(random, offerTemplate);
 		var price = getTotalPriceForItemStack(random, itemStack);
+		var sellerName = RandomPlayerUtil.randomPlayerName(random);
 
 		if (price == 0) {
 			return null;
@@ -43,7 +45,8 @@ public final class MarketOfferGenerator {
 		offer.id = UUID.randomUUID();
 		offer.isActive = true;
 		offer.isGenerated = true;
-		offer.sellerName = "Generated";
+		offer.sellerId = null;
+		offer.sellerName = sellerName;
 		offer.timestamp = world.getTime();
 		offer.stack = itemStack;
 		offer.price = price;
