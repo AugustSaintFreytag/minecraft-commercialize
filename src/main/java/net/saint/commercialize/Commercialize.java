@@ -11,12 +11,15 @@ import net.saint.commercialize.data.market.MarketOfferGenerator;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.Blocks;
 import net.saint.commercialize.util.ConfigLoadUtil;
+import net.saint.commercialize.util.PlayerProfileManager;
 
 public class Commercialize implements ModInitializer {
 
 	// Properties
 
 	public static final String MOD_ID = "commercialize";
+
+	public static final PlayerProfileManager PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
 
 	public static final ItemManager ITEM_MANAGER = new ItemManager();
 	public static final OfferTemplateManager OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
@@ -57,7 +60,12 @@ public class Commercialize implements ModInitializer {
 		Commercialize.LOGGER.info("Loaded {} offer template configs with a total of {} offer(s).", offerTemplateConfigs.size(),
 				OFFER_TEMPLATE_MANAGER.size());
 
-		ServerWorldEvents.LOAD.register((server, template) -> {
+		var playersConfig = ConfigLoadUtil.loadPlayersConfig();
+		PLAYER_PROFILE_MANAGER.registerReferencePlayerNames(playersConfig.players);
+
+		Commercialize.LOGGER.info("Loaded {} mock player names.", PLAYER_PROFILE_MANAGER.numberOfReferencePlayerNames());
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			var world = server.getOverworld();
 
 			if (world == null) {
