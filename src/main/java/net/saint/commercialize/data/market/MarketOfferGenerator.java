@@ -23,6 +23,8 @@ public final class MarketOfferGenerator {
 
 	private static final double SELLING_FACTOR = 0.75;
 
+	private static final int OFFER_DURATION = 36_000;
+
 	// Properties
 
 	private static Map<StackSizeRange, int[]> cachedStackSizeArrayByRange = new HashMap<>();
@@ -49,6 +51,7 @@ public final class MarketOfferGenerator {
 		offer.sellerId = null;
 		offer.sellerName = sellerName;
 		offer.timestamp = world.getTime();
+		offer.duration = OFFER_DURATION;
 		offer.stack = itemStack;
 		offer.price = price;
 
