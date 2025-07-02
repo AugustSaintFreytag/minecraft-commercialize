@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import net.saint.commercialize.data.offer.Offer;
@@ -109,51 +110,74 @@ public final class MarketScreenUtil {
 	public static List<TooltipComponent> tooltipTextForOffer(World world, Offer offer) {
 		var components = new ArrayList<TooltipComponent>();
 
-		// Heading
-
-		var headingText = LocalizationUtil.localizedText("text", "offer").copy().formatted(Formatting.BOLD, Formatting.YELLOW);
-		components.add(TooltipComponent.of(headingText.asOrderedText()));
+		// Title
+		var title = LocalizationUtil.localizedText("text", "offer.tooltip.title").copy();
+		title.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xf1c513)).withBold(true));
+		components.add(TooltipComponent.of(title.asOrderedText()));
 
 		// Item Name
-
-		var nameText = offer.stack.getName().copy();
-		nameText.setStyle(Style.EMPTY.withColor(Formatting.WHITE));
+		var nameLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.item") + ": ")
+				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+		var nameText = offer.stack.getName().copy().setStyle(Style.EMPTY.withColor(Formatting.WHITE));
 
 		if (offer.stack.hasCustomName()) {
 			nameText.setStyle(nameText.getStyle().withItalic(true));
 		}
 
 		if (offer.stack.getCount() > 1) {
-			var countText = Text.of(" (x" + offer.stack.getCount() + ")").copy();
-			countText.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+			var countText = Text.literal(" (x" + offer.stack.getCount() + ")").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 			nameText.append(countText);
 		}
 
-		components.add(TooltipComponent.of(nameText.asOrderedText()));
+		nameLabel.append(nameText);
+		components.add(TooltipComponent.of(nameLabel.asOrderedText()));
 
 		// Price
+		var priceLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.price") + ": ")
+				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+		var priceValue = Text.literal(NumericFormattingUtil.formatCurrency(offer.price))
+				.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xe2ca80)));
+		var priceLine = priceLabel.append(priceValue);
 
-		var priceText = LocalizationUtil.localizedText("text", "offer.price", NumericFormattingUtil.formatCurrency(offer.price));
-		components.add(TooltipComponent.of(priceText.asOrderedText()));
+		if (offer.stack.getCount() > 1) {
+			// If the item stack has more than one item, show the per-item price breakdown
+			var perItemLabel = Text
+					.literal(" " + LocalizationUtil.localizedString("text", "offer.tooltip.price_breakdown",
+							NumericFormattingUtil.formatCurrency(offer.price / offer.stack.getCount())))
+					.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x989280)));
+			priceLine = priceLine.append(perItemLabel);
+		}
+
+		components.add(TooltipComponent.of(priceLine.asOrderedText()));
 
 		// Seller
+		var sellerLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.seller") + ": ")
+				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+		var sellerValue = Text.literal(offer.sellerName).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+		components.add(TooltipComponent.of(sellerLabel.append(sellerValue).asOrderedText()));
 
-		var sellerText = LocalizationUtil.localizedText("text", "offer.seller", offer.sellerName);
-		components.add(TooltipComponent.of(sellerText.asOrderedText()));
-
-		// Time
-
+		// Time calculations
 		var currentTicks = world.getTime();
 		var elapsedTicks = currentTicks - offer.timestamp;
-		var timeExpiresTicks = Math.max(0, (offer.timestamp + offer.duration) - currentTicks);
+		var timeExpiresTicks = Math.max(0, offer.timestamp + offer.duration - currentTicks);
 
-		var formattedTimePosted = TextFormattingUtil.capitalize(TimeFormattingUtil.formattedTime(elapsedTicks));
-		var timePostedText = LocalizationUtil.localizedText("text", "offer.time_posted", formattedTimePosted);
-		components.add(TooltipComponent.of(timePostedText.asOrderedText()));
+		// Posted
+		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
+		var postedFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_posted_format",
+				TextFormattingUtil.capitalize(rawPosted));
+		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
+				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+		var postedValue = Text.literal(postedFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+		components.add(TooltipComponent.of(postedLabel.append(postedValue).asOrderedText()));
 
-		var formattedTimeExpires = TextFormattingUtil.capitalize(TimeFormattingUtil.formattedTime(timeExpiresTicks));
-		var expiryText = LocalizationUtil.localizedText("text", "offer.time_expiring", formattedTimeExpires);
-		components.add(TooltipComponent.of(expiryText.asOrderedText()));
+		// Expiration
+		var rawExpiry = TimeFormattingUtil.formattedTime(timeExpiresTicks);
+		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format",
+				TextFormattingUtil.capitalize(rawExpiry));
+		var expiryLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring") + ": ")
+				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
+		var expiryValue = Text.literal(expiryFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+		components.add(TooltipComponent.of(expiryLabel.append(expiryValue).asOrderedText()));
 
 		return components;
 	}
@@ -170,7 +194,7 @@ public final class MarketScreenUtil {
 		components.add(TooltipComponent.of(sellerNameText.asOrderedText()));
 
 		if (offer.isGenerated) {
-			var generatedText = LocalizationUtil.localizedText("text", "offer.generated").copy();
+			var generatedText = LocalizationUtil.localizedText("text", "offer.tooltip.generated_seller").copy();
 			generatedText.setStyle(generatedText.getStyle().withItalic(true).withColor(Formatting.GRAY));
 			components.add(TooltipComponent.of(generatedText.asOrderedText()));
 		}
