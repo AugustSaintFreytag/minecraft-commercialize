@@ -10,7 +10,7 @@ public final class RandomPlayerUtil {
 
 	private static final int NUMBER_OF_SAMPLES = 3;
 	private static final int MIN_NUMBER_OF_COMPONENTS = 1;
-	private static final int MAX_NUMBER_OF_COMPONENTS = 4;
+	private static final int MAX_NUMBER_OF_COMPONENTS = 3;
 	private static final int MAX_NUMBER_OF_CHARACTERS = 12;
 
 	public static String randomPlayerName(Random random) {
@@ -29,28 +29,39 @@ public final class RandomPlayerUtil {
 
 		var pickedNameComponents = new ArrayList<String>();
 		var numberOfPickedNameComponents = random.nextBetween(MIN_NUMBER_OF_COMPONENTS, MAX_NUMBER_OF_COMPONENTS);
-
-		if (numberOfPickedNameComponents == 1) {
-			// Remove numbers if only using one component
-			allNameComponents.removeIf(component -> component.chars().allMatch(Character::isDigit));
-		}
+		var lastCombinedName = "";
 
 		for (var index = 0; index < numberOfPickedNameComponents; index++) {
 			if (allNameComponents.isEmpty()) {
 				break;
 			}
 
-			var pickedIndex = random.nextInt(allNameComponents.size());
-			pickedNameComponents.add(allNameComponents.get(pickedIndex));
-			allNameComponents.remove(pickedIndex);
+			var pickedNameComponent = pickAndRemoveRandomNameComponentFromCollection(random, allNameComponents, index > 0);
+			pickedNameComponents.add(pickedNameComponent);
+			lastCombinedName = String.join("", pickedNameComponents);
 
-			if (String.join("", pickedNameComponents).length() >= MAX_NUMBER_OF_CHARACTERS) {
+			if (lastCombinedName.length() >= MAX_NUMBER_OF_CHARACTERS) {
 				break;
 			}
 		}
 
-		var joinedNameComponents = String.join("", pickedNameComponents);
-		return joinedNameComponents;
+		return lastCombinedName;
+	}
+
+	private static String pickAndRemoveRandomNameComponentFromCollection(Random random, List<String> collection, boolean allowNumerics) {
+		if (collection.isEmpty()) {
+			return "Elma";
+		}
+
+		var pickedIndex = random.nextInt(collection.size());
+		var pickedNameComponent = collection.get(pickedIndex);
+
+		if (!allowNumerics && pickedNameComponent.chars().allMatch(Character::isDigit)) {
+			return pickAndRemoveRandomNameComponentFromCollection(random, collection, allowNumerics);
+		}
+
+		collection.remove(pickedIndex);
+		return pickedNameComponent;
 	}
 
 	private static List<String> componentsFromName(String name) {
