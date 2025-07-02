@@ -84,14 +84,14 @@ public final class RandomPlayerUtil {
 
 			// Split on digit -> letter transitions
 			if (currentIsDigit != lastIsDigit) {
-				components.add(capitalize(builder.toString()));
+				components.add(TextFormattingUtil.capitalize(builder.toString()));
 				builder.setLength(0);
 				builder.append(character);
 			}
 
 			// Split on lowercase -> uppercase
 			else if (currentIsLetter && Character.isUpperCase(character) && lastIsLowercaseLetter) {
-				components.add(capitalize(builder.toString()));
+				components.add(TextFormattingUtil.capitalize(builder.toString()));
 				builder.setLength(0);
 				builder.append(character);
 			} else {
@@ -100,18 +100,10 @@ public final class RandomPlayerUtil {
 		}
 
 		if (builder.length() > 0) {
-			components.add(capitalize(builder.toString()));
+			components.add(TextFormattingUtil.capitalize(builder.toString()));
 		}
 
 		return components;
-	}
-
-	private static String capitalize(String s) {
-		if (s.isEmpty()) {
-			return s;
-		}
-
-		return Character.toUpperCase(s.charAt(0)) + s.substring(1);
 	}
 
 }
