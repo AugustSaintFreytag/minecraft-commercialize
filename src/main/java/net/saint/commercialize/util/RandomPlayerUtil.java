@@ -9,8 +9,9 @@ import net.saint.commercialize.Commercialize;
 public final class RandomPlayerUtil {
 
 	private static final int NUMBER_OF_SAMPLES = 3;
-	private static final int MIN_NUMBER_OF_COMPONENTS = 2;
+	private static final int MIN_NUMBER_OF_COMPONENTS = 1;
 	private static final int MAX_NUMBER_OF_COMPONENTS = 4;
+	private static final int MAX_NUMBER_OF_CHARACTERS = 12;
 
 	public static String randomPlayerName(Random random) {
 		// Pick three random player name from manager cache.
@@ -42,6 +43,10 @@ public final class RandomPlayerUtil {
 			var pickedIndex = random.nextInt(allNameComponents.size());
 			pickedNameComponents.add(allNameComponents.get(pickedIndex));
 			allNameComponents.remove(pickedIndex);
+
+			if (String.join("", pickedNameComponents).length() >= MAX_NUMBER_OF_CHARACTERS) {
+				break;
+			}
 		}
 
 		var joinedNameComponents = String.join("", pickedNameComponents);
