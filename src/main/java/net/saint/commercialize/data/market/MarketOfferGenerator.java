@@ -27,10 +27,11 @@ public final class MarketOfferGenerator {
 
 	private static Map<StackSizeRange, int[]> cachedStackSizeArrayByRange = new HashMap<>();
 
+	private static Random random = Random.create();
+
 	// Generation
 
 	public static Offer generateOffer(World world) {
-		var random = world.getRandom();
 		var offerTemplate = getRandomOfferTemplate(random);
 
 		var offer = new Offer();
