@@ -32,5 +32,10 @@
 	"gui.commercialize.market.order_cart.tooltip": "Confirm and order all selected items in cart.",
 	"gui.commercialize.market.empty_cart": "Empty Cart",
 	"gui.commercialize.market.empty_cart.tooltip": "Remove all selected items from the cart.",
-	"text.commercialize.currency": "¤"
+	"text.commercialize.currency": "¤",
+	"text.commercialize.time.short.hour": "hour",
+	"text.commercialize.time.short.hours": "hours",
+	"text.commercialize.time.short.day": "day",
+	"text.commercialize.time.short.days": "days",
+	"text.commercialize.time.short.moment": "a moment"
 }
