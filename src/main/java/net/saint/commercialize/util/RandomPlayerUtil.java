@@ -29,6 +29,11 @@ public final class RandomPlayerUtil {
 		var pickedNameComponents = new ArrayList<String>();
 		var numberOfPickedNameComponents = random.nextBetween(MIN_NUMBER_OF_COMPONENTS, MAX_NUMBER_OF_COMPONENTS);
 
+		if (numberOfPickedNameComponents == 1) {
+			// Remove numbers if only using one component
+			allNameComponents.removeIf(component -> component.chars().allMatch(Character::isDigit));
+		}
+
 		for (var index = 0; index < numberOfPickedNameComponents; index++) {
 			var pickedIndex = random.nextInt(allNameComponents.size());
 			pickedNameComponents.add(allNameComponents.get(pickedIndex));
