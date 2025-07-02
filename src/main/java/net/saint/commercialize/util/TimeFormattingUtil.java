@@ -10,7 +10,7 @@ public final class TimeFormattingUtil {
 
 		// Less than one hour
 		if (totalNumberOfHours < 1) {
-			return "< 1 " + LocalizationUtil.localizedString("text", "time.short.hour");
+			return LocalizationUtil.localizedString("text", "time.short.moment");
 		}
 
 		var totalNumberOfDays = totalNumberOfHours / 24;
@@ -26,7 +26,7 @@ public final class TimeFormattingUtil {
 		// Hours portion
 		if (remainingNumberOfHours > 0) {
 			if (formattedOutput.length() > 0) {
-				formattedOutput.append(" ");
+				formattedOutput.append(", ");
 			}
 
 			var hourKey = remainingNumberOfHours == 1 ? "time.short.hour" : "time.short.hours";
