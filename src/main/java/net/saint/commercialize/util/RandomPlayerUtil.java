@@ -35,8 +35,13 @@ public final class RandomPlayerUtil {
 		}
 
 		for (var index = 0; index < numberOfPickedNameComponents; index++) {
+			if (allNameComponents.isEmpty()) {
+				break;
+			}
+
 			var pickedIndex = random.nextInt(allNameComponents.size());
 			pickedNameComponents.add(allNameComponents.get(pickedIndex));
+			allNameComponents.remove(pickedIndex);
 		}
 
 		var joinedNameComponents = String.join("", pickedNameComponents);
