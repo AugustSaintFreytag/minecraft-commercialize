@@ -1,5 +1,6 @@
 package net.saint.commercialize.screen.market;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,13 +14,13 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
-import io.wispforest.owo.ui.core.OwoUIDrawContext;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -321,12 +322,15 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
+		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
 
-		return new OfferListComponent(itemStack, itemDescription, priceDescription, sellerTexture, component -> {
-			// Handle offer selection
-			client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
-		});
+		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture,
+				component -> {
+					// Handle offer selection
+					client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
+				});
 	}
 
 	private TextureReference profileTextureForOffer(Offer offer) {
@@ -351,18 +355,22 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		protected ItemStack itemStack;
 		protected Text itemDescription;
 		protected Text priceDescription;
+		protected List<TooltipComponent> offerTooltip;
+		protected List<TooltipComponent> sellerTooltip;
 		protected TextureReference profileTexture;
 		protected Consumer<OfferListComponent> onPress;
 
 		// Init
 
-		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, TextureReference profileTexture,
-				Consumer<OfferListComponent> onPress) {
+		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, List<TooltipComponent> offerTooltip,
+				List<TooltipComponent> sellerTooltip, TextureReference profileTexture, Consumer<OfferListComponent> onPress) {
 			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
 
 			this.itemStack = itemStack;
 			this.itemDescription = itemDescription;
 			this.priceDescription = priceDescription;
+			this.offerTooltip = offerTooltip;
+			this.sellerTooltip = sellerTooltip;
 			this.profileTexture = profileTexture;
 			this.onPress = onPress;
 
@@ -374,6 +382,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			var itemComponent = Components.item(this.itemStack);
 			itemComponent.showOverlay(true);
 			itemComponent.positioning(Positioning.absolute(2, 0));
+			itemComponent.setTooltipFromStack(true);
 			this.child(itemComponent);
 
 			var itemDescriptionLabel = Components.label(this.itemDescription);
@@ -389,7 +398,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			var playerHeadComponent = Components.texture(this.profileTexture);
 			playerHeadComponent.positioning(Positioning.absolute(153, 5));
 			playerHeadComponent.sizing(Sizing.fixed(8), Sizing.fixed(8));
+			playerHeadComponent.tooltip(this.sellerTooltip);
 			this.child(playerHeadComponent);
+
+			var tooltipOverlay = Components.box(Sizing.fixed(126), Sizing.fixed(18));
+			tooltipOverlay.color(Color.ofArgb(0x00000000));
+			tooltipOverlay.positioning(Positioning.absolute(26, 0));
+			tooltipOverlay.tooltip(this.offerTooltip);
+			this.child(tooltipOverlay);
 		}
 
 		@Override
