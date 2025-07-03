@@ -22,6 +22,8 @@ public final class MarketOfferGenerator {
 	private static final int[] STACK_SIZES = { 1, 2, 4, 8, 16, 24, 36, 48, 64 };
 
 	private static final double SELLING_FACTOR = 0.75;
+	private static final double BUYING_FACTOR = 1.15;
+	private static final double JITTER_FACTOR = 0.085;
 
 	private static final int OFFER_DURATION = 36_000;
 
@@ -65,11 +67,15 @@ public final class MarketOfferGenerator {
 		var itemBaseValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
 
 		if (itemBaseValue == 0) {
+			Commercialize.LOGGER.warn("Could not get total price for requested item '{}'.", itemIdentifier);
 			return 0;
 		}
 
 		var stackSize = itemStack.getCount();
-		var rawValue = ((double) itemBaseValue) * SELLING_FACTOR * stackSize;
+		var rawValue = ((double) itemBaseValue) * BUYING_FACTOR * stackSize;
+		var jitterValue = random.nextTriangular(0, JITTER_FACTOR) * itemBaseValue;
+
+		rawValue += jitterValue;
 
 		return roundToNearestAesthetic((int) rawValue);
 	}
