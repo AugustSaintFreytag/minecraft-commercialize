@@ -11,41 +11,51 @@ public final class RandomPlayerUtil {
 	private static final int NUMBER_OF_SAMPLES = 3;
 	private static final int MIN_NUMBER_OF_COMPONENTS = 1;
 	private static final int MAX_NUMBER_OF_COMPONENTS = 3;
+	private static final int MIN_NUMBER_OF_CHARACTERS = 4;
 	private static final int MAX_NUMBER_OF_CHARACTERS = 12;
 
 	public static String randomPlayerName(Random random) {
-		// Pick three random player name from manager cache.
-		// Split names into lower/uppercase components and numbers.
-		// Add all components into one set.
-		// Pick 2-4 components from set (depending on size).
-		// Combine into new name, apply basic formatting.
-
+		// Gather components from a few sample player names
 		var allNameComponents = new ArrayList<String>();
-
-		for (var index = 0; index < NUMBER_OF_SAMPLES; index++) {
+		for (int i = 0; i < NUMBER_OF_SAMPLES; i++) {
 			var name = Commercialize.PLAYER_PROFILE_MANAGER.randomReferencePlayerName(random);
 			allNameComponents.addAll(componentsFromName(name));
 		}
 
-		var pickedNameComponents = new ArrayList<String>();
-		var numberOfPickedNameComponents = random.nextBetween(MIN_NUMBER_OF_COMPONENTS, MAX_NUMBER_OF_COMPONENTS);
-		var lastCombinedName = "";
+		// Decide how many components to pick (as a guide)
+		int targetComponents = random.nextBetween(MIN_NUMBER_OF_COMPONENTS, MAX_NUMBER_OF_COMPONENTS);
+		var nameBuilder = new StringBuilder();
 
-		for (var index = 0; index < numberOfPickedNameComponents; index++) {
-			if (allNameComponents.isEmpty()) {
+		// Pick up to targetComponents, but don't exceed MAX_NUMBER_OF_CHARACTERS
+		for (int i = 0; i < targetComponents && !allNameComponents.isEmpty(); i++) {
+			var comp = pickAndRemoveRandomNameComponentFromCollection(random, allNameComponents, i > 0);
+			if (nameBuilder.length() + comp.length() > MAX_NUMBER_OF_CHARACTERS) {
 				break;
 			}
-
-			var pickedNameComponent = pickAndRemoveRandomNameComponentFromCollection(random, allNameComponents, index > 0);
-			pickedNameComponents.add(pickedNameComponent);
-			lastCombinedName = String.join("", pickedNameComponents);
-
-			if (lastCombinedName.length() >= MAX_NUMBER_OF_CHARACTERS) {
-				break;
-			}
+			nameBuilder.append(comp);
 		}
 
-		return lastCombinedName;
+		// If we're below the minimum length, grab more components until we hit the minimum
+		while (nameBuilder.length() < MIN_NUMBER_OF_CHARACTERS && !allNameComponents.isEmpty()) {
+			var comp = pickAndRemoveRandomNameComponentFromCollection(random, allNameComponents, true);
+			if (nameBuilder.length() + comp.length() > MAX_NUMBER_OF_CHARACTERS) {
+				break;
+			}
+			nameBuilder.append(comp);
+		}
+
+		// If still too short, pad with random lowercase letters
+		while (nameBuilder.length() < MIN_NUMBER_OF_CHARACTERS) {
+			char c = (char) ('a' + random.nextInt(26));
+			nameBuilder.append(c);
+		}
+
+		// Finally, trim if we've somehow exceeded max
+		if (nameBuilder.length() > MAX_NUMBER_OF_CHARACTERS) {
+			return nameBuilder.substring(0, MAX_NUMBER_OF_CHARACTERS);
+		}
+
+		return nameBuilder.toString();
 	}
 
 	private static String pickAndRemoveRandomNameComponentFromCollection(Random random, List<String> collection, boolean allowNumerics) {
