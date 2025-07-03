@@ -27,6 +27,8 @@ public final class MarketOfferGenerator {
 
 	private static final int OFFER_DURATION = 36_000;
 
+	private static List<String> playerPool = new ArrayList<String>();
+
 	// Properties
 
 	private static Map<StackSizeRange, int[]> cachedStackSizeArrayByRange = new HashMap<>();
@@ -41,7 +43,7 @@ public final class MarketOfferGenerator {
 		var offer = new Offer();
 		var itemStack = getItemStackForOfferTemplate(random, offerTemplate);
 		var price = getTotalPriceForItemStack(random, itemStack);
-		var sellerName = RandomPlayerUtil.randomPlayerName(random);
+		var sellerName = getRandomPlayerName();
 
 		if (price == 0) {
 			return null;
@@ -58,6 +60,27 @@ public final class MarketOfferGenerator {
 		offer.price = price;
 
 		return offer;
+	}
+
+	// Player
+
+	private static String getRandomPlayerName() {
+		if (playerPool.isEmpty()) {
+			pregenerateNames();
+		}
+
+		int index = random.nextInt(playerPool.size());
+		return playerPool.get(index);
+	}
+
+	public static void pregenerateNames() {
+		playerPool.clear();
+
+		// Generate a pool of random player names to use for offers
+		for (int i = 0; i < 6; i++) {
+			var name = RandomPlayerUtil.randomPlayerName(random);
+			playerPool.add(name);
+		}
 	}
 
 	// Price
