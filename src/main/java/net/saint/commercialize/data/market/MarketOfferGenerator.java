@@ -1,8 +1,11 @@
 package net.saint.commercialize.data.market;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import net.minecraft.item.ItemStack;
@@ -37,16 +40,24 @@ public final class MarketOfferGenerator {
 
 	// Generation
 
-	public static Offer generateOffer(World world) {
+	public static Optional<Offer> generateOffer(World world) {
 		var offerTemplate = getRandomOfferTemplate(random);
 
+		if (offerTemplate.isEmpty()) {
+			Commercialize.LOGGER.warn(
+					"Could not generate offer, no offer template returned from random selection. Potentially no offer templates available in registry.");
+			return Optional.empty();
+		}
+
 		var offer = new Offer();
-		var itemStack = getItemStackForOfferTemplate(random, offerTemplate);
+		var itemStack = getItemStackForOfferTemplate(random, offerTemplate.get());
 		var price = getTotalPriceForItemStack(random, itemStack);
 		var sellerName = getRandomPlayerName();
 
 		if (price == 0) {
-			return null;
+			Commercialize.LOGGER.warn("Could not generate offer for item '{}' with zero price, returning null.",
+					itemStack.getItem().getName().getString());
+			return Optional.empty();
 		}
 
 		offer.id = UUID.randomUUID();
@@ -59,7 +70,7 @@ public final class MarketOfferGenerator {
 		offer.stack = itemStack;
 		offer.price = price;
 
-		return offer;
+		return Optional.of(offer);
 	}
 
 	// Player
@@ -137,7 +148,7 @@ public final class MarketOfferGenerator {
 	/**
 	 * Picks a random offer template from the offer template manager.
 	 */
-	private static OfferTemplate getRandomOfferTemplate(Random random) {
+	private static Optional<OfferTemplate> getRandomOfferTemplate(Random random) {
 		return Commercialize.OFFER_TEMPLATE_MANAGER.getRandomTemplate(random);
 	}
 

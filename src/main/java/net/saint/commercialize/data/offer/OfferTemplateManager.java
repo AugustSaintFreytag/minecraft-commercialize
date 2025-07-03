@@ -3,6 +3,7 @@ package net.saint.commercialize.data.offer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.data.common.Availability;
@@ -24,17 +25,13 @@ public final class OfferTemplateManager {
 		return templates.size();
 	}
 
-	public List<OfferTemplate> getTemplates() {
-		return templates;
-	}
-
-	public OfferTemplate getRandomTemplate(Random random) {
+	public Optional<OfferTemplate> getRandomTemplate(Random random) {
 		if (needsIndexRebuild) {
 			rebuildIndex();
 		}
 
 		if (weightSum <= 0) {
-			return null;
+			return Optional.empty();
 		}
 
 		var randomWeightIndex = random.nextInt(weightSum);
@@ -44,7 +41,7 @@ public final class OfferTemplateManager {
 			randomIndex = -randomIndex - 1;
 		}
 
-		return templates.get(randomIndex);
+		return Optional.of(templates.get(randomIndex));
 	}
 
 	// Mutation
@@ -60,13 +57,14 @@ public final class OfferTemplateManager {
 	}
 
 	public void rebuildIndex() {
-		var n = templates.size();
+		var numberOfTemplates = templates.size();
 
-		weightSums = new int[n];
+		weightSums = new int[numberOfTemplates];
 		weightSum = 0;
 
-		for (int index = 0; index < n; index++) {
-			var weight = Availability.weightForAvailability(templates.get(index).availability);
+		for (int index = 0; index < numberOfTemplates; index++) {
+			var template = templates.get(index);
+			var weight = Availability.weightForAvailability(template.availability);
 
 			weightSum += weight;
 			weightSums[index] = weightSum;

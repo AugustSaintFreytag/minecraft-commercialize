@@ -74,14 +74,14 @@ public class Commercialize implements ModInitializer {
 
 			MARKET_MANAGER.clearOffers();
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 32; i++) {
 				var offer = MarketOfferGenerator.generateOffer(world);
 
-				if (offer == null) {
+				if (offer.isEmpty()) {
 					continue;
 				}
 
-				MARKET_MANAGER.addOffer(offer);
+				MARKET_MANAGER.addOffer(offer.get());
 			}
 
 			Commercialize.LOGGER.info("Generated {} market offer(s) for world '{}'.", MARKET_MANAGER.size(),
