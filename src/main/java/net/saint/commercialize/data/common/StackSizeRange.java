@@ -1,4 +1,4 @@
-package net.saint.commercialize.library;
+package net.saint.commercialize.data.common;
 
 import com.google.gson.annotations.JsonAdapter;
 

@@ -3,7 +3,6 @@ package net.saint.commercialize.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,7 +18,8 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.config.ItemsConfig;
 import net.saint.commercialize.config.OffersConfig;
-import net.saint.commercialize.library.IdentifierAdapter;
+import net.saint.commercialize.config.PlayersConfig;
+import net.saint.commercialize.data.common.IdentifierAdapter;
 
 public final class ConfigLoadUtil {
 
@@ -74,10 +74,35 @@ public final class ConfigLoadUtil {
 		return offerTemplateConfigs;
 	}
 
+	public static PlayersConfig loadPlayersConfig() {
+		assertConfigDirectoriesAndFiles();
+		Path configFile = CONFIG_DIR.resolve("players.json");
+
+		if (!Files.exists(configFile)) {
+			Commercialize.LOGGER.warn("Players config file '{}' not found, using defaults.", configFile.getFileName());
+			return new PlayersConfig();
+		}
+
+		try (var reader = Files.newBufferedReader(configFile)) {
+			var root = JsonParser.parseReader(reader).getAsJsonObject();
+			if (!root.has("players")) {
+				Commercialize.LOGGER.warn("Could not read players config file '{}', invalid format.", configFile.getFileName());
+				return new PlayersConfig();
+			}
+			return GSON.fromJson(root, PlayersConfig.class);
+		} catch (IOException e) {
+			Commercialize.LOGGER.error("Could not read players config file '{}'", configFile.getFileName(), e);
+			return new PlayersConfig();
+		} catch (Exception e) {
+			Commercialize.LOGGER.error("Could not decode players config file '{}'", configFile.getFileName(), e);
+			return new PlayersConfig();
+		}
+	}
+
 	private static void forEachConfigFileInStream(String pattern, BiConsumer<Path, Reader> fileReaderConsumer) {
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(CONFIG_DIR, pattern)) {
-			for (Path file : stream) {
-				try (Reader reader = Files.newBufferedReader(file)) {
+		try (var stream = Files.newDirectoryStream(CONFIG_DIR, pattern)) {
+			for (var file : stream) {
+				try (var reader = Files.newBufferedReader(file)) {
 					fileReaderConsumer.accept(file, reader);
 				} catch (IOException e) {
 					Commercialize.LOGGER.error("Could not read config file '{}'", file.getFileName(), e);
@@ -93,10 +118,8 @@ public final class ConfigLoadUtil {
 	private static void assertConfigDirectoriesAndFiles() {
 		try {
 			Files.createDirectories(CONFIG_DIR);
-
-			// ensure defaults exist
-			copyIfMissing("items_any.json");
-			copyIfMissing("offers_any.json");
+			// TODO: Add all default config files here to be copied.
+			// TODO: Only copy if master config file is missing.
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create config directory or copy default config files.", e);
 		}

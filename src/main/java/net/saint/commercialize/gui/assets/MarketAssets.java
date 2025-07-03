@@ -1,14 +1,15 @@
-package net.saint.commercialize.screen.market;
+package net.saint.commercialize.gui.assets;
 
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.library.TextureReference;
 
-public final class MarketScreenAssets {
+public final class MarketAssets {
 
 	public static final Identifier LEFT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_left_panel.png");
 	public static final Identifier RIGHT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_right_panel.png");
 	public static final Identifier ICON_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_icons.png");
+	public static final Identifier PLAYER_HEADS = new Identifier(Commercialize.MOD_ID, "textures/gui/player_heads.png");
 
 	public static final TextureReference STUB_ICON = new TextureReference(ICON_TEXTURE, 0, 0, 1, 1);
 
@@ -26,5 +27,9 @@ public final class MarketScreenAssets {
 
 	public static final TextureReference SORT_ASCENDING_ICON = new TextureReference(ICON_TEXTURE, 16, 0, 16, 16);
 	public static final TextureReference SORT_DESCENDING_ICON = new TextureReference(ICON_TEXTURE, 32, 0, 16, 16);
+
+	public static final TextureReference OFFER_LIST_ITEM = new TextureReference(LEFT_PANEL_TEXTURE, 32, 208, 167, 18);
+
+	public static final TextureReference EMPTY_BASKET_ICON = new TextureReference(ICON_TEXTURE, 16, 64, 48, 43);
 
 }

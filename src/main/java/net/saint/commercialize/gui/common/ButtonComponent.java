@@ -7,8 +7,10 @@ import net.minecraft.text.Text;
 
 public class ButtonComponent extends io.wispforest.owo.ui.component.ButtonComponent {
 
-	public ButtonComponent(Text message, Consumer<io.wispforest.owo.ui.component.ButtonComponent> onPress) {
-		super(message, onPress);
+	public ButtonComponent(Text message, Consumer<ButtonComponent> onPress) {
+		super(message, component -> {
+			onPress.accept((ButtonComponent) component);
+		});
 	}
 
 	@Override
