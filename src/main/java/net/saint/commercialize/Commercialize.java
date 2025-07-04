@@ -12,7 +12,7 @@ import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.market.MarketManager;
 import net.saint.commercialize.data.market.MarketOfferGenerator;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
-import net.saint.commercialize.init.Blocks;
+import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.util.ConfigLoadUtil;
 import net.saint.commercialize.util.PlayerProfileManager;
 
@@ -36,7 +36,7 @@ public class Commercialize implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Blocks.initialize();
+		ModBlocks.initialize();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			loadItemConfigs();

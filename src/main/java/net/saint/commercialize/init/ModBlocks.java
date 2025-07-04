@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.block.MarketBlock;
 import net.saint.commercialize.blockentity.MarketBlockEntity;
 
-public final class Blocks {
+public final class ModBlocks {
 
 	// Block Entities
 
