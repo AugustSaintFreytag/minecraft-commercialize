@@ -26,7 +26,7 @@ public final class MarketOfferGenerator {
 
 	private static final double SELLING_FACTOR = 0.75;
 	private static final double BUYING_FACTOR = 1.15;
-	private static final double JITTER_FACTOR = 0.085;
+	private static final double JITTER_FACTOR = 0.1;
 
 	private static final int OFFER_DURATION = 36_000;
 
@@ -81,7 +81,7 @@ public final class MarketOfferGenerator {
 			pregenerateNames();
 		}
 
-		int index = random.nextInt(playerPool.size());
+		var index = random.nextInt(playerPool.size());
 		return playerPool.get(index);
 	}
 
