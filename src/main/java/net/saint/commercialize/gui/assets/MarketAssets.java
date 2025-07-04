@@ -25,8 +25,8 @@ public final class MarketAssets {
 	public static final TextureReference WALLET_ICON = new TextureReference(ICON_TEXTURE, 96, 32, 16, 16);
 	public static final TextureReference CARD_ICON = new TextureReference(ICON_TEXTURE, 112, 32, 16, 16);
 
-	public static final TextureReference SORT_ASCENDING_ICON = new TextureReference(ICON_TEXTURE, 16, 0, 16, 16);
-	public static final TextureReference SORT_DESCENDING_ICON = new TextureReference(ICON_TEXTURE, 32, 0, 16, 16);
+	public static final TextureReference SORT_DESCENDING_ICON = new TextureReference(ICON_TEXTURE, 16, 0, 16, 16);
+	public static final TextureReference SORT_ASCENDING_ICON = new TextureReference(ICON_TEXTURE, 32, 0, 16, 16);
 
 	public static final TextureReference OFFER_LIST_ITEM = new TextureReference(LEFT_PANEL_TEXTURE, 32, 208, 167, 18);
 
