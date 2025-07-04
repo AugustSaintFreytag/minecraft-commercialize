@@ -52,6 +52,7 @@ public final class MarketOfferGenerator {
 		var offer = new Offer();
 		var itemStack = getItemStackForOfferTemplate(random, offerTemplate.get());
 		var price = getTotalPriceForItemStack(random, itemStack);
+		var sellerId = Offer.GENERATED_SELLER_ID;
 		var sellerName = getRandomPlayerName();
 
 		if (price == 0) {
@@ -63,7 +64,7 @@ public final class MarketOfferGenerator {
 		offer.id = UUID.randomUUID();
 		offer.isActive = true;
 		offer.isGenerated = true;
-		offer.sellerId = null;
+		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
 		offer.timestamp = world.getTime();
 		offer.duration = OFFER_DURATION;
