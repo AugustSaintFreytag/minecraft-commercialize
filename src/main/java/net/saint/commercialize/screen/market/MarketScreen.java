@@ -1,5 +1,6 @@
 package net.saint.commercialize.screen.market;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -60,10 +61,16 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	// State
 
-	private OfferSortMode sortMode = OfferSortMode.TIME_POSTED;
-	private OfferSortOrder sortOrder = OfferSortOrder.DESCENDING;
-	private OfferFilterMode filterMode = OfferFilterMode.ALL;
-	private PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
+	public List<Offer> offers = new ArrayList<>();
+	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
+	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
+	public OfferFilterMode filterMode = OfferFilterMode.ALL;
+	public PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
+
+	public Runnable onUpdate = () -> {
+		// Default no-op update handler.
+		// Can be overridden by the block entity to handle updates.
+	};
 
 	// Update
 
@@ -96,9 +103,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
 
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen.", Commercialize.MARKET_MANAGER.size());
+		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen.", this.offers.size());
 
-		Commercialize.MARKET_MANAGER.getOffers().forEach(offer -> {
+		offers.forEach(offer -> {
 			var offerComponent = makeOfferListComponent(offer);
 			offerContainer.child(offerComponent);
 		});
@@ -177,6 +184,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 						sortMode = sortMode.next();
 					}
 
+					this.onUpdate.run();
 					this.updateDisplay();
 				});
 
@@ -187,6 +195,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
 				MarketScreenUtil.textureForFilterMode(filterMode), component -> {
 					filterMode = filterMode.next();
+					this.onUpdate.run();
 					this.updateDisplay();
 				});
 
@@ -249,6 +258,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				MarketAssets.STUB_ICON, component -> {
 					paymentMethod = paymentMethod.next();
+					this.onUpdate.run();
 					this.updateDisplay();
 				});
 
