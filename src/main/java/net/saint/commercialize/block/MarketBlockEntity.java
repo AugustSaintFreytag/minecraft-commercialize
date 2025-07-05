@@ -1,4 +1,4 @@
-package net.saint.commercialize.blockentity;
+package net.saint.commercialize.block;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -42,23 +42,9 @@ public class MarketBlockEntity extends BlockEntity {
 
 	public MarketBlockEntity(BlockPos position, BlockState state) {
 		super(ModBlocks.MARKET_BLOCK_ENTITY, position, state);
-		initNetworking();
 	}
 
-	private void initNetworking() {
-		ClientPlayNetworking.registerReceiver(MarketS2CListMessage.ID, (client, handler, buffer, responseSender) -> {
-			try {
-				var marketData = MarketS2CListMessage.decodeFromBuffer(buffer);
-
-				client.execute(() -> {
-					onReceiveMarketData(marketData);
-				});
-			} catch (Exception e) {
-				Commercialize.LOGGER.error("Could not decode market data received from server.", e);
-				return;
-			}
-		});
-	}
+	// NBT
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
@@ -70,6 +56,18 @@ public class MarketBlockEntity extends BlockEntity {
 	protected void writeNbt(NbtCompound nbt) {
 		// TODO Auto-generated method stub
 		super.writeNbt(nbt);
+	}
+
+	// Networking
+
+	public void receiveServerMessage(MarketS2CListMessage message) {
+		marketManager.clearOffers();
+		marketManager.addOffers(message.offers);
+
+		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
+				this.getPos().toShortString(), marketManager.getOffers().count());
+
+		updateMarketScreen();
 	}
 
 	// Screen
@@ -94,16 +92,6 @@ public class MarketBlockEntity extends BlockEntity {
 		client.setScreen(marketScreen);
 
 		requestMarketData();
-	}
-
-	private void onReceiveMarketData(MarketS2CListMessage marketData) {
-		marketManager.clearOffers();
-		marketManager.addOffers(marketData.offers);
-
-		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
-				this.getPos().toShortString(), marketManager.getOffers().count());
-
-		updateMarketScreen();
 	}
 
 	private void onMarketScreenUpdate() {
@@ -136,6 +124,7 @@ public class MarketBlockEntity extends BlockEntity {
 	public void requestMarketData() {
 		var message = new MarketC2SQueryMessage();
 
+		message.position = this.getPos();
 		message.sortMode = sortMode;
 		message.sortOrder = sortOrder;
 		message.filterMode = filterMode;

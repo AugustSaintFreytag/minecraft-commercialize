@@ -11,7 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.block.MarketBlock;
-import net.saint.commercialize.blockentity.MarketBlockEntity;
+import net.saint.commercialize.block.MarketBlockEntity;
 
 public final class ModBlocks {
 
