@@ -1,6 +1,7 @@
 {
 	"block.commercialize.market": "Market",
 	"gui.commercialize.market.offers": "Offers",
+	"gui.commercialize.market.offers_cap": "(More available, adjust filters)",
 	"gui.commercialize.market.search_offers": "Search offers...",
 	"gui.commercialize.market.search_offers.tooltip": "Type to search for offers by name or description.",
 	"gui.commercialize.market.total": "Total:",

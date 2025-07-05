@@ -62,6 +62,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// State
 
 	public List<Offer> offers = new ArrayList<>();
+	public boolean offersAreCapped = false;
+
 	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
 	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
 	public OfferFilterMode filterMode = OfferFilterMode.ALL;
@@ -103,12 +105,17 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
 
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen.", this.offers.size());
+		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", offers.size(), offersAreCapped);
 
 		offers.forEach(offer -> {
 			var offerComponent = makeOfferListComponent(offer);
 			offerContainer.child(offerComponent);
 		});
+
+		if (offersAreCapped) {
+			var offerCapComponent = makeOfferListCapComponent();
+			offerContainer.child(offerCapComponent);
+		}
 	}
 
 	// Root
@@ -145,7 +152,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private FlowLayout makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(214), Sizing.fixed(192));
 
-		var backgroundComponent = Components.texture(MarketAssets.LEFT_PANEL_TEXTURE, 0, 0, 214, 192);
+		var backgroundComponent = Components.texture(MarketAssets.LEFT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
 
@@ -211,7 +218,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private FlowLayout makeRightSideComponent() {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
 
-		var backgroundComponent = Components.texture(MarketAssets.RIGHT_PANEL_TEXTURE, 0, 0, 192, 178);
+		var backgroundComponent = Components.texture(MarketAssets.RIGHT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
 
@@ -343,6 +350,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 				});
 	}
 
+	private OfferListCapComponent makeOfferListCapComponent() {
+		return new OfferListCapComponent();
+	}
+
 	private TextureReference profileTextureForOffer(Offer offer) {
 		if (offer.isGenerated) {
 			var sellerName = offer.sellerName;
@@ -356,6 +367,28 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var texture = new TextureReference(textureIdentifier, 32, 32, 32, 32);
 
 		return texture;
+	}
+
+	private static class OfferListCapComponent extends FlowLayout {
+
+		// Init
+
+		public OfferListCapComponent() {
+			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
+
+			var textureComponent = Components.texture(MarketAssets.OFFER_CAP_LIST_ITEM);
+			textureComponent.positioning(Positioning.absolute(0, 0));
+			textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
+			this.child(textureComponent);
+
+			var labelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.offers_cap"));
+			labelComponent.positioning(Positioning.absolute(4, 5));
+			labelComponent.sizing(Sizing.fixed(162), Sizing.fixed(12));
+			labelComponent.horizontalTextAlignment(HorizontalAlignment.LEFT);
+			labelComponent.color(Color.ofRgb(0x5A5A5A));
+			this.child(labelComponent);
+		}
+
 	}
 
 	private static class OfferListComponent extends FlowLayout {

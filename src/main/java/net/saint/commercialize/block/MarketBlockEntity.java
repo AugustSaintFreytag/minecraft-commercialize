@@ -63,6 +63,7 @@ public class MarketBlockEntity extends BlockEntity {
 	public void receiveServerMessage(MarketS2CListMessage message) {
 		marketManager.clearOffers();
 		marketManager.addOffers(message.offers);
+		marketManager.setOffersAreCapped(message.isCapped);
 
 		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
 				this.getPos().toShortString(), marketManager.getOffers().count());
@@ -88,6 +89,7 @@ public class MarketBlockEntity extends BlockEntity {
 		this.marketScreen.paymentMethod = paymentMethod;
 
 		marketScreen.offers = marketManager.getOffers().toList();
+		marketScreen.offersAreCapped = marketManager.offersAreCapped();
 
 		client.setScreen(marketScreen);
 
