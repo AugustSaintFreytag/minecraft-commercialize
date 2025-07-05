@@ -8,12 +8,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.market.MarketManager;
+import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
 import net.saint.commercialize.init.ModNetworking;
 import net.saint.commercialize.util.ConfigLoadUtil;
-import net.saint.commercialize.util.MarketOfferTickingUtil;
 import net.saint.commercialize.util.PlayerProfileManager;
 
 public class Commercialize implements ModInitializer {

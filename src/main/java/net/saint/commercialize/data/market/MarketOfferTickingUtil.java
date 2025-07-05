@@ -1,10 +1,9 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.market;
 
 import java.util.ArrayList;
 
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.market.MarketOfferGenerator;
 import net.saint.commercialize.data.offer.Offer;
 
 public final class MarketOfferTickingUtil {
