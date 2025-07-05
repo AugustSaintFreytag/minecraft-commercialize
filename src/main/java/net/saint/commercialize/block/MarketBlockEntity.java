@@ -89,6 +89,7 @@ public class MarketBlockEntity extends BlockEntity {
 		this.marketScreen.paymentMethod = paymentMethod;
 
 		marketScreen.offers = marketManager.getOffers().toList();
+		marketScreen.offersAreCapped = marketManager.offersAreCapped();
 
 		client.setScreen(marketScreen);
 
