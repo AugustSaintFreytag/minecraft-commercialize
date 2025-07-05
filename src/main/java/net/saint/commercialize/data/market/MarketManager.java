@@ -13,6 +13,7 @@ public final class MarketManager {
 	// Properties
 
 	private List<Offer> offers = new ArrayList<Offer>();
+	private boolean offersAreCapped = false;
 
 	// Access
 
@@ -22,6 +23,14 @@ public final class MarketManager {
 
 	public int size() {
 		return offers.size();
+	}
+
+	public boolean isEmpty() {
+		return offers.isEmpty();
+	}
+
+	public boolean offersAreCapped() {
+		return offersAreCapped;
 	}
 
 	// Mutation
@@ -48,6 +57,10 @@ public final class MarketManager {
 
 	public void clearOffers() {
 		offers.clear();
+	}
+
+	public void setOffersAreCapped(boolean capped) {
+		this.offersAreCapped = capped;
 	}
 
 }
