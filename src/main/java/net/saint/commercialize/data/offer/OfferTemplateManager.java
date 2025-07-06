@@ -62,12 +62,12 @@ public final class OfferTemplateManager {
 		weightSums = new int[numberOfTemplates];
 		weightSum = 0;
 
-		for (int index = 0; index < numberOfTemplates; index++) {
-			var template = templates.get(index);
+		for (var i = 0; i < numberOfTemplates; i++) {
+			var template = templates.get(i);
 			var weight = Availability.weightForAvailability(template.availability);
 
 			weightSum += weight;
-			weightSums[index] = weightSum;
+			weightSums[i] = weightSum;
 		}
 
 		needsIndexRebuild = false;

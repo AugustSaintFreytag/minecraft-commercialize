@@ -26,9 +26,9 @@ public final class MarketOfferGenerator {
 
 	private static final double SELLING_FACTOR = 0.75;
 	private static final double BUYING_FACTOR = 1.15;
-	private static final double JITTER_FACTOR = 0.085;
+	private static final double JITTER_FACTOR = 0.1;
 
-	private static final int OFFER_DURATION = 36_000;
+	private static final int OFFER_DURATION = 48_000;
 
 	private static List<String> playerPool = new ArrayList<String>();
 
@@ -52,6 +52,7 @@ public final class MarketOfferGenerator {
 		var offer = new Offer();
 		var itemStack = getItemStackForOfferTemplate(random, offerTemplate.get());
 		var price = getTotalPriceForItemStack(random, itemStack);
+		var sellerId = Offer.GENERATED_SELLER_ID;
 		var sellerName = getRandomPlayerName();
 
 		if (price == 0) {
@@ -63,7 +64,7 @@ public final class MarketOfferGenerator {
 		offer.id = UUID.randomUUID();
 		offer.isActive = true;
 		offer.isGenerated = true;
-		offer.sellerId = null;
+		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
 		offer.timestamp = world.getTime();
 		offer.duration = OFFER_DURATION;
@@ -80,7 +81,7 @@ public final class MarketOfferGenerator {
 			pregenerateNames();
 		}
 
-		int index = random.nextInt(playerPool.size());
+		var index = random.nextInt(playerPool.size());
 		return playerPool.get(index);
 	}
 

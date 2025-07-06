@@ -8,6 +8,8 @@ import net.minecraft.network.PacketByteBuf;
 
 public class Offer {
 
+	public static final UUID GENERATED_SELLER_ID = new UUID(0, 0);
+
 	// Properties
 
 	public UUID id;
@@ -48,15 +50,8 @@ public class Offer {
 		offer.id = nbt.getUuid("id");
 		offer.isActive = nbt.getBoolean("isActive");
 		offer.isGenerated = nbt.getBoolean("isGenerated");
-
-		if (nbt.contains("sellerId")) {
-			offer.sellerId = nbt.getUuid("sellerId");
-		}
-
-		if (nbt.contains("sellerName")) {
-			offer.sellerName = nbt.getString("sellerName");
-		}
-
+		offer.sellerId = nbt.getUuid("sellerId");
+		offer.sellerName = nbt.getString("sellerName");
 		offer.timestamp = nbt.getLong("timestamp");
 		offer.duration = nbt.getInt("duration");
 		offer.stack = ItemStack.fromNbt(nbt.getCompound("stack"));
@@ -71,15 +66,8 @@ public class Offer {
 		buffer.writeUuid(id);
 		buffer.writeBoolean(isActive);
 		buffer.writeBoolean(isGenerated);
-
-		if (sellerId != null) {
-			buffer.writeUuid(sellerId);
-		}
-
-		if (sellerName != null) {
-			buffer.writeString(sellerName);
-		}
-
+		buffer.writeUuid(sellerId);
+		buffer.writeString(sellerName);
 		buffer.writeLong(timestamp);
 		buffer.writeInt(duration);
 		buffer.writeItemStack(stack);
@@ -90,15 +78,8 @@ public class Offer {
 		nbt.putUuid("id", id);
 		nbt.putBoolean("isActive", isActive);
 		nbt.putBoolean("isGenerated", isGenerated);
-
-		if (sellerId != null) {
-			nbt.putUuid("sellerId", sellerId);
-		}
-
-		if (sellerName != null) {
-			nbt.putString("sellerName", sellerName);
-		}
-
+		nbt.putUuid("sellerId", sellerId);
+		nbt.putString("sellerName", sellerName);
 		nbt.putLong("timestamp", timestamp);
 		nbt.putInt("duration", duration);
 		nbt.put("stack", stack.writeNbt(new NbtCompound()));

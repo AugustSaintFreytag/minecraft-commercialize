@@ -5,7 +5,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
@@ -19,8 +18,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.blockentity.MarketBlockEntity;
-import net.saint.commercialize.screen.market.MarketScreen;
 
 public class MarketBlock extends BlockWithEntity {
 
@@ -71,12 +68,12 @@ public class MarketBlock extends BlockWithEntity {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!world.isClient()) {
-			return ActionResult.SUCCESS;
+		if (!world.isClient() || hand == Hand.OFF_HAND) {
+			return ActionResult.PASS;
 		}
 
-		var client = MinecraftClient.getInstance();
-		client.setScreen(new MarketScreen());
+		var blockEntity = (MarketBlockEntity) world.getBlockEntity(pos);
+		blockEntity.openMarketScreen(world, player);
 
 		return ActionResult.PASS;
 	}
