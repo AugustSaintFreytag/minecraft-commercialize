@@ -6,6 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -19,7 +22,7 @@ public final class MarketOfferListingUtil {
 
 	// Filtering
 
-	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, OfferFilterMode filterMode) {
+	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, PlayerEntity player, OfferFilterMode filterMode) {
 		if (filterMode == null) {
 			filterMode = OfferFilterMode.ALL;
 		}
@@ -31,6 +34,31 @@ public final class MarketOfferListingUtil {
 		default:
 			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
 		}
+	}
+
+	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, PlayerEntity player, String searchTerm) {
+		if (searchTerm.isEmpty()) {
+			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
+		}
+
+		var sanitizedSearchTerm = searchTerm.toLowerCase();
+
+		return offers.filter(offer -> {
+			var stack = offer.stack;
+			var item = stack.getItem();
+			var itemId = Registries.ITEM.getId(item);
+
+			var itemName = stack.getName().getString().toLowerCase();
+			var itemNamespace = itemId.getNamespace().toLowerCase();
+			var itemTooltipLines = offer.stack.getTooltip(player, TooltipContext.BASIC).stream().map(line -> line.getString()).toList();
+			var itemTooltip = String.join("", itemTooltipLines).toLowerCase();
+			var sellerName = offer.sellerName.toLowerCase();
+
+			var didMatch = itemName.contains(sanitizedSearchTerm) || itemNamespace.contains(sanitizedSearchTerm)
+					|| itemTooltip.contains(sanitizedSearchTerm) || sellerName.contains(sanitizedSearchTerm);
+
+			return didMatch;
+		}).limit(MAX_OFFERS_PER_LISTING + 1).toList();
 	}
 
 	// Sorting

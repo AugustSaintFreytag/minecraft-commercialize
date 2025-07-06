@@ -17,6 +17,7 @@ public final class MarketC2SQueryMessage {
 	// Properties
 
 	public BlockPos position;
+	public String searchTerm;
 	public OfferSortMode sortMode;
 	public OfferSortOrder sortOrder;
 	public OfferFilterMode filterMode;
@@ -25,6 +26,7 @@ public final class MarketC2SQueryMessage {
 
 	public void encodeToBuffer(PacketByteBuf buffer) {
 		buffer.writeBlockPos(position);
+		buffer.writeString(searchTerm);
 		buffer.writeEnumConstant(sortMode);
 		buffer.writeEnumConstant(sortOrder);
 		buffer.writeEnumConstant(filterMode);
@@ -36,6 +38,7 @@ public final class MarketC2SQueryMessage {
 		var message = new MarketC2SQueryMessage();
 
 		message.position = buffer.readBlockPos();
+		message.searchTerm = buffer.readString(120);
 		message.sortMode = buffer.readEnumConstant(OfferSortMode.class);
 		message.sortOrder = buffer.readEnumConstant(OfferSortOrder.class);
 		message.filterMode = buffer.readEnumConstant(OfferFilterMode.class);

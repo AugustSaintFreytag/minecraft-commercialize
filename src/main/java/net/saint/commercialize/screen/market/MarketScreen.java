@@ -64,6 +64,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	public List<Offer> offers = new ArrayList<>();
 	public boolean offersAreCapped = false;
 
+	public String searchTerm = "";
 	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
 	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
 	public OfferFilterMode filterMode = OfferFilterMode.ALL;
@@ -163,6 +164,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var offersSearchBox = makeSearchBoxComponent();
 		offersSearchBox.positioning(Positioning.absolute(32, 17));
+		offersSearchBox.onChanged().subscribe(updatedSearchTerm -> {
+			// Update search term and trigger update.
+			this.searchTerm = updatedSearchTerm;
+			this.onUpdate.run();
+			this.updateDisplay();
+		});
+
 		leftSideComponent.child(offersSearchBox);
 
 		// Offers
