@@ -33,6 +33,7 @@ public class MarketBlockEntity extends BlockEntity {
 
 	public MarketScreen marketScreen;
 
+	public String searchTerm = "";
 	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
 	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
 	public OfferFilterMode filterMode = OfferFilterMode.ALL;
@@ -83,6 +84,7 @@ public class MarketBlockEntity extends BlockEntity {
 		this.marketScreen = new MarketScreen();
 
 		this.marketScreen.onUpdate = this::onMarketScreenUpdate;
+		this.marketScreen.searchTerm = searchTerm;
 		this.marketScreen.sortMode = sortMode;
 		this.marketScreen.sortOrder = sortOrder;
 		this.marketScreen.filterMode = filterMode;
@@ -102,6 +104,7 @@ public class MarketBlockEntity extends BlockEntity {
 			return;
 		}
 
+		this.searchTerm = this.marketScreen.searchTerm;
 		this.filterMode = this.marketScreen.filterMode;
 		this.sortMode = this.marketScreen.sortMode;
 		this.sortOrder = this.marketScreen.sortOrder;
@@ -127,6 +130,7 @@ public class MarketBlockEntity extends BlockEntity {
 		var message = new MarketC2SQueryMessage();
 
 		message.position = this.getPos();
+		message.searchTerm = searchTerm;
 		message.sortMode = sortMode;
 		message.sortOrder = sortOrder;
 		message.filterMode = filterMode;

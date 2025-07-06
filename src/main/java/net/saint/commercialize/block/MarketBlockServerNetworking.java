@@ -38,6 +38,10 @@ public final class MarketBlockServerNetworking {
 		var offers = MarketOfferListingUtil.offersWithAppliedFilters(Commercialize.MARKET_MANAGER.getOffers(), message.filterMode);
 		var offersAreCapped = false;
 
+		if (!message.searchTerm.isEmpty()) {
+			offers = MarketOfferListingUtil.offersForSearchTerm(offers.stream(), player, message.searchTerm);
+		}
+
 		offers = MarketOfferListingUtil.offersWithAppliedSorting(offers, message.sortMode, message.sortOrder);
 
 		if (offers.size() > MarketOfferListingUtil.MAX_OFFERS_PER_LISTING) {
@@ -49,8 +53,8 @@ public final class MarketBlockServerNetworking {
 		var responseMessage = new MarketS2CListMessage();
 
 		responseMessage.position = message.position;
-		responseMessage.isCapped = offersAreCapped;
 		responseMessage.offers = offers;
+		responseMessage.isCapped = offersAreCapped;
 
 		var responseBuffer = PacketByteBufs.create();
 		responseMessage.encodeToBuffer(responseBuffer);
