@@ -10,7 +10,6 @@ import com.mojang.authlib.GameProfile;
 
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.LabelComponent;
-import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
@@ -35,6 +34,7 @@ import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.gui.common.TabButtonComponent;
+import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -79,6 +79,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	public void updateDisplay() {
 		var rootComponent = this.uiAdapter.rootComponent;
+
+		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
+		if (searchTextBox.getText() != searchTerm) {
+			searchTextBox.text(searchTerm);
+		}
 
 		var sortModeButton = rootComponent.childById(TabButtonComponent.class, "sort_mode");
 		sortModeButton.sortOrder(sortOrder);
@@ -332,6 +337,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private TextBoxComponent makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
 
+		offersSearchBox.id("search-input");
 		offersSearchBox.sizing(Sizing.fixed(174), Sizing.fixed(14));
 		offersSearchBox.setPlaceholder(LocalizationUtil.localizedText("gui", "market.search_offers"));
 		offersSearchBox.setTooltip(Tooltip.of(LocalizationUtil.localizedText("gui", "market.search_offers.tooltip")));
