@@ -28,7 +28,7 @@ public class Offer {
 
 	// Decoding
 
-	public static Offer decodeFromBuffer(PacketByteBuf buffer) {
+	public static Offer fromBuffer(PacketByteBuf buffer) {
 		var offer = new Offer();
 
 		offer.id = buffer.readUuid();
@@ -44,7 +44,7 @@ public class Offer {
 		return offer;
 	}
 
-	public static Offer decodeFromNBT(NbtCompound nbt) {
+	public static Offer fromNBT(NbtCompound nbt) {
 		var offer = new Offer();
 
 		offer.id = nbt.getUuid("id");
@@ -62,7 +62,7 @@ public class Offer {
 
 	// Encoding
 
-	public void encodeToBuffer(PacketByteBuf buffer) {
+	public void toBuffer(PacketByteBuf buffer) {
 		buffer.writeUuid(id);
 		buffer.writeBoolean(isActive);
 		buffer.writeBoolean(isGenerated);
@@ -74,7 +74,7 @@ public class Offer {
 		buffer.writeInt(price);
 	}
 
-	public void encodeToNBT(NbtCompound nbt) {
+	public NbtCompound writeNbt(NbtCompound nbt) {
 		nbt.putUuid("id", id);
 		nbt.putBoolean("isActive", isActive);
 		nbt.putBoolean("isGenerated", isGenerated);
@@ -84,6 +84,8 @@ public class Offer {
 		nbt.putInt("duration", duration);
 		nbt.put("stack", stack.writeNbt(new NbtCompound()));
 		nbt.putInt("price", price);
+
+		return nbt;
 	}
 
 }
