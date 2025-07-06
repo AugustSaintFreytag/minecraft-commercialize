@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.market.MarketManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
+import net.saint.commercialize.data.market.MarketPersistentStorageUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
@@ -25,12 +26,12 @@ public class Commercialize implements ModInitializer {
 
 	// Properties
 
-	public static final ItemManager ITEM_MANAGER = new ItemManager();
-	public static final OfferTemplateManager OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
-	public static final PlayerProfileManager PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
-	public static final MarketManager MARKET_MANAGER = new MarketManager();
-
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
+
+	public static ItemManager ITEM_MANAGER;
+	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
+	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
+	public static MarketManager MARKET_MANAGER;
 
 	public static boolean shouldTickMarket = true;
 
@@ -43,6 +44,11 @@ public class Commercialize implements ModInitializer {
 		ModServerNetworking.initialize();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			ITEM_MANAGER = new ItemManager();
+			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
+			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
+			MARKET_MANAGER = MarketPersistentStorageUtil.loadPersistentMarketManager(server);
+
 			loadItemConfigs();
 			loadPlayersConfig();
 			loadOfferTemplatesConfigs();
