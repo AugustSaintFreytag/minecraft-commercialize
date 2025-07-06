@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -31,6 +33,22 @@ public final class MarketOfferListingUtil {
 		default:
 			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
 		}
+	}
+
+	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, PlayerEntity player, String searchTerm) {
+		if (searchTerm.isEmpty()) {
+			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
+		}
+
+		var sanitizedSearchTerm = searchTerm.toLowerCase();
+
+		return offers.filter(offer -> {
+			var itemName = offer.stack.getName().getString().toLowerCase();
+			var itemTooltipLines = offer.stack.getTooltip(player, TooltipContext.BASIC).stream().map(line -> line.getString()).toList();
+			var itemTooltip = String.join("", itemTooltipLines).toLowerCase();
+
+			return itemName.contains(sanitizedSearchTerm) || itemTooltip.contains(sanitizedSearchTerm);
+		}).limit(MAX_OFFERS_PER_LISTING + 1).toList();
 	}
 
 	// Sorting
