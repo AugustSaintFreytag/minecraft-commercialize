@@ -42,13 +42,8 @@ public final class MarketOfferListingUtil {
 		}
 
 		var sanitizedSearchTerm = searchTerm.toLowerCase();
-		var matchingOffers = new ArrayList<Offer>();
 
-		offers.takeWhile(offer -> {
-			if (matchingOffers.size() == MAX_OFFERS_PER_LISTING + 1) {
-				return false;
-			}
-
+		return offers.filter(offer -> {
 			var stack = offer.stack;
 			var item = stack.getItem();
 			var itemId = Registries.ITEM.getId(item);
@@ -61,14 +56,8 @@ public final class MarketOfferListingUtil {
 			var didMatch = itemName.contains(sanitizedSearchTerm) || itemNamespace.contains(sanitizedSearchTerm)
 					|| itemTooltip.contains(sanitizedSearchTerm);
 
-			if (didMatch) {
-				matchingOffers.add(offer);
-			}
-
-			return true;
-		});
-
-		return matchingOffers;
+			return didMatch;
+		}).limit(MAX_OFFERS_PER_LISTING + 1).toList();
 	}
 
 	// Sorting
