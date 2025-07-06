@@ -52,9 +52,10 @@ public final class MarketOfferListingUtil {
 			var itemNamespace = itemId.getNamespace().toLowerCase();
 			var itemTooltipLines = offer.stack.getTooltip(player, TooltipContext.BASIC).stream().map(line -> line.getString()).toList();
 			var itemTooltip = String.join("", itemTooltipLines).toLowerCase();
+			var sellerName = offer.sellerName.toLowerCase();
 
 			var didMatch = itemName.contains(sanitizedSearchTerm) || itemNamespace.contains(sanitizedSearchTerm)
-					|| itemTooltip.contains(sanitizedSearchTerm);
+					|| itemTooltip.contains(sanitizedSearchTerm) || sellerName.contains(sanitizedSearchTerm);
 
 			return didMatch;
 		}).limit(MAX_OFFERS_PER_LISTING + 1).toList();
