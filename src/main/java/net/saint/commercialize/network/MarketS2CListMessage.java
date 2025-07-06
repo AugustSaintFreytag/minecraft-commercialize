@@ -26,7 +26,7 @@ public final class MarketS2CListMessage {
 		var message = new MarketS2CListMessage();
 
 		message.position = buffer.readBlockPos();
-		message.offers = buffer.readList(Offer::decodeFromBuffer);
+		message.offers = buffer.readList(Offer::fromBuffer);
 		message.isCapped = buffer.readBoolean();
 
 		return message;
@@ -36,7 +36,7 @@ public final class MarketS2CListMessage {
 
 	public void encodeToBuffer(PacketByteBuf buffer) {
 		buffer.writeBlockPos(position);
-		buffer.writeCollection(offers, (localBuffer, offer) -> offer.encodeToBuffer(localBuffer));
+		buffer.writeCollection(offers, (localBuffer, offer) -> offer.toBuffer(localBuffer));
 		buffer.writeBoolean(isCapped);
 	}
 
