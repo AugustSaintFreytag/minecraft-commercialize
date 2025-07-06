@@ -35,7 +35,7 @@ public final class MarketBlockServerNetworking {
 
 	private static void onReceiveMarketDataRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SQueryMessage message) {
-		var offers = MarketOfferListingUtil.offersWithAppliedFilters(Commercialize.MARKET_MANAGER.getOffers(), message.filterMode);
+		var offers = MarketOfferListingUtil.offersWithAppliedFilters(Commercialize.MARKET_MANAGER.getOffers(), player, message.filterMode);
 		var offersAreCapped = false;
 
 		if (!message.searchTerm.isEmpty()) {
