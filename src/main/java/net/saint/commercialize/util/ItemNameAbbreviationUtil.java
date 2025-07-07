@@ -70,7 +70,13 @@ public class ItemNameAbbreviationUtil {
 
 		if (currentName.length() > limit) {
 			if (limit > 3) {
-				return currentName.substring(0, limit - 3) + "...";
+				var truncated = currentName.substring(0, limit - 3);
+
+				if (truncated.endsWith(".")) {
+					return truncated;
+				}
+
+				return truncated + "...";
 			} else {
 				return currentName.substring(0, limit);
 			}
