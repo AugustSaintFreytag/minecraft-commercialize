@@ -28,7 +28,7 @@ public final class MarketOfferGenerator {
 	private static final double BUYING_FACTOR = 1.15;
 	private static final double JITTER_FACTOR = 0.1;
 
-	private static final int OFFER_DURATION = 48_000;
+	private static final int OFFER_DURATION = 96_000;
 
 	private static List<String> playerPool = new ArrayList<String>();
 
