@@ -447,7 +447,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
 			// Handle cart item selection
-			client.player.sendMessage(Text.of("Selected cart item: " + offer.stack.getName().getString()));
+			this.delegate.removeOfferFromCart(offer);
+			client.player.sendMessage(Text.of("Removing item from cart: " + offer.stack.getName().getString() + "."));
 		});
 	}
 
