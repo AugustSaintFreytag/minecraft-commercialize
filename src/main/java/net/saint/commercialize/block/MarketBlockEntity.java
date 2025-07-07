@@ -49,14 +49,24 @@ public class MarketBlockEntity extends BlockEntity {
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
-		// TODO Auto-generated method stub
 		super.readNbt(nbt);
+
+		this.searchTerm = nbt.getString("searchTerm");
+		this.sortMode = ifPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
+		this.sortOrder = ifPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
+		this.filterMode = ifPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
+		this.paymentMethod = ifPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
 	}
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
-		// TODO Auto-generated method stub
 		super.writeNbt(nbt);
+
+		nbt.putString("searchTerm", this.searchTerm);
+		nbt.putString("sortMode", this.sortMode.name());
+		nbt.putString("sortOrder", this.sortOrder.name());
+		nbt.putString("filterMode", this.filterMode.name());
+		nbt.putString("paymentMethod", this.paymentMethod.name());
 	}
 
 	// Networking
