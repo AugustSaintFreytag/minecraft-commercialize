@@ -90,7 +90,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod()));
 
 		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
-		totalDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
+		totalDisplay.text(MarketScreenUtil.totalPriceTextForOffers(delegate.getCart()));
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));

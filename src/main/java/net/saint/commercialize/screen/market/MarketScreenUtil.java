@@ -202,4 +202,15 @@ public final class MarketScreenUtil {
 		return components;
 	}
 
+	// Total
+
+	public static int totalPriceForOffers(List<Offer> offers) {
+		return offers.stream().mapToInt(offer -> offer.price).sum();
+	}
+
+	public static Text totalPriceTextForOffers(List<Offer> offers) {
+		var totalPrice = totalPriceForOffers(offers);
+		return Text.literal(NumericFormattingUtil.formatCurrency(totalPrice));
+	}
+
 }
