@@ -38,6 +38,8 @@ public final class MarketAssets {
 	public static final TextureReference OFFER_LIST_ITEM = new TextureReference(LEFT_PANEL_TEXTURE, 32, 198, 167, 18);
 	public static final TextureReference OFFER_CAP_LIST_ITEM = new TextureReference(LEFT_PANEL_TEXTURE, 32, 216, 167, 18);
 
+	public static final TextureReference CART_LIST_ITEM = new TextureReference(RIGHT_PANEL_TEXTURE, 14, 184, 133, 18);
+
 	public static final TextureReference EMPTY_CART_INDICATOR = new TextureReference(ICON_TEXTURE, 16, 64, 48, 43);
 
 }
