@@ -19,6 +19,8 @@ public interface MarketScreenDelegate {
 
 	void removeOfferFromCart(Offer offer);
 
+	void emptyCart();
+
 	// Offers
 
 	List<Offer> getOffers();

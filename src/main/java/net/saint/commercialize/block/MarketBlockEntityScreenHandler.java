@@ -41,6 +41,12 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 		onMarketScreenUpdate();
 	}
 
+	@Override
+	default void emptyCart() {
+		getState().cart.clear();
+		onMarketScreenUpdate();
+	}
+
 	// Offers
 
 	@Override
