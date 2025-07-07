@@ -28,6 +28,9 @@ import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
+import net.saint.commercialize.gui.market.CartListComponent;
+import net.saint.commercialize.gui.market.OfferListCapComponent;
+import net.saint.commercialize.gui.market.OfferListComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -66,6 +69,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var rootComponent = this.uiAdapter.rootComponent;
 
+		// Inputs & Controls
+
 		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
 		if (searchTextBox.getText() != delegate.getSearchTerm()) {
 			searchTextBox.text(delegate.getSearchTerm());
@@ -93,6 +98,25 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
+
+		// Cart
+
+		if (delegate.getCart().isEmpty()) {
+			addEmptyCartIndicator(rootComponent);
+		} else {
+			removeEmptyCartIndicator(rootComponent);
+		}
+
+		var cartContainer = rootComponent.childById(FlowLayout.class, "cart_container");
+		cartContainer.clearChildren();
+
+		var cartOffers = delegate.getCart();
+		cartOffers.forEach(offer -> {
+			var cartComponent = makeCartListComponent(offer);
+			cartContainer.child(cartComponent);
+		});
+
+		// Offers
 
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
@@ -222,6 +246,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private FlowLayout makeRightSideComponent() {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
+		rightSideComponent.id("right_side");
 
 		var backgroundComponent = Components.texture(MarketAssets.RIGHT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
@@ -229,11 +254,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Cart
 
-		var emptyCartIndicatorComponent = makeEmptyCartIndicatorComponent();
-		emptyCartIndicatorComponent.id("empty-cart-indicator");
-		emptyCartIndicatorComponent.positioning(Positioning.absolute(14, 14));
-		emptyCartIndicatorComponent.sizing(Sizing.fixed(140), Sizing.fixed(98));
-		rightSideComponent.child(emptyCartIndicatorComponent);
+		var cartContainer = Containers.verticalFlow(Sizing.fixed(136), Sizing.content()).id("cart_container");
+		cartContainer.positioning(Positioning.absolute(0, 0));
+
+		var cartScrollView = Containers.verticalScroll(Sizing.fixed(140), Sizing.fixed(98), cartContainer);
+		cartScrollView.positioning(Positioning.absolute(14, 14));
+
+		rightSideComponent.child(cartScrollView);
 
 		// Labels
 
@@ -259,7 +286,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
 				MarketAssets.EMPTY_CART_ICON, component -> {
-					client.player.sendMessage(Text.of("Requesting to empty cart."));
+					delegate.emptyCart();
 				});
 
 		emptyCardTabButton.positioning(Positioning.absolute(168, 14));
@@ -288,6 +315,32 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
 		return rightSideComponent;
+	}
+
+	// Toggleables
+
+	private void addEmptyCartIndicator(FlowLayout rootComponent) {
+		if (rootComponent.childById(FlowLayout.class, "empty_cart_indicator") != null) {
+			return;
+		}
+
+		var emptyCartIndicatorComponent = makeEmptyCartIndicatorComponent();
+		emptyCartIndicatorComponent.id("empty_cart_indicator");
+		emptyCartIndicatorComponent.positioning(Positioning.absolute(14, 14));
+		emptyCartIndicatorComponent.sizing(Sizing.fixed(140), Sizing.fixed(98));
+
+		var rightSideComponent = rootComponent.childById(FlowLayout.class, "right_side");
+		rightSideComponent.child(emptyCartIndicatorComponent);
+	}
+
+	private void removeEmptyCartIndicator(FlowLayout rootComponent) {
+		var emptyCartIndicatorComponent = rootComponent.childById(FlowLayout.class, "empty_cart_indicator");
+
+		if (emptyCartIndicatorComponent == null) {
+			return;
+		}
+
+		emptyCartIndicatorComponent.remove();
 	}
 
 	// Components
@@ -361,7 +414,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture,
 				component -> {
 					// Handle offer selection
-					client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
+					client.player.sendMessage(
+							Text.of("Adding offer to cart: " + offer.stack.getName().getString() + " for " + offer.price + " ¤."));
+					delegate.addOfferToCart(offer);
 				});
 	}
 
@@ -382,6 +437,18 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var texture = new TextureReference(textureIdentifier, 32, 32, 32, 32);
 
 		return texture;
+	}
+
+	private CartListComponent makeCartListComponent(Offer offer) {
+		var itemStack = offer.stack;
+		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 9);
+		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
+
+		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
+			// Handle cart item selection
+			client.player.sendMessage(Text.of("Selected cart item: " + offer.stack.getName().getString()));
+		});
 	}
 
 	private EmptyCartIndicatorComponent makeEmptyCartIndicatorComponent() {
