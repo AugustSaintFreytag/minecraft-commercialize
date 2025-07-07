@@ -13,6 +13,7 @@ import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
@@ -235,6 +236,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
 
+		// Cart
+
+		var emptyCartIndicatorComponent = makeEmptyCartIndicatorComponent();
+		emptyCartIndicatorComponent.id("empty-cart-indicator");
+		emptyCartIndicatorComponent.positioning(Positioning.absolute(14, 14));
+		emptyCartIndicatorComponent.sizing(Sizing.fixed(140), Sizing.fixed(98));
+		rightSideComponent.child(emptyCartIndicatorComponent);
+
 		// Labels
 
 		var totalLabelComponent = makeTotalLabelComponent();
@@ -381,6 +390,34 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var texture = new TextureReference(textureIdentifier, 32, 32, 32, 32);
 
 		return texture;
+	}
+
+	private EmptyCartIndicatorComponent makeEmptyCartIndicatorComponent() {
+		return new EmptyCartIndicatorComponent();
+	}
+
+	// Subcomponents
+
+	private static class EmptyCartIndicatorComponent extends FlowLayout {
+
+		// Init
+
+		public EmptyCartIndicatorComponent() {
+			super(Sizing.fill(100), Sizing.content(), FlowLayout.Algorithm.VERTICAL);
+			this.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+
+			var textureComponent = Components.texture(MarketAssets.EMPTY_CART_INDICATOR);
+			textureComponent.sizing(Sizing.fixed(48), Sizing.fixed(43));
+			this.child(textureComponent);
+
+			var labelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.empty_cart_indicator"));
+			labelComponent.horizontalTextAlignment(HorizontalAlignment.CENTER);
+			labelComponent.sizing(Sizing.fill(100), Sizing.content());
+			labelComponent.margins(Insets.vertical(6));
+			labelComponent.color(Color.ofRgb(0x78726D));
+			this.child(labelComponent);
+		}
+
 	}
 
 	private static class OfferListCapComponent extends FlowLayout {

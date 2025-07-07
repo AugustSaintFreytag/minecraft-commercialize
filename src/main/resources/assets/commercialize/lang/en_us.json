@@ -33,6 +33,7 @@
 	"gui.commercialize.market.order_cart.tooltip": "Confirm and order all selected items in cart.",
 	"gui.commercialize.market.empty_cart": "Empty Cart",
 	"gui.commercialize.market.empty_cart.tooltip": "Remove all selected items from the cart.",
+	"gui.commercialize.market.empty_cart_indicator": "No offers in cart.",
 	"text.commercialize.currency": "¤",
 	"text.commercialize.offer.tooltip.title": "Public Offer",
 	"text.commercialize.offer.tooltip.item": "Item",
