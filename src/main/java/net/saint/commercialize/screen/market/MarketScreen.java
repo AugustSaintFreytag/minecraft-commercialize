@@ -1,7 +1,5 @@
 package net.saint.commercialize.screen.market;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +11,7 @@ import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
@@ -20,21 +19,18 @@ import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
-import net.saint.commercialize.data.offer.OfferFilterMode;
-import net.saint.commercialize.data.offer.OfferSortMode;
-import net.saint.commercialize.data.offer.OfferSortOrder;
-import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
+import net.saint.commercialize.gui.market.CartListComponent;
+import net.saint.commercialize.gui.market.OfferListCapComponent;
+import net.saint.commercialize.gui.market.OfferListComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -46,6 +42,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// Configuration
 
 	public static final String ID = "market_screen";
+
+	// References
+
+	public MarketScreenDelegate delegate;
 
 	// Init
 
@@ -59,59 +59,73 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return false;
 	}
 
-	// State
-
-	public List<Offer> offers = new ArrayList<>();
-	public boolean offersAreCapped = false;
-
-	public String searchTerm = "";
-	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
-	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
-	public OfferFilterMode filterMode = OfferFilterMode.ALL;
-	public PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
-
-	public Runnable onUpdate = () -> {
-		// Default no-op update handler.
-		// Can be overridden by the block entity to handle updates.
-	};
-
 	// Update
 
 	public void updateDisplay() {
+		if (delegate == null) {
+			Commercialize.LOGGER.warn("Can not update market screen display, missing delegate.");
+			return;
+		}
+
 		var rootComponent = this.uiAdapter.rootComponent;
 
+		// Inputs & Controls
+
 		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
-		if (searchTextBox.getText() != searchTerm) {
-			searchTextBox.text(searchTerm);
+		if (searchTextBox.getText() != delegate.getSearchTerm()) {
+			searchTextBox.text(delegate.getSearchTerm());
 		}
 
 		var sortModeButton = rootComponent.childById(TabButtonComponent.class, "sort_mode");
-		sortModeButton.sortOrder(sortOrder);
-		sortModeButton.texture(MarketScreenUtil.textureForSortMode(sortMode));
-		sortModeButton.tooltip(MarketScreenUtil.tooltipTextForSortMode(sortMode, sortOrder));
+		sortModeButton.sortOrder(delegate.getSortOrder());
+		sortModeButton.texture(MarketScreenUtil.textureForSortMode(delegate.getSortMode()));
+		sortModeButton.tooltip(MarketScreenUtil.tooltipTextForSortMode(delegate.getSortMode(), delegate.getSortOrder()));
 
 		var filterModeButton = rootComponent.childById(TabButtonComponent.class, "filter_mode");
-		filterModeButton.texture(MarketScreenUtil.textureForFilterMode(filterMode));
-		filterModeButton.tooltip(MarketScreenUtil.tooltipTextForFilterMode(filterMode));
+		filterModeButton.texture(MarketScreenUtil.textureForFilterMode(delegate.getFilterMode()));
+		filterModeButton.tooltip(MarketScreenUtil.tooltipTextForFilterMode(delegate.getFilterMode()));
 
 		var paymentMethodButton = rootComponent.childById(TabButtonComponent.class, "payment_method");
-		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(paymentMethod));
-		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(paymentMethod));
+		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(delegate.getPaymentMethod()));
+		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod()));
 
 		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
-		totalDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
+		totalDisplay.text(MarketScreenUtil.totalPriceTextForOffers(delegate.getCart()));
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
-		balanceLabel.text(MarketScreenUtil.labelTextForBalance(paymentMethod));
+		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
 
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(paymentMethod));
+		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
+
+		// Cart
+
+		if (delegate.getCart().isEmpty()) {
+			addEmptyCartIndicator(rootComponent);
+		} else {
+			removeEmptyCartIndicator(rootComponent);
+		}
+
+		var cartContainer = rootComponent.childById(FlowLayout.class, "cart_container");
+		cartContainer.clearChildren();
+
+		var cartOffers = delegate.getCart();
+		cartOffers.forEach(offer -> {
+			var cartComponent = makeCartListComponent(offer);
+			cartContainer.child(cartComponent);
+		});
+
+		// Offers
 
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
 
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", offers.size(), offersAreCapped);
+		var offers = delegate.getOffers();
+		var offersAreCapped = delegate.getOffersAreCapped();
+		var numberOfOffers = offers.size();
+
+		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
 
 		offers.forEach(offer -> {
 			var offerComponent = makeOfferListComponent(offer);
@@ -171,8 +185,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		offersSearchBox.positioning(Positioning.absolute(32, 17));
 		offersSearchBox.onChanged().subscribe(updatedSearchTerm -> {
 			// Update search term and trigger update.
-			this.searchTerm = updatedSearchTerm;
-			this.onUpdate.run();
+			delegate.setSearchTerm(updatedSearchTerm);
 			this.updateDisplay();
 		});
 
@@ -190,21 +203,23 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"),
-				MarketScreenUtil.textureForSortMode(sortMode), component -> {
+		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"), MarketAssets.STUB_ICON,
+				component -> {
 					// If sprint key is held, toggle sort order.
 
 					var windowHandle = client.getWindow().getHandle();
 					var sprintKeyCode = KeyBindingHelper.getBoundKeyOf(client.options.sprintKey).getCode();
 					var isSprintKeyHeld = InputUtil.isKeyPressed(windowHandle, sprintKeyCode);
 
+					var sortMode = delegate.getSortMode();
+					var sortOrder = delegate.getSortOrder();
+
 					if (isSprintKeyHeld) {
-						sortOrder = sortOrder.next();
+						delegate.setSortOrder(sortOrder.next());
 					} else {
-						sortMode = sortMode.next();
+						delegate.setSortMode(sortMode.next());
 					}
 
-					this.onUpdate.run();
 					this.updateDisplay();
 				});
 
@@ -212,10 +227,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
-				MarketScreenUtil.textureForFilterMode(filterMode), component -> {
-					filterMode = filterMode.next();
-					this.onUpdate.run();
+		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"), MarketAssets.STUB_ICON,
+				component -> {
+					var filterMode = delegate.getFilterMode();
+					delegate.setFilterMode(filterMode.next());
+
 					this.updateDisplay();
 				});
 
@@ -230,10 +246,21 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private FlowLayout makeRightSideComponent() {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
+		rightSideComponent.id("right_side");
 
 		var backgroundComponent = Components.texture(MarketAssets.RIGHT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
+
+		// Cart
+
+		var cartContainer = Containers.verticalFlow(Sizing.fixed(136), Sizing.content()).id("cart_container");
+		cartContainer.positioning(Positioning.absolute(0, 0));
+
+		var cartScrollView = Containers.verticalScroll(Sizing.fixed(140), Sizing.fixed(98), cartContainer);
+		cartScrollView.positioning(Positioning.absolute(14, 14));
+
+		rightSideComponent.child(cartScrollView);
 
 		// Labels
 
@@ -259,7 +286,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
 				MarketAssets.EMPTY_CART_ICON, component -> {
-					client.player.sendMessage(Text.of("Requesting to empty cart."));
+					delegate.emptyCart();
 				});
 
 		emptyCardTabButton.positioning(Positioning.absolute(168, 14));
@@ -277,8 +304,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				MarketAssets.STUB_ICON, component -> {
-					paymentMethod = paymentMethod.next();
-					this.onUpdate.run();
+					var paymentMethod = delegate.getPaymentMethod();
+					delegate.setPaymentMethod(paymentMethod.next());
+
 					this.updateDisplay();
 				});
 
@@ -287,6 +315,32 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
 		return rightSideComponent;
+	}
+
+	// Toggleables
+
+	private void addEmptyCartIndicator(FlowLayout rootComponent) {
+		if (rootComponent.childById(FlowLayout.class, "empty_cart_indicator") != null) {
+			return;
+		}
+
+		var emptyCartIndicatorComponent = makeEmptyCartIndicatorComponent();
+		emptyCartIndicatorComponent.id("empty_cart_indicator");
+		emptyCartIndicatorComponent.positioning(Positioning.absolute(14, 14));
+		emptyCartIndicatorComponent.sizing(Sizing.fixed(140), Sizing.fixed(98));
+
+		var rightSideComponent = rootComponent.childById(FlowLayout.class, "right_side");
+		rightSideComponent.child(emptyCartIndicatorComponent);
+	}
+
+	private void removeEmptyCartIndicator(FlowLayout rootComponent) {
+		var emptyCartIndicatorComponent = rootComponent.childById(FlowLayout.class, "empty_cart_indicator");
+
+		if (emptyCartIndicatorComponent == null) {
+			return;
+		}
+
+		emptyCartIndicatorComponent.remove();
 	}
 
 	// Components
@@ -360,7 +414,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture,
 				component -> {
 					// Handle offer selection
-					client.player.sendMessage(Text.of("Selected offer: " + offer.stack.getName().getString()));
+					client.player.sendMessage(
+							Text.of("Adding offer to cart: " + offer.stack.getName().getString() + " for " + offer.price + " ¤."));
+					delegate.addOfferToCart(offer);
 				});
 	}
 
@@ -383,92 +439,43 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return texture;
 	}
 
-	private static class OfferListCapComponent extends FlowLayout {
+	private CartListComponent makeCartListComponent(Offer offer) {
+		var itemStack = offer.stack;
+		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 9);
+		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
-		// Init
-
-		public OfferListCapComponent() {
-			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
-
-			var textureComponent = Components.texture(MarketAssets.OFFER_CAP_LIST_ITEM);
-			textureComponent.positioning(Positioning.absolute(0, 0));
-			textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
-			this.child(textureComponent);
-
-			var labelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.offers_cap"));
-			labelComponent.positioning(Positioning.absolute(4, 5));
-			labelComponent.sizing(Sizing.fixed(162), Sizing.fixed(12));
-			labelComponent.horizontalTextAlignment(HorizontalAlignment.LEFT);
-			labelComponent.color(Color.ofRgb(0x5A5A5A));
-			this.child(labelComponent);
-		}
-
+		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
+			// Handle cart item selection
+			this.delegate.removeOfferFromCart(offer);
+			client.player.sendMessage(Text.of("Removing item from cart: " + offer.stack.getName().getString() + "."));
+		});
 	}
 
-	private static class OfferListComponent extends FlowLayout {
+	private EmptyCartIndicatorComponent makeEmptyCartIndicatorComponent() {
+		return new EmptyCartIndicatorComponent();
+	}
 
-		// Properties
+	// Subcomponents
 
-		protected ItemStack itemStack;
-		protected Text itemDescription;
-		protected Text priceDescription;
-		protected List<TooltipComponent> offerTooltip;
-		protected List<TooltipComponent> sellerTooltip;
-		protected TextureReference profileTexture;
-		protected Consumer<OfferListComponent> onPress;
+	private static class EmptyCartIndicatorComponent extends FlowLayout {
 
 		// Init
 
-		public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, List<TooltipComponent> offerTooltip,
-				List<TooltipComponent> sellerTooltip, TextureReference profileTexture, Consumer<OfferListComponent> onPress) {
-			super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
+		public EmptyCartIndicatorComponent() {
+			super(Sizing.fill(100), Sizing.content(), FlowLayout.Algorithm.VERTICAL);
+			this.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 
-			this.itemStack = itemStack;
-			this.itemDescription = itemDescription;
-			this.priceDescription = priceDescription;
-			this.offerTooltip = offerTooltip;
-			this.sellerTooltip = sellerTooltip;
-			this.profileTexture = profileTexture;
-			this.onPress = onPress;
-
-			var textureComponent = Components.texture(MarketAssets.OFFER_LIST_ITEM);
-			textureComponent.positioning(Positioning.absolute(0, 0));
-			textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
+			var textureComponent = Components.texture(MarketAssets.EMPTY_CART_INDICATOR);
+			textureComponent.sizing(Sizing.fixed(48), Sizing.fixed(43));
 			this.child(textureComponent);
 
-			var itemComponent = Components.item(this.itemStack);
-			itemComponent.showOverlay(true);
-			itemComponent.positioning(Positioning.absolute(2, 0));
-			itemComponent.setTooltipFromStack(true);
-			this.child(itemComponent);
-
-			var itemDescriptionLabel = Components.label(this.itemDescription);
-			itemDescriptionLabel.positioning(Positioning.absolute(28, 5));
-			itemDescriptionLabel.sizing(Sizing.fixed(70), Sizing.fixed(12));
-			this.child(itemDescriptionLabel);
-
-			var priceDescriptionLabel = Components.label(this.priceDescription).horizontalTextAlignment(HorizontalAlignment.RIGHT);
-			priceDescriptionLabel.positioning(Positioning.absolute(95, 5));
-			priceDescriptionLabel.sizing(Sizing.fixed(55), Sizing.fixed(12));
-			this.child(priceDescriptionLabel);
-
-			var playerHeadComponent = Components.texture(this.profileTexture);
-			playerHeadComponent.positioning(Positioning.absolute(153, 5));
-			playerHeadComponent.sizing(Sizing.fixed(8), Sizing.fixed(8));
-			playerHeadComponent.tooltip(this.sellerTooltip);
-			this.child(playerHeadComponent);
-
-			var tooltipOverlay = Components.box(Sizing.fixed(126), Sizing.fixed(18));
-			tooltipOverlay.color(Color.ofArgb(0x00000000));
-			tooltipOverlay.positioning(Positioning.absolute(26, 0));
-			tooltipOverlay.tooltip(this.offerTooltip);
-			this.child(tooltipOverlay);
-		}
-
-		@Override
-		public boolean onMouseDown(double mouseX, double mouseY, int button) {
-			this.onPress.accept(this);
-			return super.onMouseDown(mouseX, mouseY, button);
+			var labelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.empty_cart_indicator"));
+			labelComponent.horizontalTextAlignment(HorizontalAlignment.CENTER);
+			labelComponent.sizing(Sizing.fill(100), Sizing.content());
+			labelComponent.margins(Insets.vertical(6));
+			labelComponent.color(Color.ofRgb(0x78726D));
+			this.child(labelComponent);
 		}
 
 	}
