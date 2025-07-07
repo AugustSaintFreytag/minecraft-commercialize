@@ -92,6 +92,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 		var client = MinecraftClient.getInstance();
 		this.marketScreen = new MarketScreen();
+		this.marketScreen.delegate = this;
 		client.setScreen(marketScreen);
 
 		requestMarketData();
