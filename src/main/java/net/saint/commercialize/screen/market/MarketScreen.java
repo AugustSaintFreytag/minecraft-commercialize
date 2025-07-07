@@ -1,6 +1,5 @@
 package net.saint.commercialize.screen.market;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -27,10 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
-import net.saint.commercialize.data.offer.OfferFilterMode;
-import net.saint.commercialize.data.offer.OfferSortMode;
-import net.saint.commercialize.data.offer.OfferSortOrder;
-import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
@@ -48,6 +43,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	public static final String ID = "market_screen";
 
+	// References
+
+	public MarketScreenDelegate delegate;
+
 	// Init
 
 	@Override
@@ -60,59 +59,52 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return false;
 	}
 
-	// State
-
-	public List<Offer> offers = new ArrayList<>();
-	public boolean offersAreCapped = false;
-
-	public String searchTerm = "";
-	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
-	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
-	public OfferFilterMode filterMode = OfferFilterMode.ALL;
-	public PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
-
-	public Runnable onUpdate = () -> {
-		// Default no-op update handler.
-		// Can be overridden by the block entity to handle updates.
-	};
-
 	// Update
 
 	public void updateDisplay() {
+		if (delegate == null) {
+			Commercialize.LOGGER.warn("Can not update market screen display, missing delegate.");
+			return;
+		}
+
 		var rootComponent = this.uiAdapter.rootComponent;
 
 		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
-		if (searchTextBox.getText() != searchTerm) {
-			searchTextBox.text(searchTerm);
+		if (searchTextBox.getText() != delegate.getSearchTerm()) {
+			searchTextBox.text(delegate.getSearchTerm());
 		}
 
 		var sortModeButton = rootComponent.childById(TabButtonComponent.class, "sort_mode");
-		sortModeButton.sortOrder(sortOrder);
-		sortModeButton.texture(MarketScreenUtil.textureForSortMode(sortMode));
-		sortModeButton.tooltip(MarketScreenUtil.tooltipTextForSortMode(sortMode, sortOrder));
+		sortModeButton.sortOrder(delegate.getSortOrder());
+		sortModeButton.texture(MarketScreenUtil.textureForSortMode(delegate.getSortMode()));
+		sortModeButton.tooltip(MarketScreenUtil.tooltipTextForSortMode(delegate.getSortMode(), delegate.getSortOrder()));
 
 		var filterModeButton = rootComponent.childById(TabButtonComponent.class, "filter_mode");
-		filterModeButton.texture(MarketScreenUtil.textureForFilterMode(filterMode));
-		filterModeButton.tooltip(MarketScreenUtil.tooltipTextForFilterMode(filterMode));
+		filterModeButton.texture(MarketScreenUtil.textureForFilterMode(delegate.getFilterMode()));
+		filterModeButton.tooltip(MarketScreenUtil.tooltipTextForFilterMode(delegate.getFilterMode()));
 
 		var paymentMethodButton = rootComponent.childById(TabButtonComponent.class, "payment_method");
-		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(paymentMethod));
-		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(paymentMethod));
+		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(delegate.getPaymentMethod()));
+		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod()));
 
 		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
 		totalDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
-		balanceLabel.text(MarketScreenUtil.labelTextForBalance(paymentMethod));
+		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
 
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(paymentMethod));
+		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
 
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
 
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", offers.size(), offersAreCapped);
+		var offers = delegate.getOffers();
+		var offersAreCapped = delegate.getOffersAreCapped();
+		var numberOfOffers = offers.size();
+
+		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
 
 		offers.forEach(offer -> {
 			var offerComponent = makeOfferListComponent(offer);
@@ -172,8 +164,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		offersSearchBox.positioning(Positioning.absolute(32, 17));
 		offersSearchBox.onChanged().subscribe(updatedSearchTerm -> {
 			// Update search term and trigger update.
-			this.searchTerm = updatedSearchTerm;
-			this.onUpdate.run();
+			delegate.setSearchTerm(updatedSearchTerm);
 			this.updateDisplay();
 		});
 
@@ -191,21 +182,23 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"),
-				MarketScreenUtil.textureForSortMode(sortMode), component -> {
+		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"), MarketAssets.STUB_ICON,
+				component -> {
 					// If sprint key is held, toggle sort order.
 
 					var windowHandle = client.getWindow().getHandle();
 					var sprintKeyCode = KeyBindingHelper.getBoundKeyOf(client.options.sprintKey).getCode();
 					var isSprintKeyHeld = InputUtil.isKeyPressed(windowHandle, sprintKeyCode);
 
+					var sortMode = delegate.getSortMode();
+					var sortOrder = delegate.getSortOrder();
+
 					if (isSprintKeyHeld) {
-						sortOrder = sortOrder.next();
+						delegate.setSortOrder(sortOrder.next());
 					} else {
-						sortMode = sortMode.next();
+						delegate.setSortMode(sortMode.next());
 					}
 
-					this.onUpdate.run();
 					this.updateDisplay();
 				});
 
@@ -213,10 +206,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
-				MarketScreenUtil.textureForFilterMode(filterMode), component -> {
-					filterMode = filterMode.next();
-					this.onUpdate.run();
+		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"), MarketAssets.STUB_ICON,
+				component -> {
+					var filterMode = delegate.getFilterMode();
+					delegate.setFilterMode(filterMode.next());
+
 					this.updateDisplay();
 				});
 
@@ -286,8 +280,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				MarketAssets.STUB_ICON, component -> {
-					paymentMethod = paymentMethod.next();
-					this.onUpdate.run();
+					var paymentMethod = delegate.getPaymentMethod();
+					delegate.setPaymentMethod(paymentMethod.next());
+
 					this.updateDisplay();
 				});
 
