@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.market.MarketManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
@@ -52,6 +53,8 @@ public class Commercialize implements ModInitializer {
 			loadItemConfigs();
 			loadPlayersConfig();
 			loadOfferTemplatesConfigs();
+
+			PlayerInventoryCashUtil.initialize();
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
