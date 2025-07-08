@@ -6,12 +6,12 @@ import net.minecraft.nbt.NbtCompound;
 
 public final class Values {
 
-	public static <T, U> U ifPresent(T value, Function<? super T, ? extends U> action) {
+	public static <T, U> U ifPresent(T value, Function<? super T, ? extends U> action, U fallback) {
 		if (value != null) {
 			return action.apply(value);
 		}
 
-		return null;
+		return fallback;
 	}
 
 	public static <U> U ifPresentAsString(NbtCompound nbt, String key, Function<String, ? extends U> action, U fallback) {
