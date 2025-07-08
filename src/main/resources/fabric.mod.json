@@ -3,15 +3,15 @@
 	"id": "commercialize",
 	"version": "${version}",
 	"name": "commercialize",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A commerce mod for Minecraft, introducing a server-wide dynamic market alongside a selling block. Integrates with Create: Numismatics for monetary management and Furniture Refurbished for postal services.",
 	"authors": [
-		"Me!"
+		"Saint"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/augustsaintfreytag/minecraft-commercialize",
+		"sources": "https://github.com/augustsaintfreytag/minecraft-commercialize"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/commercialize/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -29,9 +29,11 @@
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"owo-lib": ">=0.11.2"
+		"owo-lib": ">=0.11.2",
+		"framework": ">=0.7.15",
+		"refurbished_furniture": ">=1.0.14"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"backpacked": ">=3.0.0"
 	}
 }
