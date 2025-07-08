@@ -284,22 +284,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
-				MarketAssets.EMPTY_CART_ICON, component -> {
-					delegate.emptyCart();
-				});
-
-		emptyCardTabButton.positioning(Positioning.absolute(168, 14));
-		emptyCardTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.empty_cart.tooltip"));
-		rightSideComponent.child(emptyCardTabButton);
-
 		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
 				MarketAssets.CONFIRM_ORDER_ICON, component -> {
 					client.player.sendMessage(Text.of("Requesting to confirm order."));
 				});
 
-		orderTabButton.positioning(Positioning.absolute(168, 43));
 		orderTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.order_cart.tooltip"));
+		orderTabButton.positioning(Positioning.absolute(168, 14));
 		rightSideComponent.child(orderTabButton);
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
@@ -311,8 +302,17 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 				});
 
 		cyclePaymentMethodTabButton.id("payment_method");
-		cyclePaymentMethodTabButton.positioning(Positioning.absolute(168, 72));
+		cyclePaymentMethodTabButton.positioning(Positioning.absolute(168, 43));
 		rightSideComponent.child(cyclePaymentMethodTabButton);
+
+		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
+				MarketAssets.EMPTY_CART_ICON, component -> {
+					delegate.emptyCart();
+				});
+
+		emptyCardTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.empty_cart.tooltip"));
+		emptyCardTabButton.positioning(Positioning.absolute(168, 72));
+		rightSideComponent.child(emptyCardTabButton);
 
 		return rightSideComponent;
 	}
