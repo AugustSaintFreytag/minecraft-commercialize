@@ -9,10 +9,12 @@ import java.util.stream.Stream;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
+import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
+import net.saint.commercialize.data.payment.PaymentMethod;
 
 public final class MarketOfferListingUtil {
 
@@ -22,15 +24,16 @@ public final class MarketOfferListingUtil {
 
 	// Filtering
 
-	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, PlayerEntity player, OfferFilterMode filterMode) {
+	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, PlayerEntity player, OfferFilterMode filterMode,
+			PaymentMethod paymentMethod) {
 		if (filterMode == null) {
 			filterMode = OfferFilterMode.ALL;
 		}
 
 		switch (filterMode) {
 		case AFFORDABLE:
-			// TODO: Implement once monetary data is available.
-			return new ArrayList<Offer>();
+			var balance = playerBalanceForPaymentMethod(player, paymentMethod);
+			return offers.filter(offer -> offer.price <= balance).limit(MAX_OFFERS_PER_LISTING + 1).toList();
 		default:
 			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
 		}
@@ -132,6 +135,17 @@ public final class MarketOfferListingUtil {
 
 			return Integer.compare(lhs.stack.getCount(), rhs.stack.getCount());
 		};
+	}
+
+	private static int playerBalanceForPaymentMethod(PlayerEntity player, PaymentMethod paymentMethod) {
+		switch (paymentMethod) {
+		case INVENTORY:
+			return PlayerInventoryCashUtil.getCurrencyValueInPlayerInventory(player);
+		case ACCOUNT:
+			return 0;
+		default:
+			return 0;
+		}
 	}
 
 }
