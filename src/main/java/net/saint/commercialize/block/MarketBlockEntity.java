@@ -127,6 +127,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		message.sortMode = state.sortMode;
 		message.sortOrder = state.sortOrder;
 		message.filterMode = state.filterMode;
+		message.paymentMethod = state.paymentMethod;
 
 		var buffer = PacketByteBufs.create();
 		message.encodeToBuffer(buffer);
