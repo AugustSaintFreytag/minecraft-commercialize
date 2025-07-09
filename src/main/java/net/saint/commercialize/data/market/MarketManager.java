@@ -35,6 +35,11 @@ public final class MarketManager extends PersistentState {
 		return offersAreCapped;
 	}
 
+	@Override
+	public int hashCode() {
+		return offers.stream().map(offer -> offer.id).toList().hashCode();
+	}
+
 	// Mutation
 
 	public void addOffer(Offer offer) {
