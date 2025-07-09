@@ -204,13 +204,14 @@ public final class MarketScreenUtil {
 
 	// Total
 
-	public static int totalPriceForOffers(List<Offer> offers) {
-		return offers.stream().mapToInt(offer -> offer.price).sum();
+	public static Text textForCartTotal(int value) {
+		return Text.literal(NumericFormattingUtil.formatCurrency(value));
 	}
 
-	public static Text totalPriceTextForOffers(List<Offer> offers) {
-		var totalPrice = totalPriceForOffers(offers);
-		return Text.literal(NumericFormattingUtil.formatCurrency(totalPrice));
+	// Balance
+
+	public static Text textForBalance(int value) {
+		return Text.literal(NumericFormattingUtil.formatCurrency(value));
 	}
 
 }
