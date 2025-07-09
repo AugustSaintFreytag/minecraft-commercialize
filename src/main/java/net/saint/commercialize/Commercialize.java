@@ -15,6 +15,7 @@ import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
 import net.saint.commercialize.init.ModServerNetworking;
+import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.util.ConfigLoadUtil;
 import net.saint.commercialize.util.PlayerProfileManager;
 
@@ -41,6 +42,7 @@ public class Commercialize implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModBlocks.initialize();
+		ModSounds.initialize();
 		ModCommands.initialize();
 		ModServerNetworking.initialize();
 
