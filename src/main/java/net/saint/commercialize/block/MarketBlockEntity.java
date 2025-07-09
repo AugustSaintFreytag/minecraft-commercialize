@@ -32,6 +32,8 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
 
+	private int lastMarketHash = 0;
+
 	private MarketScreen marketScreen;
 
 	// Init
@@ -114,7 +116,16 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			return;
 		}
 
+		var lastMarketHash = this.lastMarketHash;
+		var currentMarketHash = this.state.marketManager.hashCode();
+
 		this.marketScreen.updateDisplay();
+
+		this.lastMarketHash = currentMarketHash;
+
+		if (lastMarketHash != currentMarketHash) {
+			this.marketScreen.resetOfferScrollView();
+		}
 	}
 
 	// Networking
