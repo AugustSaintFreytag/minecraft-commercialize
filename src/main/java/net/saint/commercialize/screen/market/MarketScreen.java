@@ -23,6 +23,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
+import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
@@ -96,7 +97,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
 
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
-		balanceDisplay.text(Text.of(NumericFormattingUtil.formatCurrency(0)));
+		var balance = delegate.getPaymentMethod() == PaymentMethod.INVENTORY ? delegate.getCashBalance() : delegate.getAccountBalance();
+		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
 
 		// Cart
