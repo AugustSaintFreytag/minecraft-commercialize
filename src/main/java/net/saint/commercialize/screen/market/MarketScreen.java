@@ -27,6 +27,7 @@ import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
+import net.saint.commercialize.gui.common.ScrollContainer;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.gui.market.CartListComponent;
@@ -120,6 +121,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Offers
 
+		var offerScrollView = rootComponent.childById(ScrollContainer.class, "offer_scroll_view");
+		offerScrollView.markScrollPositionForRestore();
+
 		var offerContainer = rootComponent.childById(FlowLayout.class, "offer_container");
 		offerContainer.clearChildren();
 
@@ -138,6 +142,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			var offerCapComponent = makeOfferListCapComponent();
 			offerContainer.child(offerCapComponent);
 		}
+
+		offerScrollView.restoreScrollPosition();
+	}
+
+	public void resetOfferScrollView() {
+		var rootComponent = this.uiAdapter.rootComponent;
+		var offerScrollView = rootComponent.childById(ScrollContainer.class, "offer_scroll_view");
+		offerScrollView.scrollToTop();
 	}
 
 	// Root
@@ -198,7 +210,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offerContainer = Containers.verticalFlow(Sizing.fixed(166), Sizing.content()).id("offer_container");
 		offerContainer.positioning(Positioning.absolute(0, 0));
 
-		var offerScrollView = Containers.verticalScroll(Sizing.fixed(174), Sizing.fixed(148), offerContainer);
+		var offerScrollView = Containers.verticalScroll(Sizing.fixed(174), Sizing.fixed(148), offerContainer).id("offer_scroll_view");
 		offerScrollView.positioning(Positioning.absolute(33, 36));
 
 		leftSideComponent.child(offerScrollView);
