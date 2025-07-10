@@ -15,6 +15,10 @@ import net.saint.commercialize.data.payment.Currency;
 
 public class PlayerInventoryCashUtil {
 
+	// Configuration
+
+	private static final int ITEM_STACK_ANIMATION_TIME = 5;
+
 	// References
 
 	private static final List<InventoryProvider> INVENTORY_PROVIDERS = new ArrayList<>();
@@ -73,6 +77,8 @@ public class PlayerInventoryCashUtil {
 			return;
 		}
 
+		var remainingStacks = getCurrencyStacksForAmount(amount);
+
 		for (var provider : INVENTORY_PROVIDERS) {
 			var inventory = provider.get(player);
 
@@ -80,35 +86,39 @@ public class PlayerInventoryCashUtil {
 				continue;
 			}
 
-			var remainingStacks = addCurrencyToInventory(inventory, amount);
+			remainingStacks = addItemStacksToInventory(remainingStacks, inventory);
 
 			if (remainingStacks.isEmpty()) {
-				break; // All currency added.
+				break;
 			}
+		}
 
-			// Log remaining stacks that could not be added.
-			Commercialize.LOGGER.info("Could not add all currency to inventory for player '{}'. Remaining stacks: {}.",
-					player.getName().getString(), remainingStacks);
+		while (!remainingStacks.isEmpty()) {
+			// If not all currency items could be added, drop at player position.
+			var itemStack = remainingStacks.remove(0);
+			player.dropItem(itemStack, true);
 		}
 	}
 
-	public static List<ItemStack> addCurrencyToInventory(Inventory inventory, int amount) {
-		var currencyStacks = getCurrencyStacksForAmount(amount);
+	public static List<ItemStack> addItemStacksToInventory(List<ItemStack> itemStacks, Inventory inventory) {
+		var remainingItemStacks = new ArrayList<ItemStack>(itemStacks);
 
-		while (!currencyStacks.isEmpty()) {
-			var itemStack = currencyStacks.remove(0);
-			var firstFreeSlot = firstFreeSlotInInventory(inventory);
+		while (!remainingItemStacks.isEmpty()) {
+			var itemStack = remainingItemStacks.remove(0);
+			var emptySlot = firstEmptySlotInInventory(inventory);
 
-			if (firstFreeSlot == -1) {
+			if (emptySlot == -1) {
 				// No free slot found, stop adding.
-				Commercialize.LOGGER.info("Could not find free slot in inventory for adding currency item stack '{}'.", itemStack);
+				Commercialize.LOGGER.info("Could not find empty slot in inventory for adding item stack '{}'.",
+						itemStack.getName().getString());
 				break;
 			}
 
-			inventory.setStack(firstFreeSlot, itemStack);
+			inventory.setStack(emptySlot, itemStack);
+			itemStack.setBobbingAnimationTime(ITEM_STACK_ANIMATION_TIME);
 		}
 
-		return currencyStacks;
+		return remainingItemStacks;
 	}
 
 	private static List<ItemStack> getCurrencyStacksForAmount(int amount) {
@@ -137,7 +147,7 @@ public class PlayerInventoryCashUtil {
 		return stacks;
 	}
 
-	private static int firstFreeSlotInInventory(Inventory inventory) {
+	private static int firstEmptySlotInInventory(Inventory inventory) {
 		for (var slot = 0; slot < inventory.size(); slot++) {
 			if (inventory.getStack(slot).isEmpty()) {
 				return slot;
