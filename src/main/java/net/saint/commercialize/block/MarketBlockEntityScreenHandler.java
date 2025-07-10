@@ -33,7 +33,7 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 
 	@Override
 	default int getCashBalance() {
-		return PlayerInventoryCashUtil.getCurrencyValueInPlayerInventory(getPlayer());
+		return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(getPlayer());
 	}
 
 	@Override

@@ -140,7 +140,7 @@ public final class MarketOfferListingUtil {
 	private static int playerBalanceForPaymentMethod(PlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
 		case INVENTORY:
-			return PlayerInventoryCashUtil.getCurrencyValueInPlayerInventory(player);
+			return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
 			return 0;
 		default:
