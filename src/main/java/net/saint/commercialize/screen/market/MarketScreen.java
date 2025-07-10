@@ -300,7 +300,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
 				MarketAssets.CONFIRM_ORDER_ICON, component -> {
-					client.player.sendMessage(Text.of("Requesting to confirm order."));
+					delegate.confirmCartOrder();
 				});
 
 		orderTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.order_cart.tooltip"));
