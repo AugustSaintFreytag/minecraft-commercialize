@@ -172,8 +172,7 @@ public final class MarketScreenUtil {
 
 		// Expiration
 		var rawExpiry = TimeFormattingUtil.formattedTime(timeExpiresTicks);
-		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format",
-				TextFormattingUtil.capitalize(rawExpiry));
+		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format", rawExpiry);
 		var expiryLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 		var expiryValue = Text.literal(expiryFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
@@ -212,6 +211,42 @@ public final class MarketScreenUtil {
 
 	public static Text textForBalance(int value) {
 		return Text.literal(NumericFormattingUtil.formatCurrency(value));
+	}
+
+	// Order
+
+	private static final int MAX_ORDER_SUMMARY_ITEM_NAMES = 3;
+
+	public static Text textForOrderSummary(List<Offer> offers) {
+		if (offers.isEmpty()) {
+			return LocalizationUtil.localizedText("gui", "order_item_unknown");
+		}
+
+		var itemNames = offers.stream().map(offer -> {
+			var numberOfItems = offer.stack.getCount();
+
+			if (numberOfItems == 1) {
+				return offer.stack.getName().getString();
+			} else {
+				return offer.stack.getName().getString() + " (x" + numberOfItems + ")";
+			}
+		}).distinct().toList();
+
+		if (itemNames.size() <= MAX_ORDER_SUMMARY_ITEM_NAMES) {
+			return Text.literal(String.join(", ", itemNames));
+		}
+
+		var displayableItemNames = itemNames.subList(0, MAX_ORDER_SUMMARY_ITEM_NAMES);
+		var numberOfTruncatedItemNames = itemNames.size() - MAX_ORDER_SUMMARY_ITEM_NAMES;
+		var listedItemNames = String.join(", ", displayableItemNames);
+
+		if (numberOfTruncatedItemNames == 0) {
+			return Text.literal(listedItemNames);
+		} else {
+			var moreText = LocalizationUtil.localizedString("gui", "order_item_more", numberOfTruncatedItemNames);
+			return Text.literal(listedItemNames + ", " + moreText);
+		}
+
 	}
 
 }

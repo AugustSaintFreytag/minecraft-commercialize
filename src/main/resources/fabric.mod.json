@@ -30,7 +30,7 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"owo-lib": ">=0.11.2",
-		"framework": ">=0.7.15",
+		"numismatics": ">=1.0.11",
 		"refurbished_furniture": ">=1.0.14"
 	},
 	"suggests": {
