@@ -75,7 +75,7 @@ public class MarketBlock extends BlockWithEntity {
 		var blockEntity = (MarketBlockEntity) world.getBlockEntity(pos);
 		blockEntity.openMarketScreen(world, player);
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}
 
 }

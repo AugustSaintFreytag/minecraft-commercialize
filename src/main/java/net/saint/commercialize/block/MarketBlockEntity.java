@@ -9,6 +9,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,9 +19,15 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModSounds;
+import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
+import net.saint.commercialize.network.MarketS2COrderMessage;
 import net.saint.commercialize.screen.market.MarketScreen;
+import net.saint.commercialize.screen.market.MarketScreenUtil;
+import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.NumericFormattingUtil;
 
 public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityScreenHandler {
 
@@ -31,6 +38,8 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Properties
 
 	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
+
+	private int lastMarketHash = 0;
 
 	private MarketScreen marketScreen;
 
@@ -72,7 +81,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	// Networking
 
-	public void receiveServerMessage(MarketS2CListMessage message) {
+	public void receiveListMessage(MarketS2CListMessage message) {
 		state.marketManager.clearOffers();
 		state.marketManager.addOffers(message.offers);
 		state.marketManager.setOffersAreCapped(message.isCapped);
@@ -81,6 +90,49 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 				this.getPos().toShortString(), state.marketManager.getOffers().count());
 
 		updateMarketScreen();
+	}
+
+	public void receiveOrderMessage(MarketS2COrderMessage message) {
+		Commercialize.LOGGER.info("Received market order response with result '{}' for offer '{}' at pos '{}'.", message.result,
+				message.offers, this.getPos().toShortString());
+
+		var client = MinecraftClient.getInstance();
+		var player = client.player;
+
+		switch (message.result) {
+		case INSUFFICIENT_FUNDS: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
+		case INVIABLE_OFFERS: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
+		case FAILURE: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
+		case SUCCESS: {
+			var offers = state.cart;
+			var itemNames = MarketScreenUtil.textForOrderSummary(offers);
+			var formattedTotal = NumericFormattingUtil.formatCurrency(getCartTotal());
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
+
+			player.sendMessage(displayText, true);
+			player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
+
+			state.cart.clear();
+			requestMarketData();
+			updateMarketScreen();
+			break;
+		}
+		}
 	}
 
 	// Screen
@@ -114,7 +166,16 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			return;
 		}
 
+		var lastMarketHash = this.lastMarketHash;
+		var currentMarketHash = this.state.marketManager.hashCode();
+
 		this.marketScreen.updateDisplay();
+
+		this.lastMarketHash = currentMarketHash;
+
+		if (lastMarketHash != currentMarketHash) {
+			this.marketScreen.resetOfferScrollView();
+		}
 	}
 
 	// Networking
@@ -127,11 +188,25 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		message.sortMode = state.sortMode;
 		message.sortOrder = state.sortOrder;
 		message.filterMode = state.filterMode;
+		message.paymentMethod = state.paymentMethod;
 
 		var buffer = PacketByteBufs.create();
 		message.encodeToBuffer(buffer);
 
 		ClientPlayNetworking.send(MarketC2SQueryMessage.ID, buffer);
+	}
+
+	public void confirmCartOrder() {
+		var message = new MarketC2SOrderMessage();
+
+		message.position = this.getPos();
+		message.offers = state.cart.stream().map(offer -> offer.id).toList();
+		message.paymentMethod = state.paymentMethod;
+
+		var buffer = PacketByteBufs.create();
+		message.encodeToBuffer(buffer);
+
+		ClientPlayNetworking.send(MarketC2SOrderMessage.ID, buffer);
 	}
 
 }

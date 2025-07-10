@@ -7,6 +7,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
+import net.saint.commercialize.data.payment.PaymentMethod;
 
 public final class MarketC2SQueryMessage {
 
@@ -21,6 +22,7 @@ public final class MarketC2SQueryMessage {
 	public OfferSortMode sortMode;
 	public OfferSortOrder sortOrder;
 	public OfferFilterMode filterMode;
+	public PaymentMethod paymentMethod;
 
 	// Encoding
 
@@ -30,6 +32,7 @@ public final class MarketC2SQueryMessage {
 		buffer.writeEnumConstant(sortMode);
 		buffer.writeEnumConstant(sortOrder);
 		buffer.writeEnumConstant(filterMode);
+		buffer.writeEnumConstant(paymentMethod);
 	}
 
 	// Decoding
@@ -42,6 +45,7 @@ public final class MarketC2SQueryMessage {
 		message.sortMode = buffer.readEnumConstant(OfferSortMode.class);
 		message.sortOrder = buffer.readEnumConstant(OfferSortOrder.class);
 		message.filterMode = buffer.readEnumConstant(OfferFilterMode.class);
+		message.paymentMethod = buffer.readEnumConstant(PaymentMethod.class);
 
 		return message;
 	}

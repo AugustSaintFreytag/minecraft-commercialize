@@ -1,0 +1,18 @@
+{
+	"offer_select": {
+		"sounds": [
+			{
+				"name": "commercialize:offer_select"
+			}
+		],
+		"category": "gui"
+	},
+	"order_confirm": {
+		"sounds": [
+			{
+				"name": "commercialize:order_confirm"
+			}
+		],
+		"category": "gui"
+	}
+}

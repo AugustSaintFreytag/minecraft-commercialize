@@ -3,6 +3,7 @@ package net.saint.commercialize.screen.market;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -10,6 +11,14 @@ import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 
 public interface MarketScreenDelegate {
+
+	// Player
+
+	PlayerEntity getPlayer();
+
+	int getCashBalance();
+
+	int getAccountBalance();
 
 	// Cart
 
@@ -19,7 +28,11 @@ public interface MarketScreenDelegate {
 
 	void removeOfferFromCart(Offer offer);
 
+	int getCartTotal();
+
 	void emptyCart();
+
+	void confirmCartOrder();
 
 	// Offers
 

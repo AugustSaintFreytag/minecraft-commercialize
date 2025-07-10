@@ -3,6 +3,7 @@ package net.saint.commercialize.data.market;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -23,6 +24,10 @@ public final class MarketManager extends PersistentState {
 		return offers.stream();
 	}
 
+	public Optional<Offer> getOffer(UUID id) {
+		return offers.stream().filter(offer -> offer.id.equals(id)).findFirst();
+	}
+
 	public int size() {
 		return offers.size();
 	}
@@ -33,6 +38,11 @@ public final class MarketManager extends PersistentState {
 
 	public boolean offersAreCapped() {
 		return offersAreCapped;
+	}
+
+	@Override
+	public int hashCode() {
+		return offers.stream().map(offer -> offer.id).toList().hashCode();
 	}
 
 	// Mutation

@@ -3,6 +3,9 @@ package net.saint.commercialize.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -19,6 +22,24 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	// Event
 
 	void onMarketScreenUpdate();
+
+	// Player
+
+	@Override
+	default PlayerEntity getPlayer() {
+		var client = MinecraftClient.getInstance();
+		return client.player;
+	}
+
+	@Override
+	default int getCashBalance() {
+		return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(getPlayer());
+	}
+
+	@Override
+	default int getAccountBalance() {
+		return 0;
+	}
 
 	// Cart
 
@@ -45,6 +66,12 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	default void emptyCart() {
 		getState().cart.clear();
 		onMarketScreenUpdate();
+	}
+
+	@Override
+	default int getCartTotal() {
+		var total = getCart().stream().mapToInt(offer -> offer.price).sum();
+		return total;
 	}
 
 	// Offers

@@ -8,11 +8,14 @@ import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.assets.MarketAssets;
+import net.saint.commercialize.init.ModSounds;
 
 public class CartListComponent extends FlowLayout {
 
@@ -66,8 +69,17 @@ public class CartListComponent extends FlowLayout {
 
 	@Override
 	public boolean onMouseDown(double mouseX, double mouseY, int button) {
+		this.playInteractionSound();
 		this.onPress.accept(this);
 		return super.onMouseDown(mouseX, mouseY, button);
+	}
+
+	private void playInteractionSound() {
+		var client = MinecraftClient.getInstance();
+		var soundManager = client.getSoundManager();
+		var soundInstance = PositionedSoundInstance.master(ModSounds.OFFER_SELECT_SOUND, 0.5F, 0.75F);
+
+		soundManager.play(soundInstance);
 	}
 
 }
