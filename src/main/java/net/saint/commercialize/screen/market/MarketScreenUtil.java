@@ -172,8 +172,7 @@ public final class MarketScreenUtil {
 
 		// Expiration
 		var rawExpiry = TimeFormattingUtil.formattedTime(timeExpiresTicks);
-		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format",
-				TextFormattingUtil.capitalize(rawExpiry));
+		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format", rawExpiry);
 		var expiryLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 		var expiryValue = Text.literal(expiryFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));

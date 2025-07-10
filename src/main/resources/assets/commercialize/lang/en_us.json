@@ -50,7 +50,7 @@
 	"text.commercialize.offer.tooltip.time_posted": "Posted",
 	"text.commercialize.offer.tooltip.time_posted_format": "%s ago",
 	"text.commercialize.offer.tooltip.time_expiring": "Expiration",
-	"text.commercialize.offer.tooltip.time_expiring_format": "%s",
+	"text.commercialize.offer.tooltip.time_expiring_format": "In %s",
 	"text.commercialize.offer.tooltip.generated_seller": "Generated Offer",
 	"text.commercialize.time.short.hour": "hour",
 	"text.commercialize.time.short.hours": "hours",
