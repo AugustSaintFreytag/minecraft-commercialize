@@ -219,7 +219,7 @@ public final class MarketScreenUtil {
 
 	public static Text textForOrderSummary(List<Offer> offers) {
 		if (offers.isEmpty()) {
-			return LocalizationUtil.localizedText("gui", "order_item_unknown");
+			return LocalizationUtil.localizedText("gui", "order_summary_item_unknown");
 		}
 
 		var itemNames = offers.stream().map(offer -> {
