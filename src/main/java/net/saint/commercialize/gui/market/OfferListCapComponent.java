@@ -22,10 +22,10 @@ public class OfferListCapComponent extends FlowLayout {
 		this.child(textureComponent);
 
 		var labelComponent = Components.label(LocalizationUtil.localizedText("gui", "market.offers_cap"));
+		labelComponent.color(Color.ofRgb(0x5A5A5A));
 		labelComponent.positioning(Positioning.absolute(4, 5));
 		labelComponent.sizing(Sizing.fixed(162), Sizing.fixed(12));
 		labelComponent.horizontalTextAlignment(HorizontalAlignment.LEFT);
-		labelComponent.color(Color.ofRgb(0x5A5A5A));
 		this.child(labelComponent);
 	}
 
