@@ -41,25 +41,28 @@ public final class MarketOfferGenerator {
 	// Generation
 
 	public static Optional<Offer> generateOffer(World world) {
-		var offerTemplate = getRandomOfferTemplate(random);
+		var offerTemplateOptional = getRandomOfferTemplate(random);
 
-		if (offerTemplate.isEmpty()) {
+		if (offerTemplateOptional.isEmpty()) {
 			Commercialize.LOGGER.warn(
 					"Could not generate offer, no offer template returned from random selection. Potentially no offer templates available in registry.");
 			return Optional.empty();
 		}
 
+		var offerTemplate = offerTemplateOptional.get();
+
 		var offer = new Offer();
-		var itemStack = getItemStackForOfferTemplate(random, offerTemplate.get());
-		var price = getTotalPriceForItemStack(random, itemStack);
-		var sellerId = Offer.GENERATED_SELLER_ID;
-		var sellerName = getRandomPlayerName();
+		var itemStack = getItemStackForOfferTemplate(random, offerTemplate);
+		var price = getSellingPriceForOffer(random, offerTemplate, itemStack);
 
 		if (price == 0) {
 			Commercialize.LOGGER.warn("Could not generate offer for item '{}' with zero price, returning null.",
 					itemStack.getItem().getName().getString());
 			return Optional.empty();
 		}
+
+		var sellerId = Offer.GENERATED_SELLER_ID;
+		var sellerName = getRandomPlayerName();
 
 		offer.id = UUID.randomUUID();
 		offer.isActive = true;
@@ -95,9 +98,20 @@ public final class MarketOfferGenerator {
 		}
 	}
 
+	public static void clearPregeneratedNames() {
+		playerPool.clear();
+	}
+
 	// Price
 
-	private static int getTotalPriceForItemStack(Random random, ItemStack itemStack) {
+	private static int getSellingPriceForOffer(Random random, OfferTemplate offerTemplate, ItemStack itemStack) {
+		var price = getSellingPriceForItemStack(random, itemStack);
+		var markup = offerTemplate.markup;
+
+		return roundToNearestAesthetic((int) (price * markup));
+	}
+
+	private static int getSellingPriceForItemStack(Random random, ItemStack itemStack) {
 		var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
 		var itemBaseValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
 
@@ -112,7 +126,7 @@ public final class MarketOfferGenerator {
 
 		rawValue += jitterValue;
 
-		return roundToNearestAesthetic((int) rawValue);
+		return (int) rawValue;
 	}
 
 	private static int roundToNearestAesthetic(int value) {
