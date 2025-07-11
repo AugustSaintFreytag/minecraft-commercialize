@@ -28,12 +28,14 @@ public class OfferListComponent extends FlowLayout {
 	protected List<TooltipComponent> offerTooltip;
 	protected List<TooltipComponent> sellerTooltip;
 	protected TextureReference profileTexture;
+	protected boolean isDisabled = false;
 	protected Consumer<OfferListComponent> onPress;
 
 	// Init
 
 	public OfferListComponent(ItemStack itemStack, Text itemDescription, Text priceDescription, List<TooltipComponent> offerTooltip,
-			List<TooltipComponent> sellerTooltip, TextureReference profileTexture, Consumer<OfferListComponent> onPress) {
+			List<TooltipComponent> sellerTooltip, TextureReference profileTexture, boolean isDisabled,
+			Consumer<OfferListComponent> onPress) {
 		super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
 
 		this.itemStack = itemStack;
@@ -42,9 +44,10 @@ public class OfferListComponent extends FlowLayout {
 		this.offerTooltip = offerTooltip;
 		this.sellerTooltip = sellerTooltip;
 		this.profileTexture = profileTexture;
+		this.isDisabled = isDisabled;
 		this.onPress = onPress;
 
-		var textureComponent = Components.texture(MarketAssets.OFFER_LIST_ITEM);
+		var textureComponent = Components.texture(backgroundTexture());
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
 		this.child(textureComponent);
@@ -56,11 +59,13 @@ public class OfferListComponent extends FlowLayout {
 		this.child(itemComponent);
 
 		var itemDescriptionLabel = Components.label(this.itemDescription);
+		itemDescriptionLabel.color(this.textColor());
 		itemDescriptionLabel.positioning(Positioning.absolute(28, 5));
 		itemDescriptionLabel.sizing(Sizing.fixed(70), Sizing.fixed(12));
 		this.child(itemDescriptionLabel);
 
 		var priceDescriptionLabel = Components.label(this.priceDescription).horizontalTextAlignment(HorizontalAlignment.RIGHT);
+		priceDescriptionLabel.color(this.textColor());
 		priceDescriptionLabel.positioning(Positioning.absolute(95, 5));
 		priceDescriptionLabel.sizing(Sizing.fixed(55), Sizing.fixed(12));
 		this.child(priceDescriptionLabel);
@@ -76,6 +81,22 @@ public class OfferListComponent extends FlowLayout {
 		tooltipOverlay.positioning(Positioning.absolute(26, 0));
 		tooltipOverlay.tooltip(this.offerTooltip);
 		this.child(tooltipOverlay);
+	}
+
+	private Color textColor() {
+		if (this.isDisabled) {
+			return Color.ofRgb(0xE0E0E0);
+		}
+
+		return Color.ofRgb(0xFCFCFC);
+	}
+
+	private TextureReference backgroundTexture() {
+		if (this.isDisabled) {
+			return MarketAssets.OFFER_DISABLED_LIST_ITEM;
+		}
+
+		return MarketAssets.OFFER_LIST_ITEM;
 	}
 
 	@Override

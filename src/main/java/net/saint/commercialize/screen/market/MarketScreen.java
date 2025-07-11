@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
@@ -134,7 +135,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
 
 		offers.forEach(offer -> {
-			var offerComponent = makeOfferListComponent(offer);
+			var offerIsInCart = delegate.hasOfferInCart(offer);
+			var offerComponent = makeOfferListComponent(offer, offerIsInCart);
 			offerContainer.child(offerComponent);
 		});
 
@@ -300,6 +302,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
 				MarketAssets.CONFIRM_ORDER_ICON, component -> {
+					if (delegate.getCart().isEmpty()) {
+						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+						return;
+					}
+
 					delegate.confirmCartOrder();
 				});
 
@@ -365,6 +372,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		totalDisplay.id("total");
 		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 		totalDisplay.color(Color.WHITE);
+		totalDisplay.shadow(true);
 		totalDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		totalDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
@@ -376,6 +384,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		balanceDisplay.id("balance");
 		balanceDisplay.color(Color.WHITE);
+		balanceDisplay.shadow(true);
 		balanceDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		balanceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
@@ -417,7 +426,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return new TabButtonComponent(message, texture, onPress);
 	}
 
-	private OfferListComponent makeOfferListComponent(Offer offer) {
+	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
@@ -425,12 +434,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
 
-		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture,
+		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture, isDisabled,
 				component -> {
-					// Handle offer selection
-					client.player.sendMessage(
-							Text.of("Adding offer to cart: " + offer.stack.getName().getString() + " for " + offer.price + " ¤."));
-					delegate.addOfferToCart(offer);
+					if (delegate.hasOfferInCart(offer)) {
+						delegate.removeOfferFromCart(offer);
+					} else {
+						delegate.addOfferToCart(offer);
+					}
 				});
 	}
 
@@ -460,9 +470,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
-			// Handle cart item selection
 			this.delegate.removeOfferFromCart(offer);
-			client.player.sendMessage(Text.of("Removing item from cart: " + offer.stack.getName().getString() + "."));
 		});
 	}
 

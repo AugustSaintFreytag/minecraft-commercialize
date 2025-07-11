@@ -1,6 +1,5 @@
 package net.saint.commercialize.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
@@ -44,27 +43,42 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	// Cart
 
 	@Override
-	default ArrayList<Offer> getCart() {
-		// state.cart is declared as List<Offer>, but initialized as ArrayList
-		List<Offer> backing = getState().cart;
-		return (backing instanceof ArrayList) ? (ArrayList<Offer>) backing : new ArrayList<>(backing);
+	default List<Offer> getCart() {
+		return getState().cartOffers.getOffers().toList();
+	}
+
+	@Override
+	default boolean hasOfferInCart(Offer offer) {
+		var cart = getState().cartOffers;
+		return cart.hasOffer(offer.id);
 	}
 
 	@Override
 	default void addOfferToCart(Offer offer) {
-		getState().cart.add(offer);
+		var cart = getState().cartOffers;
+
+		if (cart.hasOffer(offer.id)) {
+			// If offer is already in cart, do not add again.
+			return;
+		}
+
+		cart.addOffer(offer);
 		onMarketScreenUpdate();
 	}
 
 	@Override
 	default void removeOfferFromCart(Offer offer) {
-		getState().cart.remove(offer);
+		var cart = getState().cartOffers;
+
+		cart.removeOffer(offer);
 		onMarketScreenUpdate();
 	}
 
 	@Override
 	default void emptyCart() {
-		getState().cart.clear();
+		var cart = getState().cartOffers;
+
+		cart.clearOffers();
 		onMarketScreenUpdate();
 	}
 
@@ -78,12 +92,12 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 
 	@Override
 	default List<Offer> getOffers() {
-		return getState().marketManager.getOffers().toList();
+		return getState().marketOffers.getOffers().toList();
 	}
 
 	@Override
 	default boolean getOffersAreCapped() {
-		return getState().marketManager.offersAreCapped();
+		return getState().marketOffers.offersAreCapped();
 	}
 
 	// Filtering & Sorting
