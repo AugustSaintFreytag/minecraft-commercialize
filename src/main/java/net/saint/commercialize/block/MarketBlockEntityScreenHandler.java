@@ -47,23 +47,38 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 		return getState().cartOffers.getOffers().toList();
 	}
 
+	@Override
+	default boolean hasOfferInCart(Offer offer) {
+		var cart = getState().cartOffers;
+		return cart.hasOffer(offer.id);
 	}
 
 	@Override
 	default void addOfferToCart(Offer offer) {
-		getState().cart.add(offer);
+		var cart = getState().cartOffers;
+
+		if (cart.hasOffer(offer.id)) {
+			// If offer is already in cart, do not add again.
+			return;
+		}
+
+		cart.addOffer(offer);
 		onMarketScreenUpdate();
 	}
 
 	@Override
 	default void removeOfferFromCart(Offer offer) {
-		getState().cart.remove(offer);
+		var cart = getState().cartOffers;
+
+		cart.removeOffer(offer);
 		onMarketScreenUpdate();
 	}
 
 	@Override
 	default void emptyCart() {
-		getState().cart.clear();
+		var cart = getState().cartOffers;
+
+		cart.clearOffers();
 		onMarketScreenUpdate();
 	}
 

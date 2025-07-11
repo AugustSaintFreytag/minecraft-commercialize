@@ -27,6 +27,8 @@ public interface MarketScreenDelegate {
 
 	void removeOfferFromCart(Offer offer);
 
+	boolean hasOfferInCart(Offer offer);
+
 	int getCartTotal();
 
 	void emptyCart();
