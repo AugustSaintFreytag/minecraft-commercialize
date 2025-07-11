@@ -372,6 +372,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		totalDisplay.id("total");
 		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 		totalDisplay.color(Color.WHITE);
+		totalDisplay.shadow(true);
 		totalDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		totalDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
@@ -383,6 +384,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		balanceDisplay.id("balance");
 		balanceDisplay.color(Color.WHITE);
+		balanceDisplay.shadow(true);
 		balanceDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		balanceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
