@@ -19,16 +19,6 @@ public class PlayerInventoryCashUtil {
 
 	private static final int ITEM_STACK_ANIMATION_TIME = 5;
 
-	// References
-
-	private static final List<InventoryProvider> INVENTORY_PROVIDERS = new ArrayList<>();
-
-	// Init
-
-	public static void initialize() {
-		INVENTORY_PROVIDERS.add(MainInventoryProvider.playerMainInventoryProvider());
-	}
-
 	// Reading & Counting
 
 	public static int getCurrencyValueInAnyInventoriesForPlayer(PlayerEntity player) {
@@ -38,7 +28,7 @@ public class PlayerInventoryCashUtil {
 			return totalValue;
 		}
 
-		for (var provider : INVENTORY_PROVIDERS) {
+		for (var provider : InventoryAccessUtil.getInventoryProviders()) {
 			var inventory = provider.get(player);
 
 			if (inventory == null) {
@@ -79,7 +69,7 @@ public class PlayerInventoryCashUtil {
 
 		var remainingStacks = getCurrencyStacksForAmount(amount);
 
-		for (var provider : INVENTORY_PROVIDERS) {
+		for (var provider : InventoryAccessUtil.getInventoryProviders()) {
 			var inventory = provider.get(player);
 
 			if (inventory == null) {
