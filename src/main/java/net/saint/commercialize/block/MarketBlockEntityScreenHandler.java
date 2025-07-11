@@ -1,6 +1,5 @@
 package net.saint.commercialize.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
@@ -44,10 +43,10 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	// Cart
 
 	@Override
-	default ArrayList<Offer> getCart() {
-		// state.cart is declared as List<Offer>, but initialized as ArrayList
-		List<Offer> backing = getState().cart;
-		return (backing instanceof ArrayList) ? (ArrayList<Offer>) backing : new ArrayList<>(backing);
+	default List<Offer> getCart() {
+		return getState().cartOffers.getOffers().toList();
+	}
+
 	}
 
 	@Override
@@ -78,12 +77,12 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 
 	@Override
 	default List<Offer> getOffers() {
-		return getState().marketManager.getOffers().toList();
+		return getState().marketOffers.getOffers().toList();
 	}
 
 	@Override
 	default boolean getOffersAreCapped() {
-		return getState().marketManager.offersAreCapped();
+		return getState().marketOffers.offersAreCapped();
 	}
 
 	// Filtering & Sorting

@@ -1,10 +1,6 @@
 package net.saint.commercialize.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.saint.commercialize.data.market.MarketManager;
-import net.saint.commercialize.data.offer.Offer;
+import net.saint.commercialize.data.market.MarketOfferCollection;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
@@ -14,11 +10,11 @@ public class MarketBlockEntityScreenState {
 
 	// Market
 
-	public MarketManager marketManager = new MarketManager();
+	public MarketOfferCollection marketOffers = new MarketOfferCollection();
 
 	// Cart
 
-	public List<Offer> cart = new ArrayList<>();
+	public MarketOfferCollection cartOffers = new MarketOfferCollection();
 
 	// Filtering & Sorting
 
