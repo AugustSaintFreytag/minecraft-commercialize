@@ -135,7 +135,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
 
 		offers.forEach(offer -> {
-			var offerComponent = makeOfferListComponent(offer);
+			var offerIsInCart = delegate.hasOfferInCart(offer);
+			var offerComponent = makeOfferListComponent(offer, offerIsInCart);
 			offerContainer.child(offerComponent);
 		});
 
@@ -423,7 +424,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return new TabButtonComponent(message, texture, onPress);
 	}
 
-	private OfferListComponent makeOfferListComponent(Offer offer) {
+	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
@@ -431,7 +432,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
 
-		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture,
+		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture, isDisabled,
 				component -> {
 					// Handle offer selection
 					client.player.sendMessage(
