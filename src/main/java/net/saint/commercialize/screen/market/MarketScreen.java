@@ -469,9 +469,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
-			// Handle cart item selection
 			this.delegate.removeOfferFromCart(offer);
-			client.player.sendMessage(Text.of("Removing item from cart: " + offer.stack.getName().getString() + "."));
 		});
 	}
 
