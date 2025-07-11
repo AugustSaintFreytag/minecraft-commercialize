@@ -1,6 +1,5 @@
 package net.saint.commercialize.screen.market;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +21,7 @@ public interface MarketScreenDelegate {
 
 	// Cart
 
-	ArrayList<Offer> getCart();
+	List<Offer> getCart();
 
 	void addOfferToCart(Offer offer);
 
