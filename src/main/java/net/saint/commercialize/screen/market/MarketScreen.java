@@ -436,10 +436,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture, isDisabled,
 				component -> {
-					// Handle offer selection
-					client.player.sendMessage(
-							Text.of("Adding offer to cart: " + offer.stack.getName().getString() + " for " + offer.price + " ¤."));
-					delegate.addOfferToCart(offer);
+					if (delegate.hasOfferInCart(offer)) {
+						delegate.removeOfferFromCart(offer);
+					} else {
+						delegate.addOfferToCart(offer);
+					}
 				});
 	}
 
