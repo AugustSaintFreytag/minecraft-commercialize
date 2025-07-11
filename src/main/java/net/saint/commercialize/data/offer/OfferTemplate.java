@@ -10,6 +10,7 @@ public class OfferTemplate {
 
 	public Identifier item;
 	public StackSizeRange stack;
-	public Availability availability;
+	public float markup = 1.0f;
+	public Availability availability = Availability.COMMON;
 
 }
