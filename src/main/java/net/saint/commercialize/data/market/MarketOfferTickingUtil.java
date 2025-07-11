@@ -68,7 +68,9 @@ public final class MarketOfferTickingUtil {
 			expiredOffers.add(offer);
 		});
 
-		Commercialize.MARKET_MANAGER.removeOffers(expiredOffers);
+		expiredOffers.forEach(offer -> {
+			Commercialize.MARKET_MANAGER.removeOffer(offer);
+		});
 	}
 
 }

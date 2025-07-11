@@ -82,12 +82,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
-		state.marketManager.clearOffers();
-		state.marketManager.addOffers(message.offers);
-		state.marketManager.setOffersAreCapped(message.isCapped);
+		state.marketOffers.clearOffers();
+		state.marketOffers.addOffers(message.offers);
+		state.marketOffers.setOffersAreCapped(message.isCapped);
 
 		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
-				this.getPos().toShortString(), state.marketManager.getOffers().count());
+				this.getPos().toShortString(), state.marketOffers.getOffers().count());
 
 		updateMarketScreen();
 	}
@@ -119,7 +119,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			break;
 		}
 		case SUCCESS: {
-			var offers = state.cart;
+			var offers = state.cartOffers.getOffers().toList();
 			var itemNames = MarketScreenUtil.textForOrderSummary(offers);
 			var formattedTotal = NumericFormattingUtil.formatCurrency(getCartTotal());
 			var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
@@ -127,7 +127,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			player.sendMessage(displayText, true);
 			player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
 
-			state.cart.clear();
+			state.cartOffers.clearOffers();
 			requestMarketData();
 			updateMarketScreen();
 			break;
@@ -167,7 +167,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		}
 
 		var lastMarketHash = this.lastMarketHash;
-		var currentMarketHash = this.state.marketManager.hashCode();
+		var currentMarketHash = this.state.marketOffers.hashCode();
 
 		this.marketScreen.updateDisplay();
 
@@ -200,7 +200,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		var message = new MarketC2SOrderMessage();
 
 		message.position = this.getPos();
-		message.offers = state.cart.stream().map(offer -> offer.id).toList();
+		message.offers = state.cartOffers.getOffers().map(offer -> offer.id).toList();
 		message.paymentMethod = state.paymentMethod;
 
 		var buffer = PacketByteBufs.create();

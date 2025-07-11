@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.item.ItemManager;
-import net.saint.commercialize.data.market.MarketManager;
+import net.saint.commercialize.data.market.MarketOfferCollection;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.market.MarketPersistentStorageUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
@@ -33,7 +33,7 @@ public class Commercialize implements ModInitializer {
 	public static ItemManager ITEM_MANAGER;
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
 	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
-	public static MarketManager MARKET_MANAGER;
+	public static MarketOfferCollection MARKET_MANAGER;
 
 	public static boolean shouldTickMarket = true;
 
