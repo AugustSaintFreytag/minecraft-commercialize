@@ -24,8 +24,6 @@ repositories {
 	maven { url "https://cursemaven.com/" }
 	maven { url "https://maven.wispforest.io/releases/" }
 	maven { url "https://maven.ladysnake.org/releases" }
-	maven { url "https://mvn.devos.one/snapshots/" }
-	maven { url "https://mvn.devos.one/releases" }
 	maven { url "https://jitpack.io/" }
 }
 
@@ -45,33 +43,10 @@ dependencies {
 		transitive = false
 	}
 
-	// modImplementation ("com.github.Chocohead:Fabric-ASM:v2.3") {
-    //     exclude (group: "net.fabricmc.fabric-api")
-    // }
-
-	// modImplementation ("org.reflections:reflections:0.10.2") {
-	// 	transitive = false
-	// }
-
-	// Behold, beware, two days of infuriating work.
-	// All of this fucking bullshit is here ONLY for Framework and Backpacked to shut the fuck up.
-
-    // modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2"
-    // modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.2"
-	// modImplementation ("com.google.code.findbugs:jsr305:3.0.2")
-	// modImplementation ("com.electronwill.night-config:core:3.6.6")
-    // modImplementation ("com.electronwill.night-config:toml:3.6.6")
-    // modImplementation ("org.javassist:javassist:3.29.2-GA")
-
-	// modImplementation "curse.maven:trinkets-341284:${project.trinkets_version}"
-	// modImplementation ("curse.maven:framework-549225:${project.framework_version}")
 	modCompileOnly ("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 		transitive = false
 	}
-	// modImplementation ("curse.maven:backpacked-352835:${project.backpacked_version}")
-
-	// AND IT STILL FUCKING CRASHES WHEN LOADING A SAVE!
 }
 
 processResources {
@@ -87,9 +62,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.rr
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
 	sourceCompatibility = JavaVersion.VERSION_17
@@ -112,11 +84,9 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
 		// Add repositories to publish to here.
 		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		// The repositories here will be used for publishing your artifact, not for retrieving dependencies.
 	}
 }
