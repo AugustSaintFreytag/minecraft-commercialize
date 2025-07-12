@@ -9,7 +9,7 @@
       "console": "integratedTerminal",
       "stopOnEntry": false,
       "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "-Dfabric.dli.config\u003d/Users/Saint/Projects/Development/Mods/Minecraft/Commercialize/Code/minecraft-commercialize/.gradle/loom-cache/launch.cfg -Dfabric.dli.env\u003dclient -XstartOnFirstThread -XX:+AllowEnhancedClassRedefinition -Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient",
+      "vmArgs": "-Dfabric.dli.config\u003d/Users/Saint/Projects/Development/Mods/Minecraft/Commercialize/Code/minecraft-commercialize/.gradle/loom-cache/launch.cfg -Dfabric.dli.env\u003dclient -XstartOnFirstThread -Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient",
       "args": "",
       "env": {},
       "projectName": "minecraft-commercialize"
@@ -22,7 +22,7 @@
       "console": "integratedTerminal",
       "stopOnEntry": false,
       "mainClass": "net.fabricmc.devlaunchinjector.Main",
-      "vmArgs": "-Dfabric.dli.config\u003d/Users/Saint/Projects/Development/Mods/Minecraft/Commercialize/Code/minecraft-commercialize/.gradle/loom-cache/launch.cfg -Dfabric.dli.env\u003dserver -XX:+AllowEnhancedClassRedefinition -Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer",
+      "vmArgs": "-Dfabric.dli.config\u003d/Users/Saint/Projects/Development/Mods/Minecraft/Commercialize/Code/minecraft-commercialize/.gradle/loom-cache/launch.cfg -Dfabric.dli.env\u003dserver -Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer",
       "args": "nogui",
       "env": {},
       "projectName": "minecraft-commercialize"
