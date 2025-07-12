@@ -2,6 +2,7 @@
 	"required": true,
 	"package": "net.saint.commercialize.mixin",
 	"compatibilityLevel": "JAVA_17",
+	"plugin": "net.saint.commercialize.mixin.CommercializeMixinPlugin",
 	"mixins": [
 	],
 	"injectors": {
