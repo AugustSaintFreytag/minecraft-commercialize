@@ -10,16 +10,14 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 public class CommercializeMixinPlugin implements IMixinConfigPlugin {
 
 	private static final Supplier<Boolean> TRUE = () -> true;
 
 	private static final Map<String, Supplier<Boolean>> CONDITIONS = new HashMap<>() {
 		{
-			this.put("net.saint.commercialize.mixin.BackpackedInventoryProviderMixin",
-					() -> FabricLoader.getInstance().isModLoaded("backpacked"));
+			// this.put("net.saint.commercialize.mixin.BackpackedInventoryProviderMixin",
+			// 		() -> FabricLoader.getInstance().isModLoaded("backpacked"));
 		}
 	};
 
