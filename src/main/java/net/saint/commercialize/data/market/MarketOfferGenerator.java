@@ -22,7 +22,7 @@ public final class MarketOfferGenerator {
 
 	// Configuration
 
-	private static final int[] STACK_SIZES = { 1, 2, 4, 8, 16, 24, 36, 48, 64 };
+	private static final int[] STACK_SIZES = { 1, 2, 4, 8, 16, 24, 32, 48, 64 };
 
 	private static List<String> playerPool = new ArrayList<String>();
 
@@ -115,7 +115,7 @@ public final class MarketOfferGenerator {
 		}
 
 		var stackSize = itemStack.getCount();
-		var rawValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * stackSize;
+		var rawValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * ((double) stackSize);
 		var jitterValue = random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor) * itemBaseValue;
 
 		rawValue += jitterValue;
@@ -169,6 +169,14 @@ public final class MarketOfferGenerator {
 		var stackSizes = cachedStackSizeArrayByRange.computeIfAbsent(range, _range -> {
 			return stackSizeArrayForRange(range);
 		});
+
+		if (stackSizes.length == 0) {
+			return range.min;
+		}
+
+		if (stackSizes.length == 1) {
+			return stackSizes[0];
+		}
 
 		var index = random.nextInt(stackSizes.length);
 		return stackSizes[index];

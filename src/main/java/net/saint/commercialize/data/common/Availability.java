@@ -16,11 +16,11 @@ public enum Availability {
 
 	private static final Map<Availability, Integer> weightByAvailability = new HashMap<>() {
 		{
-			this.put(EXTREMELY_COMMON, 20);
-			this.put(VERY_COMMON, 15);
-			this.put(COMMON, 10);
-			this.put(UNCOMMON, 5);
-			this.put(VERY_RARE, 2);
+			this.put(EXTREMELY_COMMON, 50);
+			this.put(VERY_COMMON, 30);
+			this.put(COMMON, 25);
+			this.put(UNCOMMON, 10);
+			this.put(VERY_RARE, 4);
 			this.put(EXTREMELY_RARE, 1);
 		}
 	};
