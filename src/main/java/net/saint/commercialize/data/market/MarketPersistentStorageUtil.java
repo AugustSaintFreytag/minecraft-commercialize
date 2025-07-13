@@ -5,12 +5,12 @@ import net.saint.commercialize.Commercialize;
 
 public final class MarketPersistentStorageUtil {
 
-	public static MarketOfferCollection loadPersistentMarketManager(MinecraftServer server) {
+	public static MarketOfferCollection loadPersistentMarketCollection(MinecraftServer server) {
 		var persistentStateManager = server.getOverworld().getPersistentStateManager();
-		var marketManager = persistentStateManager.getOrCreate(MarketOfferCollection::fromNbt, MarketOfferCollection::new,
+		var marketCollection = persistentStateManager.getOrCreate(MarketOfferCollection::fromNbt, MarketOfferCollection::new,
 				Commercialize.MOD_ID);
 
-		return marketManager;
+		return marketCollection;
 	}
 
 }

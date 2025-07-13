@@ -22,6 +22,11 @@ public final class ModCommands {
 
 		dispatcher.register(literal(Commercialize.MOD_ID)
 
+				.then(literal("reload").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+					Commercialize.reloadConfigs();
+					return 1;
+				}))
+
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.MARKET_MANAGER.clearOffers();
 					return 1;

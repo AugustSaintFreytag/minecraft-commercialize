@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "commercialize",
 	"version": "${version}",
-	"name": "commercialize",
-	"description": "A commerce mod for Minecraft, introducing a server-wide dynamic market alongside a selling block. Integrates with Create: Numismatics for monetary management and Furniture Refurbished for postal services.",
+	"name": "Commercialize",
+	"description": "An accessible commerce mod introducing a server-wide dynamic market with browsable offers, payment, and shipping. Integrates with Create: Numismatics for monetary management and Furniture Refurbished for postal services.",
 	"authors": [
 		"Saint"
 	],
@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"net.saint.commercialize.CommercializeClient"
+		],
+		"modmenu": [
+			"net.saint.commercialize.CommercializeModMenu"
 		]
 	},
 	"mixins": [

@@ -8,25 +8,6 @@ import net.saint.commercialize.data.offer.Offer;
 
 public final class MarketOfferTickingUtil {
 
-	// Configuration
-
-	/**
-	 * If this many offers are active on the market, no further generated offers are added.
-	 */
-	private static final int MAX_NUMBER_OF_OFFERS = 100;
-
-	private static final int OFFER_BATCH_SIZE = 6;
-
-	/**
-	 * The interval in ticks at which the market checks for expired offers to be removed.
-	 */
-	private static final int OFFER_CHECK_INTERVAL = 100;
-
-	/**
-	 * The interval in ticks at which new offers are attempted to be generated.
-	 */
-	private static final int OFFER_GENERATION_TICK_INTERVAL = 2_000;
-
 	// State
 
 	private static long lastOfferGeneration = 0;
@@ -37,23 +18,24 @@ public final class MarketOfferTickingUtil {
 	public static void tickMarketOffersIfNecessary(World world) {
 		var time = world.getTime();
 
-		if (time > lastOfferGeneration + OFFER_CHECK_INTERVAL) {
+		if (time > lastOfferGeneration + Commercialize.CONFIG.offerCheckInterval) {
 			lastOfferGeneration = time;
 			tickMarketOfferGeneration(world);
 		}
 
-		if (time > lastOfferExpiration + OFFER_GENERATION_TICK_INTERVAL) {
+		if (time > lastOfferExpiration + Commercialize.CONFIG.offerGenerationTickInterval) {
 			lastOfferExpiration = time;
 			tickMarketOfferExpiration(world);
 		}
 	}
 
 	public static void tickMarketOfferGeneration(World world) {
-		if (Commercialize.MARKET_MANAGER.size() >= MAX_NUMBER_OF_OFFERS) {
+		if (Commercialize.MARKET_MANAGER.size() >= Commercialize.CONFIG.maxNumberOfOffers) {
 			return;
 		}
 
-		var numberOfOffersToGenerate = Math.max(0, Math.min(OFFER_BATCH_SIZE, MAX_NUMBER_OF_OFFERS - Commercialize.MARKET_MANAGER.size()));
+		var numberOfOffersToGenerate = Math.max(0, Math.min(Commercialize.CONFIG.offerBatchSize,
+				Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_MANAGER.size()));
 
 		for (int i = 0; i < numberOfOffersToGenerate; i++) {
 			var generatedOffer = MarketOfferGenerator.generateOffer(world);
