@@ -139,7 +139,34 @@ public final class MarketBlockServerNetworking {
 		responseMessage.encodeToBuffer(responseBuffer);
 
 		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
+	}
 
+	// Balance Utility
+
+	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
+		switch (paymentMethod) {
+		case INVENTORY:
+			return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+		case ACCOUNT:
+			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+		default:
+			Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
+			return 0;
+		}
+	}
+
+	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
+		switch (paymentMethod) {
+		case INVENTORY:
+			var remainingAmount = PlayerInventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
+			PlayerInventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
+			break;
+		case ACCOUNT:
+			BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
+			break;
+		default:
+			Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
+		}
 	}
 
 }
