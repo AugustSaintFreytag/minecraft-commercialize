@@ -72,7 +72,7 @@ loom {
   remapJar {
 	// Remap mod dependencies using different mappings.
     sourceNamespace.set("named")
-    targetNamespace.set("intermediary")
+    targetNamespace.set("net.fabricmc:yarn:${project.yarn_mappings}:v2")
   }
 }
 
