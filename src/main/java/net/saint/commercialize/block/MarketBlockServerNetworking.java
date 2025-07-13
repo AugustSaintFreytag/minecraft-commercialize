@@ -10,9 +10,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
+import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
@@ -75,14 +77,17 @@ public final class MarketBlockServerNetworking {
 			preparedOffers.remove(maxNumberOfOffers);
 		}
 
-		sendMarketDataResponse(responseSender, message.position, preparedOffers, preparedOffersAreCapped);
+		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
+
+		sendMarketDataResponse(responseSender, message.position, balance, preparedOffers, preparedOffersAreCapped);
 	}
 
-	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, List<Offer> offers,
+	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, List<Offer> offers,
 			boolean offersAreCapped) {
 		var responseMessage = new MarketS2CListMessage();
 
 		responseMessage.position = position;
+		responseMessage.balance = balance;
 		responseMessage.offers = offers;
 		responseMessage.isCapped = offersAreCapped;
 
@@ -107,17 +112,16 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var offerTotal = offers.stream().mapToInt(offer -> offer.price).sum();
-		var playerBalance = PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
 
-		if (offerTotal > playerBalance) {
+		if (offerTotal > balance) {
 			Commercialize.LOGGER.warn("Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
-					player.getName().getString(), offerTotal, playerBalance);
+					player.getName().getString(), offerTotal, balance);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 			return;
 		}
 
-		var remainingAmount = PlayerInventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), offerTotal);
-		PlayerInventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
+		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
 
 		offers.forEach(offer -> {
 			player.giveItemStack(offer.stack);
