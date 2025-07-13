@@ -68,6 +68,14 @@ processResources {
 	}
 }
 
+loom {
+  remapJar {
+	// Remap mod dependencies using different mappings.
+    sourceNamespace.set("named")
+    targetNamespace.set("intermediary")
+  }
+}
+
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
 }
