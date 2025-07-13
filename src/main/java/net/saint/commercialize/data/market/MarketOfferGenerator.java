@@ -24,12 +24,6 @@ public final class MarketOfferGenerator {
 
 	private static final int[] STACK_SIZES = { 1, 2, 4, 8, 16, 24, 36, 48, 64 };
 
-	private static final double SELLING_FACTOR = 0.75;
-	private static final double BUYING_FACTOR = 1.15;
-	private static final double JITTER_FACTOR = 0.1;
-
-	private static final int OFFER_DURATION = 96_000;
-
 	private static List<String> playerPool = new ArrayList<String>();
 
 	// Properties
@@ -70,7 +64,7 @@ public final class MarketOfferGenerator {
 		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
 		offer.timestamp = world.getTime();
-		offer.duration = OFFER_DURATION;
+		offer.duration = Commercialize.CONFIG.offerDuration;
 		offer.stack = itemStack;
 		offer.price = price;
 
@@ -121,8 +115,8 @@ public final class MarketOfferGenerator {
 		}
 
 		var stackSize = itemStack.getCount();
-		var rawValue = ((double) itemBaseValue) * BUYING_FACTOR * stackSize;
-		var jitterValue = random.nextTriangular(0, JITTER_FACTOR) * itemBaseValue;
+		var rawValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * stackSize;
+		var jitterValue = random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor) * itemBaseValue;
 
 		rawValue += jitterValue;
 
