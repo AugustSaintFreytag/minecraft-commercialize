@@ -17,6 +17,7 @@ import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
+import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
 
@@ -25,6 +26,14 @@ public final class MarketBlockServerNetworking {
 	// Init
 
 	public static void initialize() {
+
+		ServerPlayNetworking.registerGlobalReceiver(MarketC2SStateSyncMessage.ID, (server, player, handler, buffer, responseSender) -> {
+			var message = MarketC2SStateSyncMessage.decodeFromBuffer(buffer);
+
+			server.execute(() -> {
+				onReceiveMarketStateSync(server, player, responseSender, message);
+			});
+		});
 
 		ServerPlayNetworking.registerGlobalReceiver(MarketC2SQueryMessage.ID, (server, player, handler, buffer, responseSender) -> {
 			try {
@@ -53,6 +62,24 @@ public final class MarketBlockServerNetworking {
 				return;
 			}
 		});
+	}
+
+	// Market State Sync Handler
+
+	private static void onReceiveMarketStateSync(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
+			MarketC2SStateSyncMessage message) {
+		var world = player.getWorld();
+		var blockEntity = world.getBlockEntity(message.position);
+
+		if (!(blockEntity instanceof MarketBlockEntity)) {
+			Commercialize.LOGGER.error("Could not mark market block entity at position {} as dirty, invalid type.", message.position);
+			return;
+		}
+
+		var marketBlockEntity = (MarketBlockEntity) blockEntity;
+
+		marketBlockEntity.state = message.state;
+		marketBlockEntity.markDirty();
 	}
 
 	// Market Data Request Handler
