@@ -77,9 +77,7 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var marketBlockEntity = (MarketBlockEntity) blockEntity;
-
-		marketBlockEntity.state = message.state;
-		marketBlockEntity.markDirty();
+		marketBlockEntity.setState(message.state);
 	}
 
 	// Market Data Request Handler
