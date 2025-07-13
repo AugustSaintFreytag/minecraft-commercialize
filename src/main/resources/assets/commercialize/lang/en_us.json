@@ -71,7 +71,7 @@
 	"text.autoconfig.commercialize.option.offerGenerationTickInterval": "Offer Generation Interval",
 	"text.autoconfig.commercialize.option.offerGenerationTickInterval.@Tooltip": "The interval in ticks at which new offers are attempted to be generated. (Default: 2,000 ticks)",
 	"text.autoconfig.commercialize.option.buyingPriceFactor": "Buying Price Factor",
-	"text.autoconfig.commercialize.option.buyingPriceFactor.@Tooltip": "The factor applied when buying items from the general market, based off the item's base value. Applies to generated offers. (Default: 1.15)",
+	"text.autoconfig.commercialize.option.buyingPriceFactor.@Tooltip": "The factor applied when buying items from the general market, based off the item's base value. Applies to generated offers. (Default: 1.2)",
 	"text.autoconfig.commercialize.option.sellingPriceFactor": "Selling Price Factor",
 	"text.autoconfig.commercialize.option.sellingPriceFactor.@Tooltip": "The factor applied when selling items to the general market, based off the item's base value. Applies to the shipping block. (Default: 0.75)",
 	"text.autoconfig.commercialize.option.priceJitterFactor": "Price Jitter Factor",

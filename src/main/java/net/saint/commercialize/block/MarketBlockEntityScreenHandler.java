@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -31,13 +30,8 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	}
 
 	@Override
-	default int getCashBalance() {
-		return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(getPlayer());
-	}
-
-	@Override
-	default int getAccountBalance() {
-		return 0;
+	default int getBalance() {
+		return getState().balance;
 	}
 
 	// Cart

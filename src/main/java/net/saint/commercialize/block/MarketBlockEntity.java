@@ -22,6 +22,7 @@ import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
+import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
 import net.saint.commercialize.screen.market.MarketScreen;
@@ -55,6 +56,11 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		return state;
 	}
 
+	public void setState(MarketBlockEntityScreenState state) {
+		this.state = state;
+		markDirty();
+	}
+
 	// NBT
 
 	@Override
@@ -70,18 +76,20 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
-
 		nbt.putString("searchTerm", state.searchTerm);
 		nbt.putString("sortMode", state.sortMode.name());
 		nbt.putString("sortOrder", state.sortOrder.name());
 		nbt.putString("filterMode", state.filterMode.name());
 		nbt.putString("paymentMethod", state.paymentMethod.name());
+
+		super.writeNbt(nbt);
 	}
 
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
+		state.balance = message.balance;
+
 		state.marketOffers.clearOffers();
 		state.marketOffers.addOffers(message.offers);
 		state.marketOffers.setOffersAreCapped(message.isCapped);
@@ -157,6 +165,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		}
 
 		this.requestMarketData();
+		this.sendStateSync();
 	}
 
 	private void updateMarketScreen() {
@@ -179,6 +188,17 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	}
 
 	// Networking
+
+	public void sendStateSync() {
+		var message = new MarketC2SStateSyncMessage();
+		message.position = this.getPos();
+		message.state = this.state;
+
+		var buffer = PacketByteBufs.create();
+		message.encodeToBuffer(buffer);
+
+		ClientPlayNetworking.send(MarketC2SStateSyncMessage.ID, buffer);
+	}
 
 	public void requestMarketData() {
 		var message = new MarketC2SQueryMessage();

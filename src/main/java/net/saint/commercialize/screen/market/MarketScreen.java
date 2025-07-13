@@ -24,7 +24,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
-import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.assets.MarketAssets;
@@ -99,7 +98,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
 
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
-		var balance = delegate.getPaymentMethod() == PaymentMethod.INVENTORY ? delegate.getCashBalance() : delegate.getAccountBalance();
+		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
 

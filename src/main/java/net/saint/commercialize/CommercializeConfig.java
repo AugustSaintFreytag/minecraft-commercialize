@@ -37,8 +37,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The factor applied when buying items from the general market, based off the item's base value. Applies to generated offers. (Default: 1.15)")
-	public double buyingPriceFactor = 1.15;
+	@Comment("The factor applied when buying items from the general market, based off the item's base value. Applies to generated offers. (Default: 1.2)")
+	public double buyingPriceFactor = 1.2;
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip

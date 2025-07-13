@@ -15,9 +15,7 @@ public interface MarketScreenDelegate {
 
 	PlayerEntity getPlayer();
 
-	int getCashBalance();
-
-	int getAccountBalance();
+	int getBalance();
 
 	// Cart
 
