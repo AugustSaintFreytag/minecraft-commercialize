@@ -10,6 +10,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
@@ -143,7 +144,7 @@ public final class MarketOfferListingUtil {
 		case INVENTORY:
 			return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
-			return 0;
+			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
 		default:
 			return 0;
 		}
