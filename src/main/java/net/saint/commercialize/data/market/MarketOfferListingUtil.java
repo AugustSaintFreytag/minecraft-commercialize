@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
+import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
@@ -18,10 +19,6 @@ import net.saint.commercialize.data.payment.PaymentMethod;
 
 public final class MarketOfferListingUtil {
 
-	// Configuration
-
-	public static final int MAX_OFFERS_PER_LISTING = 100;
-
 	// Filtering
 
 	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, PlayerEntity player, OfferFilterMode filterMode,
@@ -30,18 +27,22 @@ public final class MarketOfferListingUtil {
 			filterMode = OfferFilterMode.ALL;
 		}
 
+		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedOffers + 1;
+
 		switch (filterMode) {
 		case AFFORDABLE:
 			var balance = playerBalanceForPaymentMethod(player, paymentMethod);
-			return offers.filter(offer -> offer.price <= balance).limit(MAX_OFFERS_PER_LISTING + 1).toList();
+			return offers.filter(offer -> offer.price <= balance).limit(maxNumberOfOffers).toList();
 		default:
-			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
+			return offers.limit(maxNumberOfOffers).toList();
 		}
 	}
 
 	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, PlayerEntity player, String searchTerm) {
+		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedOffers + 1;
+
 		if (searchTerm.isEmpty()) {
-			return offers.limit(MAX_OFFERS_PER_LISTING + 1).toList();
+			return offers.limit(maxNumberOfOffers).toList();
 		}
 
 		var sanitizedSearchTerm = searchTerm.toLowerCase();
@@ -61,7 +62,7 @@ public final class MarketOfferListingUtil {
 					|| itemTooltip.contains(sanitizedSearchTerm) || sellerName.contains(sanitizedSearchTerm);
 
 			return didMatch;
-		}).limit(MAX_OFFERS_PER_LISTING + 1).toList();
+		}).limit(maxNumberOfOffers).toList();
 	}
 
 	// Sorting

@@ -57,23 +57,25 @@ public final class MarketBlockServerNetworking {
 
 	private static void onReceiveMarketDataRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SQueryMessage message) {
-		var offers = MarketOfferListingUtil.offersWithAppliedFilters(Commercialize.MARKET_MANAGER.getOffers(), player, message.filterMode,
-				message.paymentMethod);
-		var offersAreCapped = false;
+		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedOffers;
+		var allOffers = Commercialize.MARKET_MANAGER.getOffers();
+
+		var preparedOffers = MarketOfferListingUtil.offersWithAppliedFilters(allOffers, player, message.filterMode, message.paymentMethod);
+		var preparedOffersAreCapped = false;
 
 		if (!message.searchTerm.isEmpty()) {
-			offers = MarketOfferListingUtil.offersForSearchTerm(offers.stream(), player, message.searchTerm);
+			preparedOffers = MarketOfferListingUtil.offersForSearchTerm(preparedOffers.stream(), player, message.searchTerm);
 		}
 
-		offers = MarketOfferListingUtil.offersWithAppliedSorting(offers, message.sortMode, message.sortOrder);
+		preparedOffers = MarketOfferListingUtil.offersWithAppliedSorting(preparedOffers, message.sortMode, message.sortOrder);
 
-		if (offers.size() > MarketOfferListingUtil.MAX_OFFERS_PER_LISTING) {
+		if (preparedOffers.size() > maxNumberOfOffers) {
 			// If offers are maximum size plus one, remove one and mark as capped.
-			offersAreCapped = true;
-			offers.remove(MarketOfferListingUtil.MAX_OFFERS_PER_LISTING);
+			preparedOffersAreCapped = true;
+			preparedOffers.remove(maxNumberOfOffers);
 		}
 
-		sendMarketDataResponse(responseSender, message.position, offers, offersAreCapped);
+		sendMarketDataResponse(responseSender, message.position, preparedOffers, preparedOffersAreCapped);
 	}
 
 	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, List<Offer> offers,
