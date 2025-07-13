@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"net.saint.commercialize.CommercializeClient"
+		],
+		"modmenu": [
+			"net.saint.commercialize.CommercializeModMenu"
 		]
 	},
 	"mixins": [
