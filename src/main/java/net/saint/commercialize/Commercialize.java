@@ -3,6 +3,8 @@ package net.saint.commercialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -30,6 +32,8 @@ public class Commercialize implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
+	public static CommercializeConfig CONFIG;
+
 	public static ItemManager ITEM_MANAGER;
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
 	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
@@ -41,6 +45,9 @@ public class Commercialize implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		AutoConfig.register(CommercializeConfig.class, JanksonConfigSerializer::new);
+		CONFIG = AutoConfig.getConfigHolder(CommercializeConfig.class).getConfig();
+
 		ModBlocks.initialize();
 		ModSounds.initialize();
 		ModCommands.initialize();
