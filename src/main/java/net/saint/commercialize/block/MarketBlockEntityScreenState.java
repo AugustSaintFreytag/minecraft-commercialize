@@ -16,6 +16,10 @@ public class MarketBlockEntityScreenState {
 
 	public MarketOfferCollection cartOffers = new MarketOfferCollection();
 
+	// Balance
+
+	public int balance = 0;
+
 	// Filtering & Sorting
 
 	public String searchTerm = "";
