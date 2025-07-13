@@ -51,7 +51,7 @@ public class Commercialize implements ModInitializer {
 			ITEM_MANAGER = new ItemManager();
 			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
-			MARKET_MANAGER = MarketPersistentStorageUtil.loadPersistentMarketManager(server);
+			MARKET_MANAGER = MarketPersistentStorageUtil.loadPersistentMarketCollection(server);
 
 			reloadConfigs();
 		});
