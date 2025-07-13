@@ -82,6 +82,8 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
+		state.balance = message.balance;
+
 		state.marketOffers.clearOffers();
 		state.marketOffers.addOffers(message.offers);
 		state.marketOffers.setOffersAreCapped(message.isCapped);
