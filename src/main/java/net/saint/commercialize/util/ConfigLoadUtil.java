@@ -16,10 +16,10 @@ import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.config.ItemsConfig;
-import net.saint.commercialize.config.OffersConfig;
-import net.saint.commercialize.config.PlayersConfig;
 import net.saint.commercialize.data.common.IdentifierAdapter;
+import net.saint.commercialize.data.config.ItemsConfig;
+import net.saint.commercialize.data.config.OffersConfig;
+import net.saint.commercialize.data.config.PlayersConfig;
 
 public final class ConfigLoadUtil {
 
@@ -74,7 +74,7 @@ public final class ConfigLoadUtil {
 		return offerTemplateConfigs;
 	}
 
-	public static PlayersConfig loadPlayersConfig() {
+	public static PlayersConfig loadPlayerConfigs() {
 		assertConfigDirectoriesAndFiles();
 		Path configFile = CONFIG_DIR.resolve("players.json");
 

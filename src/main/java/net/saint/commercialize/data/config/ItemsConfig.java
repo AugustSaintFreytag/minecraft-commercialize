@@ -1,4 +1,4 @@
-package net.saint.commercialize.config;
+package net.saint.commercialize.data.config;
 
 import java.util.HashMap;
 import java.util.Map;

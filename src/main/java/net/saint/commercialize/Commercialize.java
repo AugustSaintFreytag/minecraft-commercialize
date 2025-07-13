@@ -14,9 +14,9 @@ import net.saint.commercialize.data.market.MarketPersistentStorageUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
+import net.saint.commercialize.init.ModConfigUtil;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
-import net.saint.commercialize.util.ConfigLoadUtil;
 import net.saint.commercialize.util.PlayerProfileManager;
 
 public class Commercialize implements ModInitializer {
@@ -53,9 +53,7 @@ public class Commercialize implements ModInitializer {
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
 			MARKET_MANAGER = MarketPersistentStorageUtil.loadPersistentMarketManager(server);
 
-			loadItemConfigs();
-			loadPlayersConfig();
-			loadOfferTemplatesConfigs();
+			reloadConfigs();
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -69,36 +67,10 @@ public class Commercialize implements ModInitializer {
 
 	}
 
-	private void loadItemConfigs() {
-		var itemConfigs = ConfigLoadUtil.loadItemConfigs();
-
-		itemConfigs.forEach(config -> {
-			config.values.forEach((item, value) -> {
-				ITEM_MANAGER.registerItemValue(item, value);
-			});
-		});
-
-		Commercialize.LOGGER.info("Loaded {} item configs with a total of {} item(s).", itemConfigs.size(), ITEM_MANAGER.size());
-	}
-
-	private void loadPlayersConfig() {
-		var playersConfig = ConfigLoadUtil.loadPlayersConfig();
-		PLAYER_PROFILE_MANAGER.registerReferencePlayerNames(playersConfig.players);
-
-		Commercialize.LOGGER.info("Loaded {} mock player names.", PLAYER_PROFILE_MANAGER.numberOfReferencePlayerNames());
-	}
-
-	private void loadOfferTemplatesConfigs() {
-		var offerTemplateConfigs = ConfigLoadUtil.loadOfferTemplateConfigs();
-
-		offerTemplateConfigs.forEach(config -> {
-			config.offers.forEach((offerTemplate) -> {
-				OFFER_TEMPLATE_MANAGER.registerTemplate(offerTemplate);
-			});
-		});
-
-		Commercialize.LOGGER.info("Loaded {} offer template configs with a total of {} offer(s).", offerTemplateConfigs.size(),
-				OFFER_TEMPLATE_MANAGER.size());
+	public static void reloadConfigs() {
+		ModConfigUtil.reloadItemConfigs();
+		ModConfigUtil.reloadPlayerConfigs();
+		ModConfigUtil.reloadOfferTemplateConfigs();
 	}
 
 }

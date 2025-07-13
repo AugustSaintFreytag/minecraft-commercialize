@@ -35,6 +35,10 @@ public final class PlayerProfileManager {
 		referencePlayerNames = playerNames;
 	}
 
+	public void clearReferencePlayerNames() {
+		referencePlayerNames.clear();
+	}
+
 	public int numberOfReferencePlayerNames() {
 		return referencePlayerNames.size();
 	}
