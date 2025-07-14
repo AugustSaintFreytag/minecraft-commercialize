@@ -13,7 +13,7 @@ public final class MarketS2COrderMessage {
 	// Library
 
 	public static enum Result {
-		SUCCESS, INSUFFICIENT_FUNDS, INVIABLE_OFFERS, FAILURE
+		SUCCESS, INSUFFICIENT_FUNDS, INVIABLE_OFFERS, INVIABLE_DELIVERY, FAILURE
 	}
 
 	// Configuration
