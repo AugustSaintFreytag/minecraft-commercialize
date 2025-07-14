@@ -85,6 +85,14 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		super.writeNbt(nbt);
 	}
 
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		var nbt = new NbtCompound();
+		writeNbt(nbt);
+
+		return nbt;
+	}
+
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
