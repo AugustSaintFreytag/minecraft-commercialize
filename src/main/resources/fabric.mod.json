@@ -26,6 +26,7 @@
 		]
 	},
 	"mixins": [
+		"commercialize.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
