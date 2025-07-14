@@ -113,25 +113,33 @@ public class PlayerInventoryCashUtil {
 
 	private static List<ItemStack> getCurrencyStacksForAmount(int amount) {
 		var stacks = new ArrayList<ItemStack>();
+		var remainingAmount = amount;
 
-		for (var entry : Currency.CURRENCY_VALUES.entrySet()) {
-			if (amount <= 0) {
+		for (var entry : Currency.ORDERED_CURRENCY_VALUES) {
+			if (remainingAmount <= 0) {
 				break;
 			}
 
 			var itemIdentifier = entry.getKey();
 			var currencyDenomination = entry.getValue();
 
-			var numberOfItems = Math.floorDiv(amount, currencyDenomination);
+			var numberOfItems = Math.floorDiv(remainingAmount, currencyDenomination);
+			var remainingNumberOfItems = numberOfItems;
 
-			if (numberOfItems <= 0) {
-				continue;
+			while (remainingNumberOfItems > 0) {
+				var stackSize = Math.min(remainingNumberOfItems, 64);
+				var itemStack = new ItemStack(Registries.ITEM.get(itemIdentifier), stackSize);
+				remainingNumberOfItems -= stackSize;
+
+				stacks.add(itemStack);
 			}
 
-			var itemStack = new ItemStack(Registries.ITEM.get(itemIdentifier), (int) numberOfItems);
-			stacks.add(itemStack);
+			remainingAmount -= numberOfItems * currencyDenomination;
+		}
 
-			amount -= numberOfItems * currencyDenomination;
+		if (remainingAmount > 0) {
+			Commercialize.LOGGER.error("Could not break down total amount {} into currency, {} left after distribution.", amount,
+					remainingAmount);
 		}
 
 		return stacks;
