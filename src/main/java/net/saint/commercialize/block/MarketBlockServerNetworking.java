@@ -6,12 +6,15 @@ import java.util.UUID;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
+import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
@@ -146,14 +149,54 @@ public final class MarketBlockServerNetworking {
 			return;
 		}
 
-		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
+		var didDispatch = dispatchOffersToPlayer(server, player, offers);
 
-		offers.forEach(offer -> {
-			player.giveItemStack(offer.stack);
-			Commercialize.MARKET_MANAGER.removeOffer(offer);
-		});
+		if (!didDispatch) {
+			Commercialize.LOGGER.warn("Player '{}' tried to order offers but order could not be dispatched.");
+			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_DELIVERY);
+			return;
+		}
+
+		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
+		removeOffers(offers);
 
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
+	}
+
+	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
+		var itemStackList = itemStackListFromOffers(offers);
+
+		// Mail Delivery
+
+		if (Commercialize.CONFIG.useMailDelivery) {
+			var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStackList);
+			var didSuccessfullyDeliverOrder = MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
+
+			return didSuccessfullyDeliverOrder;
+		}
+
+		// Direct Delivery
+
+		itemStackList.forEach(itemStack -> {
+			player.giveItemStack(itemStack);
+		});
+
+		return true;
+	}
+
+	private static DefaultedList<ItemStack> itemStackListFromOffers(List<Offer> offers) {
+		var itemStacks = offers.stream().map(offer -> offer.stack).toList();
+		var itemStackList = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
+
+		for (var index = 0; index < itemStacks.size(); index++) {
+			itemStackList.set(index, itemStacks.get(index));
+		}
+
+		return itemStackList;
+	}
+
+	private static void removeOffers(List<Offer> offers) {
+		offers.forEach(offer -> Commercialize.MARKET_MANAGER.removeOffer(offer));
 	}
 
 	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
