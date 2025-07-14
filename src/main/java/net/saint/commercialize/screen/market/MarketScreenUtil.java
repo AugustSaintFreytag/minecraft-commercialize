@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -223,13 +224,7 @@ public final class MarketScreenUtil {
 		}
 
 		var itemNames = offers.stream().map(offer -> {
-			var numberOfItems = offer.stack.getCount();
-
-			if (numberOfItems == 1) {
-				return offer.stack.getName().getString();
-			} else {
-				return offer.stack.getName().getString() + " (x" + numberOfItems + ")";
-			}
+			return descriptionForItemStack(offer.stack);
 		}).distinct().toList();
 
 		if (itemNames.size() <= MAX_ORDER_SUMMARY_ITEM_NAMES) {
@@ -247,6 +242,16 @@ public final class MarketScreenUtil {
 			return Text.literal(listedItemNames + ", " + moreText);
 		}
 
+	}
+
+	public static String descriptionForItemStack(ItemStack stack) {
+		var numberOfItems = stack.getCount();
+
+		if (numberOfItems > 1) {
+			return stack.getName().getString() + " (x" + numberOfItems + ")";
+		}
+
+		return stack.getName().getString();
 	}
 
 }
