@@ -69,7 +69,7 @@ public class MarketBlock extends BlockWithEntity {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!world.isClient() || hand == Hand.OFF_HAND) {
-			return ActionResult.PASS;
+			return ActionResult.CONSUME;
 		}
 
 		var blockEntity = (MarketBlockEntity) world.getBlockEntity(pos);
