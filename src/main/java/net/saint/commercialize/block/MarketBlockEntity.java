@@ -122,6 +122,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 			break;
 		}
+		case INVIABLE_DELIVERY: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
 		case INVIABLE_OFFERS: {
 			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
 			player.sendMessage(displayText, true);
