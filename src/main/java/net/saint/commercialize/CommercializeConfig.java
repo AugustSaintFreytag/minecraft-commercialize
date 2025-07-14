@@ -62,4 +62,21 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("The maximum number of offers sent to be listed on a market screen before getting truncated. (Default: 100)")
 	public int maxNumberOfListedOffers = 100;
 
+	// Delivery
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Delivers market orders through the delivery network to a player's mailbox with variable delivery time. (Default: true)")
+	public boolean useMailDelivery = true;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The average time it takes for a market order to be delivered to a player's mailbox. (Default: 1200)")
+	public int mailDeliveryTime = 1_200;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("A string added in the mailbox name to mark it as the main delivery destination for market orders. (Default: '(M)')")
+	public String mailboxMainMarker = "(M)";
+
 }

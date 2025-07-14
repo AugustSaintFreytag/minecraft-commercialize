@@ -85,6 +85,14 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		super.writeNbt(nbt);
 	}
 
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		var nbt = new NbtCompound();
+		writeNbt(nbt);
+
+		return nbt;
+	}
+
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
@@ -110,6 +118,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		switch (message.result) {
 		case INSUFFICIENT_FUNDS: {
 			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
+		case INVIABLE_DELIVERY: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
 			player.sendMessage(displayText, true);
 			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 			break;
