@@ -1,7 +1,9 @@
 package net.saint.commercialize.data.payment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.util.Identifier;
 
@@ -17,4 +19,9 @@ public final class Currency {
 			this.put(new Identifier("numismatics", "sun"), 4096);
 		}
 	};
+
+	public static final List<Entry<Identifier, Integer>> ORDERED_CURRENCY_VALUES = CURRENCY_VALUES.entrySet().stream()
+			.sorted((lhs, rhs) -> {
+				return lhs.getValue() < rhs.getValue() ? 1 : -1;
+			}).toList();
 }
