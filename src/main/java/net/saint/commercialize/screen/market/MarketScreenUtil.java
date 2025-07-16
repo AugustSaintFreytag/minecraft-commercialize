@@ -15,7 +15,6 @@ import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
-import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
@@ -28,10 +27,10 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortMode(OfferSortMode sortMode) {
 		return switch (sortMode) {
-		case ITEM_NAME -> MarketAssets.SORT_BY_NAME_ICON;
-		case TIME_POSTED -> MarketAssets.SORT_BY_TIME_ICON;
-		case PRICE -> MarketAssets.SORT_BY_PRICE_ICON;
-		case PLAYER_NAME -> MarketAssets.SORT_BY_PLAYER_ICON;
+		case ITEM_NAME -> MarketScreenAssets.SORT_BY_NAME_ICON;
+		case TIME_POSTED -> MarketScreenAssets.SORT_BY_TIME_ICON;
+		case PRICE -> MarketScreenAssets.SORT_BY_PRICE_ICON;
+		case PLAYER_NAME -> MarketScreenAssets.SORT_BY_PLAYER_ICON;
 		};
 	}
 
@@ -48,8 +47,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForFilterMode(OfferFilterMode filterMode) {
 		return switch (filterMode) {
-		case AFFORDABLE -> MarketAssets.FILTER_BY_PRICE_ICON;
-		case ALL -> MarketAssets.FILTER_BY_ALL_ICON;
+		case AFFORDABLE -> MarketScreenAssets.FILTER_BY_PRICE_ICON;
+		case ALL -> MarketScreenAssets.FILTER_BY_ALL_ICON;
 		};
 	}
 
@@ -65,8 +64,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortOrder(OfferSortOrder sortOrder) {
 		return switch (sortOrder) {
-		case ASCENDING -> MarketAssets.SORT_ASCENDING_ICON;
-		case DESCENDING -> MarketAssets.SORT_DESCENDING_ICON;
+		case ASCENDING -> MarketScreenAssets.SORT_ASCENDING_ICON;
+		case DESCENDING -> MarketScreenAssets.SORT_DESCENDING_ICON;
 		};
 	}
 
@@ -74,8 +73,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForPaymentMethod(PaymentMethod paymentMethod) {
 		return switch (paymentMethod) {
-		case INVENTORY -> MarketAssets.WALLET_ICON;
-		case ACCOUNT -> MarketAssets.CARD_ICON;
+		case INVENTORY -> MarketScreenAssets.WALLET_ICON;
+		case ACCOUNT -> MarketScreenAssets.CARD_ICON;
 		};
 	}
 

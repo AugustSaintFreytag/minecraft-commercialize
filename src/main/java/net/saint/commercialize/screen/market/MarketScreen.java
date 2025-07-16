@@ -26,14 +26,13 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
-import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.gui.common.ScrollContainer;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
-import net.saint.commercialize.gui.market.CartListComponent;
-import net.saint.commercialize.gui.market.OfferListCapComponent;
-import net.saint.commercialize.gui.market.OfferListComponent;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.market.components.CartListComponent;
+import net.saint.commercialize.screen.market.components.OfferListCapComponent;
+import net.saint.commercialize.screen.market.components.OfferListComponent;
 import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 import net.saint.commercialize.util.NumericFormattingUtil;
@@ -187,7 +186,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private FlowLayout makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(214), Sizing.fixed(192));
 
-		var backgroundComponent = Components.texture(MarketAssets.LEFT_PANEL);
+		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
 
@@ -218,8 +217,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"), MarketAssets.STUB_ICON,
-				component -> {
+		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"),
+				MarketScreenAssets.STUB_ICON, component -> {
 					// If sprint key is held, toggle sort order.
 
 					var windowHandle = client.getWindow().getHandle();
@@ -242,8 +241,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"), MarketAssets.STUB_ICON,
-				component -> {
+		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
+				MarketScreenAssets.STUB_ICON, component -> {
 					var filterMode = delegate.getFilterMode();
 					delegate.setFilterMode(filterMode.next());
 
@@ -263,7 +262,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var rightSideComponent = Containers.verticalFlow(Sizing.fixed(192), Sizing.fixed(178));
 		rightSideComponent.id("right_side");
 
-		var backgroundComponent = Components.texture(MarketAssets.RIGHT_PANEL);
+		var backgroundComponent = Components.texture(MarketScreenAssets.RIGHT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		rightSideComponent.child(backgroundComponent);
 
@@ -300,7 +299,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Tabs
 
 		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
-				MarketAssets.CONFIRM_ORDER_ICON, component -> {
+				MarketScreenAssets.CONFIRM_ORDER_ICON, component -> {
 					if (delegate.getCart().isEmpty()) {
 						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 						return;
@@ -314,7 +313,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(orderTabButton);
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
-				MarketAssets.STUB_ICON, component -> {
+				MarketScreenAssets.STUB_ICON, component -> {
 					var paymentMethod = delegate.getPaymentMethod();
 					delegate.setPaymentMethod(paymentMethod.next());
 
@@ -326,7 +325,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
 		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
-				MarketAssets.EMPTY_CART_ICON, component -> {
+				MarketScreenAssets.EMPTY_CART_ICON, component -> {
 					delegate.emptyCart();
 				});
 
@@ -487,7 +486,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 			super(Sizing.fill(100), Sizing.content(), FlowLayout.Algorithm.VERTICAL);
 			this.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 
-			var textureComponent = Components.texture(MarketAssets.EMPTY_CART_INDICATOR);
+			var textureComponent = Components.texture(MarketScreenAssets.EMPTY_CART_INDICATOR);
 			textureComponent.sizing(Sizing.fixed(48), Sizing.fixed(43));
 			this.child(textureComponent);
 

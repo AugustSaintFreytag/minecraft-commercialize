@@ -1,10 +1,10 @@
-package net.saint.commercialize.gui.assets;
+package net.saint.commercialize.screen.market;
 
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.library.TextureReference;
 
-public final class MarketAssets {
+public final class MarketScreenAssets {
 
 	// Configuration
 

@@ -3,8 +3,8 @@ package net.saint.commercialize.util;
 import com.google.common.hash.Hashing;
 
 import net.minecraft.util.math.random.Random;
-import net.saint.commercialize.gui.assets.MarketAssets;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.market.MarketScreenAssets;
 
 public final class PlayerHeadUtil {
 
@@ -30,7 +30,7 @@ public final class PlayerHeadUtil {
 		var row = index / TEXTURES_PER_ROW;
 		var column = index % TEXTURES_PER_ROW;
 
-		return new TextureReference(MarketAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
+		return new TextureReference(MarketScreenAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
 	}
 
 	// Random from Name
@@ -47,7 +47,7 @@ public final class PlayerHeadUtil {
 		var row = index / TEXTURES_PER_ROW;
 		var column = index % TEXTURES_PER_ROW;
 
-		return new TextureReference(MarketAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
+		return new TextureReference(MarketScreenAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
 	}
 
 	// Utility
