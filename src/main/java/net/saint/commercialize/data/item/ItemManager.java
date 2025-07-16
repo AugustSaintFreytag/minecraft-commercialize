@@ -21,6 +21,14 @@ public final class ItemManager {
 		return valueByItem.getOrDefault(item, 0);
 	}
 
+	public Map<Identifier, Integer> getValuesByItem() {
+		return new HashMap<Identifier, Integer>() {
+			{
+				this.putAll(valueByItem);
+			}
+		};
+	}
+
 	// Mutation
 
 	public void registerItemValue(Identifier item, int value) {
