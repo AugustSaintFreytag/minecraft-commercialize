@@ -19,7 +19,6 @@ import io.wispforest.owo.ui.component.SliderComponent;
 import io.wispforest.owo.ui.component.SlimSliderComponent;
 import io.wispforest.owo.ui.component.SmallCheckboxComponent;
 import io.wispforest.owo.ui.component.SpriteComponent;
-import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.component.VanillaWidgetComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Component;
@@ -34,9 +33,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.saint.commercialize.gui.common.ButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
+import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.library.TextureReference;
 
 public final class Components {
@@ -109,18 +108,8 @@ public final class Components {
 		return io.wispforest.owo.ui.component.Components.sprite(sprite);
 	}
 
-	public static TextureComponent texture(TextureReference textureReference) {
-		return io.wispforest.owo.ui.component.Components.texture(textureReference.texture, textureReference.u, textureReference.v,
-				textureReference.width, textureReference.height);
-	}
-
-	public static TextureComponent texture(Identifier texture, int u, int v, int regionWidth, int regionHeight, int textureWidth,
-			int textureHeight) {
-		return io.wispforest.owo.ui.component.Components.texture(texture, u, v, regionWidth, regionHeight, textureWidth, textureHeight);
-	}
-
-	public static TextureComponent texture(Identifier texture, int u, int v, int regionWidth, int regionHeight) {
-		return io.wispforest.owo.ui.component.Components.texture(texture, u, v, regionWidth, regionHeight);
+	public static TextureComponent texture(TextureReference reference) {
+		return new TextureComponent(reference);
 	}
 
 	public static BoxComponent box(Sizing horizontalSizing, Sizing verticalSizing) {
