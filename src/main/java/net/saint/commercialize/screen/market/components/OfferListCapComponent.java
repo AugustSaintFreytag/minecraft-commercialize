@@ -1,4 +1,4 @@
-package net.saint.commercialize.gui.market;
+package net.saint.commercialize.screen.market.components;
 
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
@@ -6,7 +6,7 @@ import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import net.saint.commercialize.gui.Components;
-import net.saint.commercialize.gui.assets.MarketAssets;
+import net.saint.commercialize.screen.market.MarketScreenAssets;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public class OfferListCapComponent extends FlowLayout {
@@ -16,7 +16,7 @@ public class OfferListCapComponent extends FlowLayout {
 	public OfferListCapComponent() {
 		super(Sizing.fixed(167), Sizing.fixed(18), FlowLayout.Algorithm.VERTICAL);
 
-		var textureComponent = Components.texture(MarketAssets.OFFER_CAP_LIST_ITEM);
+		var textureComponent = Components.texture(MarketScreenAssets.OFFER_CAP_LIST_ITEM);
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
 		this.child(textureComponent);

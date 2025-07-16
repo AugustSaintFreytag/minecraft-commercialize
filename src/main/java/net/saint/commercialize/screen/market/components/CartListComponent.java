@@ -1,4 +1,4 @@
-package net.saint.commercialize.gui.market;
+package net.saint.commercialize.screen.market.components;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -14,8 +14,10 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
-import net.saint.commercialize.gui.assets.MarketAssets;
+import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.init.ModSounds;
+import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.market.MarketScreenAssets;
 
 public class CartListComponent extends FlowLayout {
 
@@ -39,7 +41,8 @@ public class CartListComponent extends FlowLayout {
 		this.offerTooltip = offerTooltip;
 		this.onPress = onPress;
 
-		var textureComponent = Components.texture(MarketAssets.CART_LIST_ITEM);
+		var textureComponent = Components.texture(backgroundTexture());
+		textureComponent.id("background");
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		textureComponent.sizing(Sizing.fixed(133), Sizing.fixed(18));
 		this.child(textureComponent);
@@ -65,6 +68,27 @@ public class CartListComponent extends FlowLayout {
 		tooltipOverlay.positioning(Positioning.absolute(26, 0));
 		tooltipOverlay.tooltip(this.offerTooltip);
 		this.child(tooltipOverlay);
+	}
+
+	private TextureReference backgroundTexture() {
+		if (this.hovered) {
+			return MarketScreenAssets.CART_LIST_ITEM_HIGHLIGHT;
+		}
+
+		return MarketScreenAssets.CART_LIST_ITEM;
+	}
+
+	// Interaction
+
+	@Override
+	protected void parentUpdate(float delta, int mouseX, int mouseY) {
+		onMouseOver();
+		super.parentUpdate(delta, mouseX, mouseY);
+	}
+
+	private void onMouseOver() {
+		var backgroundTexture = this.childById(TextureComponent.class, "background");
+		backgroundTexture.reference(backgroundTexture());
 	}
 
 	@Override
