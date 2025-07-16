@@ -55,7 +55,7 @@
 	"text.commercialize.offer.tooltip.generated_seller": "Generated Offer",
 	"text.commercialize.delivery.sender": "Market Delivery Network",
 	"text.commercialize.delivery.receipt_format": "Order: %s",
-	"text.commercialize.delivery.signature": "Thank you for using the automated market delivery network. Have a nice day!",
+	"text.commercialize.delivery.signature": "Public market order, paid in full. Thank you for using the automated market delivery network. Have a nice day!",
 	"text.commercialize.time.short.hour": "hour",
 	"text.commercialize.time.short.hours": "hours",
 	"text.commercialize.time.short.day": "day",
