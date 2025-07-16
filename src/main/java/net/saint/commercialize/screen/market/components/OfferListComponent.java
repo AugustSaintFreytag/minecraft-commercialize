@@ -14,6 +14,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
+import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.market.MarketScreenAssets;
@@ -48,6 +49,7 @@ public class OfferListComponent extends FlowLayout {
 		this.onPress = onPress;
 
 		var textureComponent = Components.texture(backgroundTexture());
+		textureComponent.id("background");
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		textureComponent.sizing(Sizing.fixed(166), Sizing.fixed(18));
 		this.child(textureComponent);
@@ -96,7 +98,24 @@ public class OfferListComponent extends FlowLayout {
 			return MarketScreenAssets.OFFER_DISABLED_LIST_ITEM;
 		}
 
+		if (this.hovered) {
+			return MarketScreenAssets.OFFER_LIST_ITEM_HIGHLIGHT;
+		}
+
 		return MarketScreenAssets.OFFER_LIST_ITEM;
+	}
+
+	// Interaction
+
+	@Override
+	protected void parentUpdate(float delta, int mouseX, int mouseY) {
+		onMouseOver();
+		super.parentUpdate(delta, mouseX, mouseY);
+	}
+
+	private void onMouseOver() {
+		var backgroundTexture = this.childById(TextureComponent.class, "background");
+		backgroundTexture.reference(backgroundTexture());
 	}
 
 	@Override
