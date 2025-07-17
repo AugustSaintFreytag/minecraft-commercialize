@@ -3,7 +3,8 @@
 	"package": "net.saint.commercialize.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"DeliveryServiceAccessor"
+		"DeliveryServiceAccessor",
+		"MailboxBlockEntityMixin"
 	],
 	"server": [],
 	"client": [],
