@@ -28,7 +28,13 @@ public final class MarketOfferCollection extends PersistentState {
 	}
 
 	public Optional<Offer> getOffer(UUID id) {
-		return Optional.of(offersById.get(id));
+		var offer = offersById.get(id);
+
+		if (offer == null) {
+			return Optional.empty();
+		}
+
+		return Optional.of(offer);
 	}
 
 	public boolean hasOffer(UUID id) {
