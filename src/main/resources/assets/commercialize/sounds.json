@@ -1,18 +1,22 @@
 {
 	"offer_select": {
 		"sounds": [
-			{
-				"name": "commercialize:offer_select"
-			}
+			"commercialize:offer_select"
 		],
 		"category": "gui"
 	},
 	"order_confirm": {
 		"sounds": [
-			{
-				"name": "commercialize:order_confirm"
-			}
+			"commercialize:order_confirm"
 		],
 		"category": "gui"
+	},
+	"mailbox_delivery": {
+		"subtitle": "subtitles.commercialize.mailbox_delivery",
+		"sounds": [
+			"commercialize:mailbox_delivery_1",
+			"commercialize:mailbox_delivery_2",
+			"commercialize:mailbox_delivery_3"
+		]
 	}
 }
