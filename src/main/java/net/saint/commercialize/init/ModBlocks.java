@@ -12,24 +12,31 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.block.market.MarketBlock;
 import net.saint.commercialize.block.market.MarketBlockEntity;
+import net.saint.commercialize.block.shipping.ShippingBlock;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 
 public final class ModBlocks {
 
 	// Block Entities
 
 	public static BlockEntityType<MarketBlockEntity> MARKET_BLOCK_ENTITY;
+	public static BlockEntityType<ShippingBlockEntity> SHIPPING_BLOCK_ENTITY;
 
 	// Blocks
 
 	public static Block MARKET_BLOCK;
+	public static Block SHIPPING_BLOCK;
 
 	// Init
 
 	public static void initialize() {
 		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID,
 				new MarketBlock(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE)));
-
 		MARKET_BLOCK_ENTITY = registerBlockEntity(MarketBlockEntity.ID, MARKET_BLOCK, MarketBlockEntity::new);
+
+		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
+				new ShippingBlock(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.WOOD)));
+		SHIPPING_BLOCK_ENTITY = registerBlockEntity(ShippingBlockEntity.ID, SHIPPING_BLOCK, ShippingBlockEntity::new);
 	}
 
 	// Registration
