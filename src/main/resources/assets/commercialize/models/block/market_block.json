@@ -4,8 +4,8 @@
 		64
 	],
 	"textures": {
-		"0": "commercialize:block/market",
-		"particle": "commercialize:block/market"
+		"0": "commercialize:block/market_block",
+		"particle": "commercialize:block/market_block"
 	},
 	"elements": [
 		{
