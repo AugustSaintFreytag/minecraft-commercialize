@@ -1,4 +1,4 @@
-package net.saint.commercialize.block;
+package net.saint.commercialize.block.market;
 
 import net.saint.commercialize.data.market.MarketOfferCollection;
 import net.saint.commercialize.data.offer.OfferFilterMode;

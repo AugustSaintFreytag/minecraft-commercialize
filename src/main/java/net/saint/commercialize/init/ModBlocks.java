@@ -10,8 +10,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.saint.commercialize.block.MarketBlock;
-import net.saint.commercialize.block.MarketBlockEntity;
+import net.saint.commercialize.block.market.MarketBlock;
+import net.saint.commercialize.block.market.MarketBlockEntity;
 
 public final class ModBlocks {
 

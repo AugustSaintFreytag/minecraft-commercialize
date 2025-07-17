@@ -1,4 +1,4 @@
-package net.saint.commercialize.block;
+package net.saint.commercialize.block.market;
 
 import static net.saint.commercialize.util.Values.ifPresentAsString;
 

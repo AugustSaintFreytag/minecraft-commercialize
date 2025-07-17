@@ -4,7 +4,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.block.MarketBlockEntityScreenState;
+import net.saint.commercialize.block.market.MarketBlockEntityScreenState;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;

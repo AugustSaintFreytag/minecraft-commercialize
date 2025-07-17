@@ -1,4 +1,4 @@
-package net.saint.commercialize.block;
+package net.saint.commercialize.block.market;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -23,9 +24,9 @@ public class MarketBlock extends BlockWithEntity {
 
 	// Properties
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market_block");
 
-	public static final DirectionProperty FACING = net.minecraft.state.property.Properties.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
 	// Init
 
