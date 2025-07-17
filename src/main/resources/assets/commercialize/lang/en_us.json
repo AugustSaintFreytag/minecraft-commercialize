@@ -1,5 +1,6 @@
 {
 	"block.commercialize.market_block": "Market Block",
+	"block.commercialize.shipping_block": "Shipping Block",
 	"gui.commercialize.market.offers": "Offers",
 	"gui.commercialize.market.offers_cap": "(More available, adjust filters)",
 	"gui.commercialize.market.search_offers": "Search offers...",
