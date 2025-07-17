@@ -89,7 +89,7 @@
 	"text.autoconfig.commercialize.option.mailDeliveryTime": "Mail Delivery Time",
 	"text.autoconfig.commercialize.option.mailDeliveryTime.@Tooltip": "The average time it takes for a market order to be delivered to a player's mailbox. (Default: 1200)",
 	"text.autoconfig.commercialize.option.mailboxMainMarker": "Main Mailbox Marker",
-	"text.autoconfig.commercialize.option.mailboxMainMarker.@Tooltip": "A string added in the mailbox name to mark it as the main delivery destination for market orders.  (Default: '(M)')"
-
+	"text.autoconfig.commercialize.option.mailboxMainMarker.@Tooltip": "A string added in the mailbox name to mark it as the main delivery destination for market orders.  (Default: '(M)')",
+	"subtitles.commercialize.mailbox_delivery": "Mailbox delivery received"
 
 }
