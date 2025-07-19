@@ -17,6 +17,7 @@ import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
 import net.saint.commercialize.init.ModConfigUtil;
+import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.util.PlayerProfileManager;
@@ -49,6 +50,7 @@ public class Commercialize implements ModInitializer {
 		CONFIG = AutoConfig.getConfigHolder(CommercializeConfig.class).getConfig();
 
 		ModBlocks.initialize();
+		ModScreenHandlers.initialize();
 		ModSounds.initialize();
 		ModCommands.initialize();
 		ModServerNetworking.initialize();
