@@ -154,11 +154,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// Root
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-	}
-
-	@Override
 	protected void build(FlowLayout rootComponent) {
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(404), Sizing.fixed(192));
 
