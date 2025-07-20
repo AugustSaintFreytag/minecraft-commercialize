@@ -1,8 +1,8 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.text;
 
 public final class TextFormattingUtil {
 
-	public static String capitalize(String s) {
+	public static String capitalizedString(String s) {
 		if (s.isEmpty()) {
 			return s;
 		}
