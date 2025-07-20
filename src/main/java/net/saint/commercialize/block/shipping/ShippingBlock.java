@@ -38,6 +38,8 @@ public class ShippingBlock extends BlockWithEntity {
 		super(settings);
 	}
 
+	// Block
+
 	@Override
 	public BlockEntity createBlockEntity(BlockPos position, BlockState blockState) {
 		return new ShippingBlockEntity(position, blockState);

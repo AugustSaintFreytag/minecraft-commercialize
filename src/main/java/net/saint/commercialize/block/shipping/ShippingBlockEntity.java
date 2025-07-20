@@ -6,6 +6,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -19,9 +20,13 @@ import net.saint.commercialize.screen.shipping.ShippingBlockScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
-	// Properties
+	// Configuration
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_entity");
+
+	public static final String INVENTORY_NBT_KEY = "items";
+
+	// Properties
 
 	private final ShippingBlockInventory inventory = new ShippingBlockInventory();
 
@@ -29,6 +34,40 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	public ShippingBlockEntity(BlockPos position, BlockState state) {
 		super(ModBlocks.SHIPPING_BLOCK_ENTITY, position, state);
+
+		inventory.addListener(inventory -> {
+			this.markDirty();
+		});
+	}
+
+	// NBT
+
+	@Override
+	public void readNbt(NbtCompound nbt) {
+		super.readNbt(nbt);
+
+		if (!nbt.contains(INVENTORY_NBT_KEY)) {
+			return;
+		}
+
+		var inventoryNbtCompound = nbt.getCompound(INVENTORY_NBT_KEY);
+		this.inventory.readNbtCompound(inventoryNbtCompound);
+	}
+
+	@Override
+	protected void writeNbt(NbtCompound nbt) {
+		var inventoryNbtCompound = this.inventory.toNbtCompound();
+		nbt.put(INVENTORY_NBT_KEY, inventoryNbtCompound);
+
+		super.writeNbt(nbt);
+	}
+
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		var nbt = new NbtCompound();
+		writeNbt(nbt);
+
+		return nbt;
 	}
 
 	// Inventory
