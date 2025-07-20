@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.item;
 
 import java.util.ArrayList;
 import java.util.HashMap;

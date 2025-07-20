@@ -1,4 +1,6 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.text;
+
+import net.saint.commercialize.util.LocalizationUtil;
 
 public final class TimeFormattingUtil {
 

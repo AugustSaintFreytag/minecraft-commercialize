@@ -1,6 +1,6 @@
 package net.saint.commercialize.init;
 
-import net.minecraft.block.AbstractBlock;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,11 +31,11 @@ public final class ModBlocks {
 
 	public static void initialize() {
 		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID,
-				new MarketBlock(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE)));
+				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.DEEPSLATE)));
 		MARKET_BLOCK_ENTITY = registerBlockEntity(MarketBlockEntity.ID, MARKET_BLOCK, MarketBlockEntity::new);
 
 		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
-				new ShippingBlock(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.WOOD)));
+				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.WOOD)));
 		SHIPPING_BLOCK_ENTITY = registerBlockEntity(ShippingBlockEntity.ID, SHIPPING_BLOCK, ShippingBlockEntity::new);
 	}
 

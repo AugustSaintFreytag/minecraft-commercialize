@@ -1,10 +1,11 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.text.TextFormattingUtil;
 
 public final class RandomPlayerUtil {
 
@@ -105,14 +106,14 @@ public final class RandomPlayerUtil {
 
 			// Split on digit -> letter transitions
 			if (currentIsDigit != lastIsDigit) {
-				components.add(TextFormattingUtil.capitalize(builder.toString()));
+				components.add(TextFormattingUtil.capitalizedString(builder.toString()));
 				builder.setLength(0);
 				builder.append(character);
 			}
 
 			// Split on lowercase -> uppercase
 			else if (currentIsLetter && Character.isUpperCase(character) && lastIsLowercaseLetter) {
-				components.add(TextFormattingUtil.capitalize(builder.toString()));
+				components.add(TextFormattingUtil.capitalizedString(builder.toString()));
 				builder.setLength(0);
 				builder.append(character);
 			} else {
@@ -121,7 +122,7 @@ public final class RandomPlayerUtil {
 		}
 
 		if (builder.length() > 0) {
-			components.add(TextFormattingUtil.capitalize(builder.toString()));
+			components.add(TextFormattingUtil.capitalizedString(builder.toString()));
 		}
 
 		return components;
