@@ -17,7 +17,6 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
@@ -72,7 +71,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Inputs & Controls
 
-		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
+		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search_input");
 		if (searchTextBox.getText() != delegate.getSearchTerm()) {
 			searchTextBox.text(delegate.getSearchTerm());
 		}
@@ -412,7 +411,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private TextBoxComponent makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
 
-		offersSearchBox.id("search-input");
+		offersSearchBox.id("search_input");
 		offersSearchBox.sizing(Sizing.fixed(174), Sizing.fixed(14));
 		offersSearchBox.setPlaceholder(LocalizationUtil.localizedText("gui", "market.search_offers"));
 		offersSearchBox.setTooltip(Tooltip.of(LocalizationUtil.localizedText("gui", "market.search_offers.tooltip")));
