@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen;
 import io.wispforest.owo.ui.container.FlowLayout;
+import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
@@ -15,6 +16,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, ShippingBlockScreenHandler> {
 
@@ -24,8 +26,8 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 
 	// Init
 
-	public ShippingBlockScreen(ShippingBlockScreenHandler handler, PlayerInventory inventory, Text title) {
-		super(handler, inventory, title);
+	public ShippingBlockScreen(ShippingBlockScreenHandler handler, PlayerInventory playerInventory, Text title) {
+		super(handler, playerInventory, title);
 	}
 
 	// Internals
@@ -51,7 +53,32 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		wrapperComponent.child(textureComponent);
 
-		// …
+		var valueLabel = Components.label(LocalizationUtil.localizedText("gui", "shipping.value"));
+		valueLabel.positioning(Positioning.absolute(32, 45));
+		valueLabel.sizing(Sizing.fixed(35), Sizing.fixed(7));
+		valueLabel.color(Color.ofRgb(0x3F3F3F));
+		wrapperComponent.child(valueLabel);
+
+		var valueDisplay = Components.label(Text.of("1.024 ¤"));
+		valueDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
+		valueDisplay.positioning(Positioning.absolute(72, 45));
+		valueDisplay.sizing(Sizing.fixed(106), Sizing.fixed(11));
+		valueDisplay.color(Color.WHITE);
+		valueDisplay.shadow(true);
+		wrapperComponent.child(valueDisplay);
+
+		var saleLabel = Components.label(LocalizationUtil.localizedText("gui", "shipping.sale"));
+		saleLabel.positioning(Positioning.absolute(32, 68));
+		saleLabel.sizing(Sizing.fixed(35), Sizing.fixed(7));
+		saleLabel.color(Color.ofRgb(0x3F3F3F));
+		wrapperComponent.child(saleLabel);
+
+		var saleDisplay = Components.label(LocalizationUtil.localizedText("gui", "shipping.sale_time_format", "4 hours"));
+		saleDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
+		saleDisplay.positioning(Positioning.absolute(70, 68));
+		saleDisplay.sizing(Sizing.fixed(111), Sizing.fixed(7));
+		saleDisplay.color(Color.ofRgb(0x3F3F3F));
+		wrapperComponent.child(saleDisplay);
 
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
