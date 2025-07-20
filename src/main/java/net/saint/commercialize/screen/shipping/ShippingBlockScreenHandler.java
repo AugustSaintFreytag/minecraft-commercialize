@@ -1,5 +1,6 @@
 package net.saint.commercialize.screen.shipping;
 
+import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import io.wispforest.owo.client.screens.ScreenUtils;
 import io.wispforest.owo.client.screens.SlotGenerator;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,13 +37,20 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 		this.blockInventory = blockInventory;
 
 		makeSlotsForBlockInventory(blockInventory);
+		makeSlotForPaymentCard(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
 	}
 
 	private void makeSlotsForBlockInventory(ShippingBlockInventory inventory) {
 		SlotGenerator.begin(this::addSlot, -7, 4).slotFactory((_inventory, index, x, y) -> {
 			return new Slot(_inventory, index, x, y);
-		}).grid(inventory, 0, 9, 1);
+		}).grid(inventory.main, 0, 9, 1);
+	}
+
+	private void makeSlotForPaymentCard(ShippingBlockInventory inventory) {
+		SlotGenerator.begin(this::addSlot, 167, 4).slotFactory((_inventory, index, x, y) -> {
+			return new CardSlot(_inventory, index, x, y);
+		}).grid(inventory.card, 0, 1, 1);
 	}
 
 	private void makeSlotsForPlayerInventory(PlayerInventory inventory) {
