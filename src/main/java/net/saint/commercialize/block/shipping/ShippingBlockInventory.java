@@ -14,6 +14,8 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.InventoryChangedListener;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 
 public class ShippingBlockInventory implements Inventory {
@@ -27,6 +29,9 @@ public class ShippingBlockInventory implements Inventory {
 
 	public static final int[] MAIN_SLOTS = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	public static final int CARD_SLOT = 9;
+
+	public static final String MAIN_INVENTORY_NBT_KEY = "main";
+	public static final String CARD_INVENTORY_NBT_KEY = "card";
 
 	// Properties
 
@@ -47,6 +52,54 @@ public class ShippingBlockInventory implements Inventory {
 		this.card.addListener(sender -> {
 			this.markDirty();
 		});
+	}
+
+	// NBT
+
+	public void readNbtCompound(NbtCompound nbt) {
+		this.clear();
+
+		if (nbt.contains(MAIN_INVENTORY_NBT_KEY)) {
+			var mainInventoryNbtList = nbt.getList(MAIN_INVENTORY_NBT_KEY, 10);
+			for (int i = 0; i < mainInventoryNbtList.size(); i++) {
+				var itemStackNbtCompound = mainInventoryNbtList.getCompound(i);
+				this.main.setStack(i, ItemStack.fromNbt(itemStackNbtCompound));
+			}
+		}
+
+		if (nbt.contains(CARD_INVENTORY_NBT_KEY)) {
+			var cardInventoryNbtList = nbt.getList(CARD_INVENTORY_NBT_KEY, 10);
+
+			if (!cardInventoryNbtList.isEmpty()) {
+				var itemStackNbtCompound = cardInventoryNbtList.getCompound(0);
+				this.card.setStack(0, ItemStack.fromNbt(itemStackNbtCompound));
+			}
+		}
+	}
+
+	public NbtCompound toNbtCompound() {
+		var nbtCompound = new NbtCompound();
+		var mainInventoryNbtList = new NbtList();
+		var cardInventoryNbtList = new NbtList();
+
+		for (int i = 0; i < this.size(); i++) {
+			ItemStack itemStack = this.getStack(i);
+			if (!itemStack.isEmpty()) {
+				var itemStackNbtCompound = itemStack.writeNbt(new NbtCompound());
+				mainInventoryNbtList.add(itemStackNbtCompound);
+			}
+		}
+
+		var cardItemStack = this.card.getStack(0);
+		if (!cardItemStack.isEmpty()) {
+			var cardItemStackNbtCompound = cardItemStack.writeNbt(new NbtCompound());
+			cardInventoryNbtList.add(cardItemStackNbtCompound);
+		}
+
+		nbtCompound.put(MAIN_INVENTORY_NBT_KEY, mainInventoryNbtList);
+		nbtCompound.put(CARD_INVENTORY_NBT_KEY, cardInventoryNbtList);
+
+		return nbtCompound;
 	}
 
 	// Access
