@@ -18,6 +18,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -69,6 +70,16 @@ public class ShippingBlock extends BlockWithEntity {
 	@Override
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		return state.rotate(mirror.getRotation(state.get(FACING)));
+	}
+
+	@Override
+	public void onStateReplaced(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
+		if (state.getBlock() == newState.getBlock()) {
+			return;
+		}
+
+		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
+		ItemScatterer.spawn(world, position, blockEntity);
 	}
 
 	// Ticker
