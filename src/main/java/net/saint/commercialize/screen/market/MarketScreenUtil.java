@@ -15,11 +15,11 @@ import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.data.text.CurrencyFormattingUtil;
+import net.saint.commercialize.data.text.TextFormattingUtil;
+import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.util.LocalizationUtil;
-import net.saint.commercialize.util.NumericFormattingUtil;
-import net.saint.commercialize.util.TextFormattingUtil;
-import net.saint.commercialize.util.TimeFormattingUtil;
 
 public final class MarketScreenUtil {
 
@@ -135,7 +135,7 @@ public final class MarketScreenUtil {
 		// Price
 		var priceLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.price") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
-		var priceValue = Text.literal(NumericFormattingUtil.formatCurrency(offer.price))
+		var priceValue = Text.literal(CurrencyFormattingUtil.formatCurrency(offer.price))
 				.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xe2ca80)));
 		var priceLine = priceLabel.append(priceValue);
 
@@ -143,7 +143,7 @@ public final class MarketScreenUtil {
 			// If the item stack has more than one item, show the per-item price breakdown
 			var perItemLabel = Text
 					.literal(" " + LocalizationUtil.localizedString("text", "offer.tooltip.price_breakdown",
-							NumericFormattingUtil.formatCurrency(offer.price / offer.stack.getCount())))
+							CurrencyFormattingUtil.formatCurrency(offer.price / offer.stack.getCount())))
 					.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x989280)));
 			priceLine = priceLine.append(perItemLabel);
 		}
@@ -164,7 +164,7 @@ public final class MarketScreenUtil {
 		// Posted
 		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
 		var postedFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_posted_format",
-				TextFormattingUtil.capitalize(rawPosted));
+				TextFormattingUtil.capitalizedString(rawPosted));
 		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 		var postedValue = Text.literal(postedFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
@@ -204,13 +204,13 @@ public final class MarketScreenUtil {
 	// Total
 
 	public static Text textForCartTotal(int value) {
-		return Text.literal(NumericFormattingUtil.formatCurrency(value));
+		return Text.literal(CurrencyFormattingUtil.formatCurrency(value));
 	}
 
 	// Balance
 
 	public static Text textForBalance(int value) {
-		return Text.literal(NumericFormattingUtil.formatCurrency(value));
+		return Text.literal(CurrencyFormattingUtil.formatCurrency(value));
 	}
 
 	// Order

@@ -18,6 +18,7 @@ import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
@@ -28,7 +29,6 @@ import net.saint.commercialize.network.MarketS2COrderMessage;
 import net.saint.commercialize.screen.market.MarketScreen;
 import net.saint.commercialize.screen.market.MarketScreenUtil;
 import net.saint.commercialize.util.LocalizationUtil;
-import net.saint.commercialize.util.NumericFormattingUtil;
 
 public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityScreenHandler {
 
@@ -143,7 +143,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		case SUCCESS: {
 			var offers = state.cartOffers.getOffers().toList();
 			var itemNames = MarketScreenUtil.textForOrderSummary(offers);
-			var formattedTotal = NumericFormattingUtil.formatCurrency(getCartTotal());
+			var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
 			var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
 
 			player.sendMessage(displayText, true);

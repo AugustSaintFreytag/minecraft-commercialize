@@ -16,7 +16,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
-import net.saint.commercialize.util.RandomPlayerUtil;
+import net.saint.commercialize.data.player.RandomPlayerUtil;
 
 public final class MarketOfferGenerator {
 
