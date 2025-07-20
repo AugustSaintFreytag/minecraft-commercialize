@@ -21,9 +21,6 @@
 		"client": [
 			"net.saint.commercialize.CommercializeClient"
 		],
-		"fabric-datagen": [
-			"net.saint.commercialize.CommercializeDataGenerator"
-		],
 		"modmenu": [
 			"net.saint.commercialize.CommercializeModMenu"
 		]
