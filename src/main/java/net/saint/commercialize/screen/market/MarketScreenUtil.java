@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -16,6 +15,7 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
+import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
@@ -223,7 +223,7 @@ public final class MarketScreenUtil {
 		}
 
 		var itemNames = offers.stream().map(offer -> {
-			return descriptionForItemStack(offer.stack);
+			return ItemDescriptionUtil.descriptionForItemStack(offer.stack);
 		}).distinct().toList();
 
 		if (itemNames.size() <= MAX_ORDER_SUMMARY_ITEM_NAMES) {
@@ -241,16 +241,6 @@ public final class MarketScreenUtil {
 			return Text.literal(listedItemNames + ", " + moreText);
 		}
 
-	}
-
-	public static String descriptionForItemStack(ItemStack stack) {
-		var numberOfItems = stack.getCount();
-
-		if (numberOfItems > 1) {
-			return stack.getName().getString() + " (x" + numberOfItems + ")";
-		}
-
-		return stack.getName().getString();
 	}
 
 }
