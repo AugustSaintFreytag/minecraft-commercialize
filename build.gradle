@@ -60,6 +60,10 @@ dependencies {
 	modApi("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}")
 }
 
+fabricApi {
+    configureDataGeneration()
+}
+
 processResources {
 	inputs.property "version", project.version
 
