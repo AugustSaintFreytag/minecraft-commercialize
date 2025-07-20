@@ -41,6 +41,8 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 		makeSlotsForPlayerInventory(playerInventory);
 	}
 
+	// Slots
+
 	private void makeSlotsForBlockInventory(ShippingBlockInventory inventory) {
 		SlotGenerator.begin(this::addSlot, -7, 4).slotFactory((_inventory, index, x, y) -> {
 			return new Slot(_inventory, index, x, y);
@@ -58,6 +60,8 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 			return new Slot(_inventory, index, x, y);
 		}).playerInventory(inventory);
 	}
+
+	// Interaction
 
 	@Override
 	public boolean canUse(PlayerEntity player) {
