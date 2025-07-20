@@ -61,6 +61,7 @@ public class ShippingBlockInventory implements Inventory {
 
 		if (nbt.contains(MAIN_INVENTORY_NBT_KEY)) {
 			var mainInventoryNbtList = nbt.getList(MAIN_INVENTORY_NBT_KEY, 10);
+
 			for (int i = 0; i < mainInventoryNbtList.size(); i++) {
 				var itemStackNbtCompound = mainInventoryNbtList.getCompound(i);
 				this.main.setStack(i, ItemStack.fromNbt(itemStackNbtCompound));
@@ -82,8 +83,8 @@ public class ShippingBlockInventory implements Inventory {
 		var mainInventoryNbtList = new NbtList();
 		var cardInventoryNbtList = new NbtList();
 
-		for (int i = 0; i < this.size(); i++) {
-			ItemStack itemStack = this.getStack(i);
+		for (int i = 0; i < this.main.size(); i++) {
+			ItemStack itemStack = this.main.getStack(i);
 			if (!itemStack.isEmpty()) {
 				var itemStackNbtCompound = itemStack.writeNbt(new NbtCompound());
 				mainInventoryNbtList.add(itemStackNbtCompound);
