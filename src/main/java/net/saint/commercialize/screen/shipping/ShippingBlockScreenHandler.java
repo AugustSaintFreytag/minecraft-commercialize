@@ -1,9 +1,12 @@
 package net.saint.commercialize.screen.shipping;
 
+import io.wispforest.owo.client.screens.ScreenUtils;
+import io.wispforest.owo.client.screens.SlotGenerator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
@@ -17,7 +20,8 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 
 	// Properties
 
-	private final ShippingBlockInventory inventory;
+	public final PlayerInventory playerInventory;
+	public final ShippingBlockInventory blockInventory;
 
 	// Init
 
@@ -25,20 +29,37 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 		this(syncId, playerInventory, new ShippingBlockInventory());
 	}
 
-	public ShippingBlockScreenHandler(int syncId, PlayerInventory playerInventory, ShippingBlockInventory inventory) {
+	public ShippingBlockScreenHandler(int syncId, PlayerInventory playerInventory, ShippingBlockInventory blockInventory) {
 		super(ModScreenHandlers.SHIPPING_BLOCK_SCREEN_HANDLER, syncId);
-		this.inventory = inventory;
+
+		this.playerInventory = playerInventory;
+		this.blockInventory = blockInventory;
+
+		makeSlotsForBlockInventory(blockInventory);
+		makeSlotsForPlayerInventory(playerInventory);
+	}
+
+	private void makeSlotsForBlockInventory(ShippingBlockInventory inventory) {
+		SlotGenerator.begin(this::addSlot, -7, 4).slotFactory((_inventory, index, x, y) -> {
+			return new Slot(_inventory, index, x, y);
+		}).grid(inventory, 0, 9, 1);
+	}
+
+	private void makeSlotsForPlayerInventory(PlayerInventory inventory) {
+		SlotGenerator.begin(this::addSlot, 10, 89).slotFactory((_inventory, index, x, y) -> {
+			return new Slot(_inventory, index, x, y);
+		}).playerInventory(inventory);
 	}
 
 	@Override
 	public boolean canUse(PlayerEntity player) {
-		return this.inventory.canPlayerUse(player);
+		return this.blockInventory.canPlayerUse(player);
 	}
 
 	@Override
 	public ItemStack quickMove(PlayerEntity player, int slot) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'quickMove'");
+		return ScreenUtils.handleSlotTransfer(this, slot, this.blockInventory.size());
+
 	}
 
 }
