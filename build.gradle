@@ -72,14 +72,6 @@ processResources {
 	}
 }
 
-loom {
-	remapJar {
-		// Remap mod dependencies using different mappings.
-		sourceNamespace.set("intermediary")
-		targetNamespace.set("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-	}
-}
-
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
 }
