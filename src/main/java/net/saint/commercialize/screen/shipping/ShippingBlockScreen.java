@@ -56,7 +56,8 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		valueDisplay.text(ShippingBlockScreenUtil.textForSaleValueForInventory(handler.blockInventory));
 
 		var saleDisplay = rootComponent.childById(LabelComponent.class, "sale_display");
-		saleDisplay.text(LocalizationUtil.localizedText("gui", "shipping.sale_time_format", "(Not implemented)"));
+		saleDisplay.text(LocalizationUtil.localizedText("gui", "shipping.sale_time_format",
+				ShippingBlockScreenUtil.textForNextShippingTime(client.world)));
 	}
 
 	// Root
