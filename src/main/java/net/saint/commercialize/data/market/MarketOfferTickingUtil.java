@@ -8,23 +8,16 @@ import net.saint.commercialize.data.offer.Offer;
 
 public final class MarketOfferTickingUtil {
 
-	// State
-
-	private static long lastOfferGeneration = 0;
-	private static long lastOfferExpiration = 0;
-
 	// Logic
 
 	public static void tickMarketOffersIfNecessary(World world) {
 		var time = world.getTime();
 
-		if (time > lastOfferGeneration + Commercialize.CONFIG.offerCheckInterval) {
-			lastOfferGeneration = time;
+		if (time % Commercialize.CONFIG.offerCheckInterval == 0) {
 			tickMarketOfferGeneration(world);
 		}
 
-		if (time > lastOfferExpiration + Commercialize.CONFIG.offerGenerationTickInterval) {
-			lastOfferExpiration = time;
+		if (time % Commercialize.CONFIG.offerGenerationTickInterval == 0) {
 			tickMarketOfferExpiration(world);
 		}
 	}

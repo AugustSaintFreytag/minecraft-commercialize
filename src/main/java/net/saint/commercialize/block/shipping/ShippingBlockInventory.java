@@ -172,6 +172,22 @@ public class ShippingBlockInventory implements Inventory {
 		});
 	}
 
+	// Stack Access (Convenience)
+
+	public DefaultedList<ItemStack> getItemStacks() {
+		var items = DefaultedList.ofSize(MAIN_SLOTS.length, ItemStack.EMPTY);
+
+		for (var slot : MAIN_SLOTS) {
+			items.set(slot, this.main.getStack(slot));
+		}
+
+		return items;
+	}
+
+	public ItemStack getCardStack() {
+		return this.card.getStack(0);
+	}
+
 	// Listeners
 
 	public void addListener(InventoryChangedListener listener) {

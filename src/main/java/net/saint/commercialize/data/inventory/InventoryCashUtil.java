@@ -1,5 +1,6 @@
 package net.saint.commercialize.data.inventory;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,11 +14,7 @@ import net.minecraft.registry.Registries;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.payment.Currency;
 
-public class PlayerInventoryCashUtil {
-
-	// Configuration
-
-	private static final int ITEM_STACK_ANIMATION_TIME = 5;
+public class InventoryCashUtil {
 
 	// Reading & Counting
 
@@ -62,6 +59,23 @@ public class PlayerInventoryCashUtil {
 
 	// Adding
 
+	public static List<ItemStack> addCurrencyToInventory(Inventory inventory, int amount) {
+		if (amount <= 0) {
+			return List.of();
+		}
+
+		var remainingStacks = getCurrencyStacksForAmount(amount);
+
+		if (inventory == null) {
+			Commercialize.LOGGER.error("Can not add currency to null inventory.");
+			return remainingStacks;
+		}
+
+		remainingStacks = addItemStacksToInventory(remainingStacks, inventory);
+
+		return remainingStacks;
+	}
+
 	public static void addCurrencyToAnyInventoriesForPlayer(PlayerEntity player, int amount) {
 		if (player == null || amount <= 0) {
 			return;
@@ -91,24 +105,24 @@ public class PlayerInventoryCashUtil {
 	}
 
 	public static List<ItemStack> addItemStacksToInventory(List<ItemStack> itemStacks, Inventory inventory) {
-		var remainingItemStacks = new ArrayList<ItemStack>(itemStacks);
+		var remainingItemStacks = new ArrayDeque<ItemStack>(itemStacks);
 
 		while (!remainingItemStacks.isEmpty()) {
-			var itemStack = remainingItemStacks.remove(0);
-			var emptySlot = firstEmptySlotInInventory(inventory);
+			var itemStack = remainingItemStacks.poll();
+			var leftoverItemStack = InventoryItemUtil.addStack(inventory, itemStack);
 
-			if (emptySlot == -1) {
-				// No free slot found, stop adding.
-				Commercialize.LOGGER.info("Could not find empty slot in inventory for adding item stack '{}'.",
-						itemStack.getName().getString());
+			if (leftoverItemStack.getCount() == itemStack.getCount()) {
+				// Unable to add *any* of the stack's items to the inventory, presume full and bail.
 				break;
 			}
 
-			inventory.setStack(emptySlot, itemStack);
-			itemStack.setBobbingAnimationTime(ITEM_STACK_ANIMATION_TIME);
+			if (!leftoverItemStack.isEmpty()) {
+				// Items left in stack not yet added to inventory, push back to queue.
+				remainingItemStacks.add(leftoverItemStack);
+			}
 		}
 
-		return remainingItemStacks;
+		return new ArrayList<ItemStack>(remainingItemStacks);
 	}
 
 	private static List<ItemStack> getCurrencyStacksForAmount(int amount) {

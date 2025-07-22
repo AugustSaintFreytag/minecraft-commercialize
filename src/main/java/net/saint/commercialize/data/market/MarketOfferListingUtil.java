@@ -11,7 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
-import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
+import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -142,7 +142,7 @@ public final class MarketOfferListingUtil {
 	private static int playerBalanceForPaymentMethod(PlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
 		case INVENTORY:
-			return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
 			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
 		default:

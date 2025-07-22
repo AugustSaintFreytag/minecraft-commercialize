@@ -9,13 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.screen.shipping.ShippingBlockScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
@@ -28,7 +32,7 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	// Properties
 
-	private final ShippingBlockInventory inventory = new ShippingBlockInventory();
+	public final ShippingBlockInventory inventory = new ShippingBlockInventory();
 
 	// Init
 
@@ -80,6 +84,24 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	// Tick
 
 	public static void tick(World world, BlockPos position, BlockState state, ShippingBlockEntity blockEntity) {
+		if (world.isClient()) {
+			return;
+		}
+
+		ShippingExchangeTickingUtil.tickShippingIfNecessary(world, blockEntity, result -> {
+			switch (result) {
+			case SOLD:
+				world.playSound(null, blockEntity.getPos(), ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 1.5f, 0.75f);
+				break;
+			case NO_ITEMS:
+				// No feedback sound when not selling items.
+				// world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 0.5f, 0.25f);
+				break;
+			case FAILURE:
+				world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+				break;
+			}
+		});
 	}
 
 	// Screen

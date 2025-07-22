@@ -37,6 +37,11 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("The interval in ticks at which shipping blocks exchange items for currency. (Default: 24,000 ticks/1 day)")
+	public int shippingExchangeInterval = 24_000;
+
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("The factor applied when buying items from the general market, based off the item's base value. Applies to generated offers. (Default: 1.2)")
 	public double buyingPriceFactor = 1.2;
 
