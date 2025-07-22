@@ -23,7 +23,6 @@ repositories {
 	maven { url "https://api.modrinth.com/maven" }
 	maven { url "https://cursemaven.com/" }
 	maven { url "https://maven.wispforest.io/releases/" }
-	maven { url "https://maven.ladysnake.org/releases" }
 	maven { url "https://maven.shedaniel.me" }
 	maven { url "https://maven.terraformersmc.com" }
 	maven { url "https://jitpack.io/" }
@@ -53,11 +52,18 @@ dependencies {
 	}
 
 	// Create: Numismatics
-	modImplementation("maven.modrinth:numismatics:${project.numismatics_version}")
-	include("maven.modrinth:numismatics:${project.numismatics_version}")
+	
+	// Disabled transitive: modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
+	modCompileOnly("maven.modrinth:numismatics:${project.numismatics_version}")
 
 	// Furniture Refurbished
-	modApi("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}")
+	
+	// Disabled transitive: modCompileOnly("curse.maven:framework-549225:${project.framework_version}")
+	modCompileOnly("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}")
+}
+
+fabricApi {
+    configureDataGeneration()
 }
 
 processResources {
@@ -65,14 +71,6 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
-	}
-}
-
-loom {
-	remapJar {
-		// Remap mod dependencies using different mappings.
-		sourceNamespace.set("intermediary")
-		targetNamespace.set("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	}
 }
 

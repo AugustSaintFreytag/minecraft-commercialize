@@ -1,4 +1,4 @@
-package net.saint.commercialize.block;
+package net.saint.commercialize.block.market;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.saint.commercialize.Commercialize;

@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.data.player;
 
 import com.google.common.hash.Hashing;
 

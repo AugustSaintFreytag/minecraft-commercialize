@@ -1,4 +1,4 @@
-package net.saint.commercialize.block;
+package net.saint.commercialize.block.market;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
-import net.saint.commercialize.data.inventory.PlayerInventoryCashUtil;
+import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
@@ -218,7 +218,7 @@ public final class MarketBlockServerNetworking {
 	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
 		case INVENTORY:
-			return PlayerInventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
 			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
 		default:
@@ -230,8 +230,8 @@ public final class MarketBlockServerNetworking {
 	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
 		switch (paymentMethod) {
 		case INVENTORY:
-			var remainingAmount = PlayerInventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
-			PlayerInventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
+			var remainingAmount = InventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
+			InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
 			break;
 		case ACCOUNT:
 			BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);

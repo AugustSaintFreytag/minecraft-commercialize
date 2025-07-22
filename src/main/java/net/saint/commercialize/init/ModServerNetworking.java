@@ -1,6 +1,6 @@
 package net.saint.commercialize.init;
 
-import net.saint.commercialize.block.MarketBlockServerNetworking;
+import net.saint.commercialize.block.market.MarketBlockServerNetworking;
 
 public class ModServerNetworking {
 

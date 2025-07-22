@@ -17,13 +17,15 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.item.ItemNameAbbreviationUtil;
 import net.saint.commercialize.data.offer.Offer;
+import net.saint.commercialize.data.player.PlayerHeadUtil;
+import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.common.ScrollContainer;
@@ -33,10 +35,7 @@ import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.market.components.CartListComponent;
 import net.saint.commercialize.screen.market.components.OfferListCapComponent;
 import net.saint.commercialize.screen.market.components.OfferListComponent;
-import net.saint.commercialize.util.ItemNameAbbreviationUtil;
 import net.saint.commercialize.util.LocalizationUtil;
-import net.saint.commercialize.util.NumericFormattingUtil;
-import net.saint.commercialize.util.PlayerHeadUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
@@ -72,7 +71,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Inputs & Controls
 
-		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search-input");
+		var searchTextBox = rootComponent.childById(TextBoxComponent.class, "search_input");
 		if (searchTextBox.getText() != delegate.getSearchTerm()) {
 			searchTextBox.text(delegate.getSearchTerm());
 		}
@@ -153,11 +152,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	}
 
 	// Root
-
-	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-	}
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
@@ -412,7 +406,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private TextBoxComponent makeSearchBoxComponent() {
 		var offersSearchBox = Components.textBox(Sizing.fixed(162));
 
-		offersSearchBox.id("search-input");
+		offersSearchBox.id("search_input");
 		offersSearchBox.sizing(Sizing.fixed(174), Sizing.fixed(14));
 		offersSearchBox.setPlaceholder(LocalizationUtil.localizedText("gui", "market.search_offers"));
 		offersSearchBox.setTooltip(Tooltip.of(LocalizationUtil.localizedText("gui", "market.search_offers.tooltip")));
@@ -427,7 +421,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
-		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
@@ -464,7 +458,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 9);
-		var priceDescription = Text.of(NumericFormattingUtil.formatCurrency(offer.price));
+		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
