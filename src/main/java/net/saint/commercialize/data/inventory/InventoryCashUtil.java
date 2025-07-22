@@ -159,16 +159,6 @@ public class InventoryCashUtil {
 		return stacks;
 	}
 
-	private static int firstEmptySlotInInventory(Inventory inventory) {
-		for (var slot = 0; slot < inventory.size(); slot++) {
-			if (inventory.getStack(slot).isEmpty()) {
-				return slot;
-			}
-		}
-
-		return -1;
-	}
-
 	// Removing
 
 	/**

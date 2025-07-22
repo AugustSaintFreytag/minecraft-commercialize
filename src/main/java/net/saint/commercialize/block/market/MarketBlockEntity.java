@@ -40,7 +40,9 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
 
-	private int lastMarketHash = 0;
+	protected long lastListingTick = 0;
+
+	protected int lastListingHash = 0;
 
 	private MarketScreen marketScreen;
 
@@ -105,6 +107,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
 				this.getPos().toShortString(), state.marketOffers.getOffers().count());
 
+		lastListingTick = world.getTime();
 		updateMarketScreen();
 	}
 
@@ -157,52 +160,6 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		}
 	}
 
-	// Screen
-
-	public void openMarketScreen(World world, PlayerEntity player) {
-		if (!world.isClient()) {
-			return;
-		}
-
-		var client = MinecraftClient.getInstance();
-		this.marketScreen = new MarketScreen();
-		this.marketScreen.delegate = this;
-		client.setScreen(marketScreen);
-
-		requestMarketData();
-	}
-
-	public void onMarketScreenUpdate() {
-		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
-			return;
-		}
-
-		this.requestMarketData();
-		this.sendStateSync();
-	}
-
-	private void updateMarketScreen() {
-		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn(
-					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
-			return;
-		}
-
-		var lastMarketHash = this.lastMarketHash;
-		var currentMarketHash = this.state.marketOffers.hashCode();
-
-		this.marketScreen.updateDisplay();
-
-		this.lastMarketHash = currentMarketHash;
-
-		if (lastMarketHash != currentMarketHash) {
-			this.marketScreen.resetOfferScrollView();
-		}
-	}
-
-	// Networking
-
 	public void sendStateSync() {
 		var message = new MarketC2SStateSyncMessage();
 		message.position = this.getPos();
@@ -241,6 +198,71 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		message.encodeToBuffer(buffer);
 
 		ClientPlayNetworking.send(MarketC2SOrderMessage.ID, buffer);
+	}
+
+	// Ticking
+
+	public static void tick(World world, BlockPos position, BlockState state, MarketBlockEntity blockEntity) {
+		if (!world.isClient()) {
+			return;
+		}
+
+		var currentTime = world.getTime();
+		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
+
+		var isScreenActive = blockEntity.marketScreen != null;
+		var shouldRefreshForActiveScreen = isScreenActive && timeSinceLastListing > Commercialize.CONFIG.listingRefreshInterval;
+		var shouldRefreshForInactiveScreen = !isScreenActive && Commercialize.CONFIG.listingRefreshIntervalWhenInactive != -1
+				&& timeSinceLastListing > Commercialize.CONFIG.listingRefreshIntervalWhenInactive;
+
+		if (shouldRefreshForActiveScreen || shouldRefreshForInactiveScreen) {
+			blockEntity.lastListingTick = currentTime;
+			blockEntity.requestMarketData();
+		}
+	}
+
+	// Screen
+
+	public void openMarketScreen(World world, PlayerEntity player) {
+		if (!world.isClient()) {
+			return;
+		}
+
+		var client = MinecraftClient.getInstance();
+		this.marketScreen = new MarketScreen();
+		this.marketScreen.delegate = this;
+		client.setScreen(marketScreen);
+
+		requestMarketData();
+	}
+
+	public void onMarketScreenUpdate() {
+		if (this.marketScreen == null) {
+			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
+			return;
+		}
+
+		this.requestMarketData();
+		this.sendStateSync();
+	}
+
+	private void updateMarketScreen() {
+		if (this.marketScreen == null) {
+			Commercialize.LOGGER.warn(
+					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
+			return;
+		}
+
+		var lastListingHash = this.lastListingHash;
+		var currentListingHash = this.state.viewPropertiesHashCode();
+
+		this.marketScreen.updateDisplay();
+
+		this.lastListingHash = currentListingHash;
+
+		if (lastListingHash != currentListingHash) {
+			this.marketScreen.resetOfferScrollView();
+		}
 	}
 
 }

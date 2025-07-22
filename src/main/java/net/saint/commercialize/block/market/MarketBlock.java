@@ -5,6 +5,8 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
@@ -19,6 +21,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.init.ModBlocks;
 
 public class MarketBlock extends BlockWithEntity {
 
@@ -77,6 +80,13 @@ public class MarketBlock extends BlockWithEntity {
 		blockEntity.openMarketScreen(world, player);
 
 		return ActionResult.SUCCESS;
+	}
+
+	// Ticking
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return checkType(type, ModBlocks.MARKET_BLOCK_ENTITY, MarketBlockEntity::tick);
 	}
 
 }

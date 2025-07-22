@@ -1,5 +1,7 @@
 package net.saint.commercialize.block.market;
 
+import java.util.Objects;
+
 import net.saint.commercialize.data.market.MarketOfferCollection;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
@@ -27,5 +29,19 @@ public class MarketBlockEntityScreenState {
 	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
 	public OfferFilterMode filterMode = OfferFilterMode.ALL;
 	public PaymentMethod paymentMethod = PaymentMethod.INVENTORY;
+
+	// Convenience
+
+	public int marketOffersHashCode() {
+		return marketOffers.hashCode();
+	}
+
+	public int cartOffersHashCode() {
+		return cartOffers.hashCode();
+	}
+
+	public int viewPropertiesHashCode() {
+		return Objects.hash(searchTerm, sortMode, sortOrder, filterMode, paymentMethod);
+	}
 
 }
