@@ -203,14 +203,19 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Ticking
 
 	public static void tick(World world, BlockPos position, BlockState state, MarketBlockEntity blockEntity) {
-		if (blockEntity.marketScreen == null) {
+		if (!world.isClient()) {
 			return;
 		}
 
 		var currentTime = world.getTime();
 		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
 
-		if (timeSinceLastListing > Commercialize.CONFIG.listingRefreshInterval) {
+		var isScreenActive = blockEntity.marketScreen != null;
+		var shouldRefreshForActiveScreen = isScreenActive && timeSinceLastListing > Commercialize.CONFIG.listingRefreshInterval;
+		var shouldRefreshForInactiveScreen = !isScreenActive && Commercialize.CONFIG.listingRefreshIntervalWhenInactive != -1
+				&& timeSinceLastListing > Commercialize.CONFIG.listingRefreshIntervalWhenInactive;
+
+		if (shouldRefreshForActiveScreen || shouldRefreshForInactiveScreen) {
 			blockEntity.lastListingTick = currentTime;
 			blockEntity.requestMarketData();
 		}

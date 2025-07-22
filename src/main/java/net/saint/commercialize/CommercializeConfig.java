@@ -86,13 +86,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("gui")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The time in ticks after which the market screen automatically refreshes its listing when inactive (no open screen). Set to -1 to disable. (Default: 6000, 5 minutes)")
+	@Comment("The time in ticks after which the market screen automatically refreshes its listing when inactive (no open screen). Will effectively prefetch to have listing ready before player interacts with block. Set to -1 to disable. (Default: 6000, 5 minutes)")
 	public int listingRefreshIntervalWhenInactive = 6000;
-
-	@ConfigEntry.Category("gui")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("Allow the market block to prefetch offers when loaded even if it was not used by a player. Ensures offers are ready to be displayed on first use. (Default: true)")
-	public boolean listingPrefetch = true;
 
 	// Delivery
 
