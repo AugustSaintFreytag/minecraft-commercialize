@@ -76,7 +76,7 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		valueLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(valueLabel);
 
-		var valueDisplay = Components.label(Text.empty());
+		var valueDisplay = Components.label(Text.of("..."));
 		valueDisplay.id("value_display");
 		valueDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		valueDisplay.positioning(Positioning.absolute(72, 45));
@@ -91,7 +91,7 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		saleLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(saleLabel);
 
-		var saleDisplay = Components.label(Text.empty());
+		var saleDisplay = Components.label(Text.of("..."));
 		saleDisplay.id("sale_display");
 		saleDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		saleDisplay.positioning(Positioning.absolute(70, 68));
