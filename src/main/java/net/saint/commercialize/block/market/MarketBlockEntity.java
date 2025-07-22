@@ -40,7 +40,9 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
 
-	private int lastMarketHash = 0;
+	protected long lastListingTick = 0;
+
+	protected int lastListingHash = 0;
 
 	private MarketScreen marketScreen;
 
@@ -105,6 +107,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
 				this.getPos().toShortString(), state.marketOffers.getOffers().count());
 
+		lastListingTick = world.getTime();
 		updateMarketScreen();
 	}
 
@@ -195,6 +198,22 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		message.encodeToBuffer(buffer);
 
 		ClientPlayNetworking.send(MarketC2SOrderMessage.ID, buffer);
+	}
+
+	// Ticking
+
+	public static void tick(World world, BlockPos position, BlockState state, MarketBlockEntity blockEntity) {
+		if (blockEntity.marketScreen == null) {
+			return;
+		}
+
+		var currentTime = world.getTime();
+		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
+
+		if (timeSinceLastListing > Commercialize.CONFIG.listingRefreshInterval) {
+			blockEntity.lastListingTick = currentTime;
+			blockEntity.requestMarketData();
+		}
 	}
 
 	// Screen
