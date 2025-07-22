@@ -157,52 +157,6 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		}
 	}
 
-	// Screen
-
-	public void openMarketScreen(World world, PlayerEntity player) {
-		if (!world.isClient()) {
-			return;
-		}
-
-		var client = MinecraftClient.getInstance();
-		this.marketScreen = new MarketScreen();
-		this.marketScreen.delegate = this;
-		client.setScreen(marketScreen);
-
-		requestMarketData();
-	}
-
-	public void onMarketScreenUpdate() {
-		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
-			return;
-		}
-
-		this.requestMarketData();
-		this.sendStateSync();
-	}
-
-	private void updateMarketScreen() {
-		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn(
-					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
-			return;
-		}
-
-		var lastMarketHash = this.lastMarketHash;
-		var currentMarketHash = this.state.marketOffers.hashCode();
-
-		this.marketScreen.updateDisplay();
-
-		this.lastMarketHash = currentMarketHash;
-
-		if (lastMarketHash != currentMarketHash) {
-			this.marketScreen.resetOfferScrollView();
-		}
-	}
-
-	// Networking
-
 	public void sendStateSync() {
 		var message = new MarketC2SStateSyncMessage();
 		message.position = this.getPos();
@@ -241,6 +195,50 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		message.encodeToBuffer(buffer);
 
 		ClientPlayNetworking.send(MarketC2SOrderMessage.ID, buffer);
+	}
+
+	// Screen
+
+	public void openMarketScreen(World world, PlayerEntity player) {
+		if (!world.isClient()) {
+			return;
+		}
+
+		var client = MinecraftClient.getInstance();
+		this.marketScreen = new MarketScreen();
+		this.marketScreen.delegate = this;
+		client.setScreen(marketScreen);
+
+		requestMarketData();
+	}
+
+	public void onMarketScreenUpdate() {
+		if (this.marketScreen == null) {
+			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
+			return;
+		}
+
+		this.requestMarketData();
+		this.sendStateSync();
+	}
+
+	private void updateMarketScreen() {
+		if (this.marketScreen == null) {
+			Commercialize.LOGGER.warn(
+					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
+			return;
+		}
+
+		var lastListingHash = this.lastListingHash;
+		var currentListingHash = this.state.viewPropertiesHashCode();
+
+		this.marketScreen.updateDisplay();
+
+		this.lastListingHash = currentListingHash;
+
+		if (lastListingHash != currentListingHash) {
+			this.marketScreen.resetOfferScrollView();
+		}
 	}
 
 }
