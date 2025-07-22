@@ -28,7 +28,7 @@ public final class MarketOfferListingUtil {
 			filterMode = OfferFilterMode.ALL;
 		}
 
-		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedOffers + 1;
+		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems + 1;
 
 		switch (filterMode) {
 		case AFFORDABLE:
@@ -40,7 +40,7 @@ public final class MarketOfferListingUtil {
 	}
 
 	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, PlayerEntity player, String searchTerm) {
-		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedOffers + 1;
+		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems + 1;
 
 		if (searchTerm.isEmpty()) {
 			return offers.limit(maxNumberOfOffers).toList();
