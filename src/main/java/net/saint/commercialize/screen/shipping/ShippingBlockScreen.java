@@ -102,6 +102,8 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("shipping_block_screen");
+
+		this.updateDisplay();
 	}
 
 }
