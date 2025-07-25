@@ -7,11 +7,15 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
@@ -32,6 +36,7 @@ public class ShippingBlock extends BlockWithEntity {
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block");
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+	public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
 	// Init
 
@@ -53,13 +58,26 @@ public class ShippingBlock extends BlockWithEntity {
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext context) {
-		return this.getDefaultState().with(FACING, context.getHorizontalPlayerFacing().getOpposite());
+		var blockPos = context.getBlockPos();
+		var world = context.getWorld();
+
+		if (blockPos.getY() < world.getTopY() - 1 && world.getBlockState(blockPos.up()).canReplace(context)) {
+			return this.getDefaultState().with(FACING, context.getHorizontalPlayerFacing().getOpposite()).with(HALF, DoubleBlockHalf.LOWER);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void onPlaced(World world, BlockPos position, BlockState state, LivingEntity placer, ItemStack itemStack) {
+		world.setBlockState(position.up(), state.with(HALF, DoubleBlockHalf.UPPER), Block.NOTIFY_ALL);
+		super.onPlaced(world, position, state, placer, itemStack);
 	}
 
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
-		super.appendProperties(builder);
 		builder.add(FACING);
+		builder.add(HALF);
 	}
 
 	@Override
@@ -74,12 +92,24 @@ public class ShippingBlock extends BlockWithEntity {
 
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
+		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+			return;
+		}
+
 		if (state.getBlock() == newState.getBlock()) {
 			return;
 		}
 
 		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
 		ItemScatterer.spawn(world, position, blockEntity);
+	}
+
+	public long getRenderingSeed(BlockState state, BlockPos position) {
+		var x = position.getX();
+		var y = position.down(state.get(HALF) == DoubleBlockHalf.LOWER ? 0 : 1).getY();
+		var z = position.getZ();
+
+		return new BlockPos(x, y, z).hashCode();
 	}
 
 	// Ticker
