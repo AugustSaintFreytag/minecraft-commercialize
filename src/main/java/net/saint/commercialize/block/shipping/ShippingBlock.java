@@ -127,6 +127,12 @@ public class ShippingBlock extends BlockWithEntity {
 			return ActionResult.CONSUME;
 		}
 
+		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+			// Interaction with upper half is deferred to lower half instead.
+			var lowerHalfBlockState = world.getBlockState(position.down());
+			return lowerHalfBlockState.onUse(world, player, hand, hit);
+		}
+
 		var screenHandlerFactory = state.createScreenHandlerFactory(world, position);
 
 		if (screenHandlerFactory == null) {
