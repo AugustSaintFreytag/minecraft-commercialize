@@ -31,19 +31,19 @@ public final class ModBlocks {
 
 	public static void initialize() {
 		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID,
-				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.DEEPSLATE)));
+				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
 		MARKET_BLOCK_ENTITY = registerBlockEntity(MarketBlockEntity.ID, MARKET_BLOCK, MarketBlockEntity::new);
 
 		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
-				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.WOOD)));
+				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
 		SHIPPING_BLOCK_ENTITY = registerBlockEntity(ShippingBlockEntity.ID, SHIPPING_BLOCK, ShippingBlockEntity::new);
 	}
 
 	// Registration
 
 	private static Block registerBlockAndItem(Identifier id, Block block) {
-		Registry.register(Registries.BLOCK, id, block);
 		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
+		Registry.register(Registries.BLOCK, id, block);
 
 		return block;
 	}
