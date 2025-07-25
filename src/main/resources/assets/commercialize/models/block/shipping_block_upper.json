@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/air",
+	"texture_size": [64, 64],
+	"textures": {
+		"particle": "commercialize:block/red_particle"
+	}
+}

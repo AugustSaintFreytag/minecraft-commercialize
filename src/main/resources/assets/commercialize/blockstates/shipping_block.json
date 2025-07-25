@@ -1,17 +1,20 @@
 {
 	"variants": {
-		"facing=north": {
+		"half=upper": {
+			"model": "commercialize:block/shipping_block_upper"
+		},
+		"half=lower,facing=north": {
 			"model": "commercialize:block/shipping_block"
 		},
-		"facing=south": {
+		"half=lower,facing=south": {
 			"model": "commercialize:block/shipping_block",
 			"y": 180
 		},
-		"facing=west": {
+		"half=lower,facing=west": {
 			"model": "commercialize:block/shipping_block",
 			"y": 270
 		},
-		"facing=east": {
+		"half=lower,facing=east": {
 			"model": "commercialize:block/shipping_block",
 			"y": 90
 		}
