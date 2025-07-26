@@ -94,6 +94,21 @@ public class ShippingBlock extends BlockWithEntity {
 		return state.rotate(mirror.getRotation(state.get(FACING)));
 	}
 
+	// World Mutation
+
+	@Override
+	public void onBreak(World world, BlockPos position, BlockState state, PlayerEntity player) {
+		var twinBlockPosition = getTwinBlockPosition(position, state);
+		var twinBlockState = world.getBlockState(twinBlockPosition);
+
+		if (twinBlockState.getBlock() == this) {
+			world.setBlockState(twinBlockPosition, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
+			world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, twinBlockPosition, Block.getRawIdFromState(twinBlockState));
+		}
+
+		super.onBreak(world, position, state, player);
+	}
+
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
