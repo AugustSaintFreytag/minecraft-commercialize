@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.screen.shipping.ShippingBlockScreenHandler;
 
@@ -37,7 +37,7 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	// Init
 
 	public ShippingBlockEntity(BlockPos position, BlockState state) {
-		super(ModBlocks.SHIPPING_BLOCK_ENTITY, position, state);
+		super(ModBlockEntities.SHIPPING_BLOCK_ENTITY, position, state);
 
 		inventory.addListener(inventory -> {
 			this.markDirty();

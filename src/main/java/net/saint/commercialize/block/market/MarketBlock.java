@@ -21,7 +21,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModBlockEntities;
 
 public class MarketBlock extends BlockWithEntity {
 
@@ -86,7 +86,7 @@ public class MarketBlock extends BlockWithEntity {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlocks.MARKET_BLOCK_ENTITY, MarketBlockEntity::tick);
+		return checkType(type, ModBlockEntities.MARKET_BLOCK_ENTITY, MarketBlockEntity::tick);
 	}
 
 }

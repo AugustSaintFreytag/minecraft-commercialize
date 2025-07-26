@@ -19,7 +19,7 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
@@ -49,7 +49,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Init
 
 	public MarketBlockEntity(BlockPos position, BlockState state) {
-		super(ModBlocks.MARKET_BLOCK_ENTITY, position, state);
+		super(ModBlockEntities.MARKET_BLOCK_ENTITY, position, state);
 	}
 
 	// Access

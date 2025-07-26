@@ -27,7 +27,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModBlockEntities;
 
 public class ShippingBlock extends BlockWithEntity {
 
@@ -116,7 +116,7 @@ public class ShippingBlock extends BlockWithEntity {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlocks.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
+		return checkType(type, ModBlockEntities.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
 	}
 
 	// Interaction
