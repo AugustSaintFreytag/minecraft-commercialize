@@ -153,4 +153,14 @@ public class ShippingBlock extends BlockWithEntity {
 		return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
 	}
 
+	// Utility
+
+	private BlockPos getTwinBlockPosition(BlockPos position, BlockState state) {
+		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+			return position.up();
+		} else {
+			return position.down();
+		}
+	}
+
 }
