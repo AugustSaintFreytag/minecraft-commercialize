@@ -1,9 +1,13 @@
 package net.saint.commercialize.block.shipping;
 
+import java.util.HashMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -25,9 +29,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldEvents;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.init.ModBlockEntities;
+import net.saint.commercialize.util.VoxelShapeUtil;
 
 public class ShippingBlock extends BlockWithEntity {
 
@@ -37,6 +47,20 @@ public class ShippingBlock extends BlockWithEntity {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
+
+	private static final HashMap<DoubleBlockHalf, VoxelShape> SHAPES = new HashMap<>() {
+		{
+			this.put(DoubleBlockHalf.LOWER, VoxelShapes.cuboid(0, 0, 0.0625, 1, 1, 0.9375));
+			this.put(DoubleBlockHalf.UPPER, VoxelShapes.cuboid(0, 0, 0.0625, 1, 0.8125, 0.9375));
+		}
+	};
+
+	private static final HashMap<DoubleBlockHalf, HashMap<Direction, VoxelShape>> SHAPES_BY_DIRECTION = new HashMap<>() {
+		{
+			this.put(DoubleBlockHalf.LOWER, VoxelShapeUtil.createDirectionalShapes(SHAPES.get(DoubleBlockHalf.LOWER)));
+			this.put(DoubleBlockHalf.UPPER, VoxelShapeUtil.createDirectionalShapes(SHAPES.get(DoubleBlockHalf.UPPER)));
+		}
+	};
 
 	// Init
 
@@ -70,6 +94,16 @@ public class ShippingBlock extends BlockWithEntity {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPES_BY_DIRECTION.get(state.get(HALF)).get(state.get(FACING));
+	}
+
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPES_BY_DIRECTION.get(state.get(HALF)).get(state.get(FACING));
 	}
 
 	@Override
