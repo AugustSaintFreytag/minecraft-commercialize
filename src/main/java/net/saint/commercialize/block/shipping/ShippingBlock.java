@@ -48,6 +48,10 @@ public class ShippingBlock extends BlockWithEntity {
 
 	@Override
 	public BlockEntity createBlockEntity(BlockPos position, BlockState blockState) {
+		if (blockState.get(HALF) == DoubleBlockHalf.UPPER) {
+			return null;
+		}
+
 		return new ShippingBlockEntity(position, blockState);
 	}
 
@@ -129,8 +133,11 @@ public class ShippingBlock extends BlockWithEntity {
 
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
 			// Interaction with upper half is deferred to lower half instead.
-			var lowerHalfBlockState = world.getBlockState(position.down());
-			return lowerHalfBlockState.onUse(world, player, hand, hit);
+			var lowerHalfPosition = position.down();
+			var lowerHalfBlockState = world.getBlockState(lowerHalfPosition);
+			var lowerHalfBlock = (ShippingBlock) lowerHalfBlockState.getBlock();
+
+			return lowerHalfBlock.onUse(lowerHalfBlockState, world, lowerHalfPosition, player, hand, hit);
 		}
 
 		var screenHandlerFactory = state.createScreenHandlerFactory(world, position);
