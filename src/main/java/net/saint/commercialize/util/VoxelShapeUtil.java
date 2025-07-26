@@ -1,5 +1,6 @@
 package net.saint.commercialize.util;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.minecraft.util.math.Direction;
@@ -7,6 +8,20 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
 public final class VoxelShapeUtil {
+
+	// Mapping
+
+	public static HashMap<Direction, VoxelShape> createDirectionalShapes(VoxelShape baseShape) {
+		HashMap<Direction, VoxelShape> result = new HashMap<>();
+
+		for (var direction : Direction.Type.HORIZONTAL) {
+			result.put(direction, VoxelShapeUtil.rotateShape(baseShape, direction));
+		}
+
+		return result;
+	}
+
+	// Rotation
 
 	public static VoxelShape rotateShape(VoxelShape shape, Direction direction) {
 		if (direction == Direction.NORTH) {
