@@ -75,31 +75,36 @@ public final class MarketScreenUtil {
 		return switch (paymentMethod) {
 		case INVENTORY -> MarketScreenAssets.WALLET_ICON;
 		case ACCOUNT -> MarketScreenAssets.CARD_ICON;
+		case SPECIFIED_ACCOUNT -> MarketScreenAssets.SPECIFIED_CARD_ICON;
 		};
 	}
 
 	public static Text labelTextForBalance(PaymentMethod paymentMethod) {
 		return switch (paymentMethod) {
 		case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash");
-		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.bank");
-		default -> Text.empty();
+		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
+		case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
+		default -> Text.of("...");
 		};
 	}
 
-	public static Text tooltipTextForBalance(PaymentMethod paymentMethod) {
+	public static Text tooltipTextForBalance(PaymentMethod paymentMethod, String ownerName) {
 		return switch (paymentMethod) {
 		case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash.tooltip");
-		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.bank.tooltip");
-		default -> Text.empty();
+		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account.tooltip");
+		case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.specified_account.tooltip", ownerName);
+		default -> Text.of("...");
 		};
 	}
 
-	public static Text tooltipTextForPaymentMethod(PaymentMethod paymentMethod) {
+	public static Text tooltipTextForPaymentMethod(PaymentMethod paymentMethod, String ownerName) {
 		switch (paymentMethod) {
 		case INVENTORY:
 			return LocalizationUtil.localizedText("gui", "market.payment_mode.inventory.tooltip");
 		case ACCOUNT:
 			return LocalizationUtil.localizedText("gui", "market.payment_mode.account.tooltip");
+		case SPECIFIED_ACCOUNT:
+			return LocalizationUtil.localizedText("gui", "market.payment_mode.specified_account.tooltip", ownerName);
 		default:
 			return Text.empty();
 		}

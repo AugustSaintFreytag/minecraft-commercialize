@@ -87,7 +87,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var paymentMethodButton = rootComponent.childById(TabButtonComponent.class, "payment_method");
 		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(delegate.getPaymentMethod()));
-		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod()));
+		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
 		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
 		totalDisplay.text(MarketScreenUtil.textForCartTotal(delegate.getCartTotal()));
@@ -98,7 +98,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
+		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
 		// Cart
 
