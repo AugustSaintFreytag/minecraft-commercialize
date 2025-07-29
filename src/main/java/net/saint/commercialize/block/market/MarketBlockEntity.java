@@ -30,7 +30,7 @@ import net.saint.commercialize.screen.market.MarketScreen;
 import net.saint.commercialize.screen.market.MarketScreenUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityScreenHandler {
+public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenHandler {
 
 	// Configuration
 
@@ -99,6 +99,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 
 	public void receiveListMessage(MarketS2CListMessage message) {
 		state.balance = message.balance;
+		state.cardOwner = message.cardOwner;
 
 		state.marketOffers.clearOffers();
 		state.marketOffers.addOffers(message.offers);

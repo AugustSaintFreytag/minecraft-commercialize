@@ -106,16 +106,18 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
+		var cardOwner = cardOwnerForItemHeldByPlayer(player);
 
-		sendMarketDataResponse(responseSender, message.position, balance, preparedOffers, preparedOffersAreCapped);
+		sendMarketDataResponse(responseSender, message.position, balance, cardOwner, preparedOffers, preparedOffersAreCapped);
 	}
 
-	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, List<Offer> offers,
-			boolean offersAreCapped) {
+	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, String cardOwner,
+			List<Offer> offers, boolean offersAreCapped) {
 		var responseMessage = new MarketS2CListMessage();
 
 		responseMessage.position = position;
 		responseMessage.balance = balance;
+		responseMessage.cardOwner = cardOwner;
 		responseMessage.offers = offers;
 		responseMessage.isCapped = offersAreCapped;
 
@@ -163,6 +165,22 @@ public final class MarketBlockServerNetworking {
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
 	}
 
+	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
+			MarketS2COrderMessage.Result result) {
+		var responseMessage = new MarketS2COrderMessage();
+
+		responseMessage.position = position;
+		responseMessage.offers = offers;
+		responseMessage.result = result;
+
+		var responseBuffer = PacketByteBufs.create();
+		responseMessage.encodeToBuffer(responseBuffer);
+
+		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
+	}
+
+	// Actions
+
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
 		var itemStackList = itemStackListFromOffers(offers);
 
@@ -199,21 +217,7 @@ public final class MarketBlockServerNetworking {
 		offers.forEach(offer -> Commercialize.MARKET_MANAGER.removeOffer(offer));
 	}
 
-	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
-			MarketS2COrderMessage.Result result) {
-		var responseMessage = new MarketS2COrderMessage();
-
-		responseMessage.position = position;
-		responseMessage.offers = offers;
-		responseMessage.result = result;
-
-		var responseBuffer = PacketByteBufs.create();
-		responseMessage.encodeToBuffer(responseBuffer);
-
-		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
-	}
-
-	// Balance Utility
+	// Bank Account Utility
 
 	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
@@ -221,10 +225,20 @@ public final class MarketBlockServerNetworking {
 			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
 			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
 		default:
 			Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
 			return 0;
 		}
+	}
+
+	private static String cardOwnerForItemHeldByPlayer(ServerPlayerEntity player) {
+		var heldItemStack = player.getMainHandStack();
+		var ownerName = BankAccountAccessUtil.getOwnerNameForCard(heldItemStack);
+
+		return ownerName;
 	}
 
 	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
@@ -235,6 +249,10 @@ public final class MarketBlockServerNetworking {
 			break;
 		case ACCOUNT:
 			BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
+			break;
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			BankAccountAccessUtil.deductAccountBalanceForCard(heldItemStack, amount);
 			break;
 		default:
 			Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
