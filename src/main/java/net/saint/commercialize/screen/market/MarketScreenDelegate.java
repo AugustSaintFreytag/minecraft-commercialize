@@ -17,6 +17,10 @@ public interface MarketScreenDelegate {
 
 	int getBalance();
 
+	boolean hasCardInHand();
+
+	String getCardOwnerName();
+
 	// Cart
 
 	List<Offer> getCart();

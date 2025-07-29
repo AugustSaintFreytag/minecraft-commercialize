@@ -39,6 +39,23 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		return getState().balance;
 	}
 
+	@Override
+	default boolean hasCardInHand() {
+		var heldItemStack = getPlayer().getMainHandStack();
+		return BankAccountAccessUtil.isPaymentCard(heldItemStack);
+	}
+
+	@Override
+	default String getCardOwnerName() {
+		var ownerName = getState().cardOwner;
+
+		if (ownerName == null || ownerName.isEmpty()) {
+			return LocalizationUtil.localizedString("gui", "market.player_unknown");
+		}
+
+		return ownerName;
+	}
+
 	// Cart
 
 	@Override
