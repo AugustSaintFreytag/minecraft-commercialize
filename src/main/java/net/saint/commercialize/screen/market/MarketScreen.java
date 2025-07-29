@@ -219,13 +219,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 					var sprintKeyCode = KeyBindingHelper.getBoundKeyOf(client.options.sprintKey).getCode();
 					var isSprintKeyHeld = InputUtil.isKeyPressed(windowHandle, sprintKeyCode);
 
-					var sortMode = delegate.getSortMode();
-					var sortOrder = delegate.getSortOrder();
-
 					if (isSprintKeyHeld) {
-						delegate.setSortOrder(sortOrder.next());
+						delegate.cycleSortOrder();
 					} else {
-						delegate.setSortMode(sortMode.next());
+						delegate.cycleSortMode();
 					}
 
 					this.updateDisplay();
@@ -237,9 +234,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
 				MarketScreenAssets.STUB_ICON, component -> {
-					var filterMode = delegate.getFilterMode();
-					delegate.setFilterMode(filterMode.next());
-
+					delegate.cycleFilterMode();
 					this.updateDisplay();
 				});
 
@@ -308,9 +303,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				MarketScreenAssets.STUB_ICON, component -> {
-					var paymentMethod = delegate.getPaymentMethod();
-					delegate.setPaymentMethod(paymentMethod.next());
-
+					delegate.cyclePaymentMethod();
 					this.updateDisplay();
 				});
 
