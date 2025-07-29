@@ -1,6 +1,6 @@
 package net.saint.commercialize.block.market;
 
-import static net.saint.commercialize.util.Values.ifPresentAsString;
+import static net.saint.commercialize.util.Values.returnIfPresentAsString;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -70,10 +70,10 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		super.readNbt(nbt);
 
 		state.searchTerm = nbt.getString("searchTerm");
-		state.sortMode = ifPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
-		state.sortOrder = ifPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
-		state.filterMode = ifPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
-		state.paymentMethod = ifPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
+		state.sortMode = returnIfPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
+		state.sortOrder = returnIfPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
+		state.filterMode = returnIfPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
+		state.paymentMethod = returnIfPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
 	}
 
 	@Override
