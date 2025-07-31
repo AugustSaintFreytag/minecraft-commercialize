@@ -241,6 +241,10 @@ public final class MarketBlockServerNetworking {
 		var heldItemStack = player.getMainHandStack();
 		var ownerName = BankAccountAccessUtil.getOwnerNameForCard(heldItemStack);
 
+		if (ownerName == null) {
+			return "";
+		}
+
 		return ownerName;
 	}
 
