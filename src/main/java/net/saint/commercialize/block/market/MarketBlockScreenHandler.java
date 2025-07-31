@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
@@ -209,6 +210,10 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 	private PaymentMethod[] getSupportedPaymentMethods() {
 		if (hasCardInHand()) {
 			return new PaymentMethod[] { PaymentMethod.SPECIFIED_ACCOUNT };
+		}
+
+		if (Commercialize.CONFIG.requireCardForMarketPayment) {
+			return new PaymentMethod[] { PaymentMethod.INVENTORY };
 		}
 
 		return new PaymentMethod[] { PaymentMethod.INVENTORY, PaymentMethod.ACCOUNT };
