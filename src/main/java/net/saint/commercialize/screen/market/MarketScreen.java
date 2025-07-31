@@ -100,6 +100,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
+		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && !delegate.hasOwnedCardInHand()) {
+			var balanceText = LocalizationUtil.localizedText("gui", "market.inviable_balance");
+			balanceDisplay.text(balanceText);
+
+			var tooltipText = LocalizationUtil.localizedText("gui", "market.inviable_account.tooltip", delegate.getCardOwnerName());
+			balanceDisplay.tooltip(tooltipText);
+		}
+
 		// Cart
 
 		if (delegate.getCart().isEmpty()) {
