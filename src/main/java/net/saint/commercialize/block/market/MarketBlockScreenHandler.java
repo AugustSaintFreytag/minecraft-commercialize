@@ -47,6 +47,15 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 	}
 
 	@Override
+	default boolean hasOwnedCardInHand() {
+		var player = getPlayer();
+		var playerName = player.getName().getString();
+		var cardOwnerName = getCardOwnerName();
+
+		return playerName == cardOwnerName;
+	}
+
+	@Override
 	default String getCardOwnerName() {
 		var ownerName = getState().cardOwner;
 

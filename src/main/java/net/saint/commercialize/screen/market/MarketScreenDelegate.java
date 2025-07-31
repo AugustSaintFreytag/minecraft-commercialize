@@ -19,6 +19,8 @@ public interface MarketScreenDelegate {
 
 	boolean hasCardInHand();
 
+	boolean hasOwnedCardInHand();
+
 	String getCardOwnerName();
 
 	// Cart
