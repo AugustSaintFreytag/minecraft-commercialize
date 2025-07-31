@@ -7,7 +7,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.nbt.NbtCompound;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.library.CircularList;
 
 public final class Values {
 
@@ -66,19 +65,6 @@ public final class Values {
 		}
 
 		return fallback;
-	}
-
-	public static <T extends Enum<T>> void readAndSelectEnumValueFromNbt(NbtCompound nbt, String key, CircularList<T> property,
-			Function<String, T> parser) {
-		ifPresentAsString(nbt, "sortMode", storedValue -> {
-			try {
-				var value = parser.apply(storedValue);
-				property.select(value);
-			} catch (IllegalArgumentException e) {
-				Commercialize.LOGGER.warn("Could not decode value '{}' for key '{}' from NBT for property.", storedValue, key);
-				return;
-			}
-		});
 	}
 
 }
