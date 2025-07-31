@@ -138,6 +138,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 			break;
 		}
+		case INVIABLE_PAYMENT_METHOD: {
+			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
+			player.sendMessage(displayText, true);
+			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+			break;
+		}
 		case FAILURE: {
 			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
 			player.sendMessage(displayText, true);

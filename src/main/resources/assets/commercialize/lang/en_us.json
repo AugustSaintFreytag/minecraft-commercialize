@@ -45,6 +45,7 @@
 	"gui.commercialize.market.order_error_inviable_offers": "Some orders may have expired and are no longer available.",
 	"gui.commercialize.market.order_error_inviable_delivery": "No personal mailbox to receive market deliveries.",
 	"gui.commercialize.market.order_error_insufficient_funds": "Insufficient funds to complete the order.",
+	"gui.commercialize.market.order_error_inviable_payment_method": "The selected payment method can not be used.",
 	"gui.commercialize.market.order_error_failure": "Order could not be completed, market may be unavailable.",
 	"gui.commercialize.market.order_summary_item_unknown": "Unknown",
 	"gui.commercialize.market.order_summary_more": "and %s more",
