@@ -140,6 +140,27 @@ public final class MarketBlockServerNetworking {
 			return;
 		}
 
+		if (Commercialize.CONFIG.requireCardForMarketPayment && message.paymentMethod == PaymentMethod.ACCOUNT) {
+			Commercialize.LOGGER.warn(
+					"Player '{}' tried to order offers with payment method 'ACCOUNT' while configuration forbids direct-from-account payment.",
+					player.getName().getString());
+			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+			return;
+		}
+
+		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && message.paymentMethod == PaymentMethod.SPECIFIED_ACCOUNT) {
+			var cardOwner = cardOwnerForItemHeldByPlayer(player);
+
+			if (!cardOwner.equals(player.getName().getString())) {
+				Commercialize.LOGGER.warn(
+						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
+						player.getName().getString(), cardOwner);
+				sendMarketOrderResponse(responseSender, message.position, message.offers,
+						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+				return;
+			}
+		}
+
 		var offerTotal = offers.stream().mapToInt(offer -> offer.price).sum();
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
 
