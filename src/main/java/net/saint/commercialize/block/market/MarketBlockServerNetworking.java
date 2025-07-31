@@ -131,8 +131,7 @@ public final class MarketBlockServerNetworking {
 
 	private static void onReceiveMarketOrderRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SOrderMessage message) {
-		var offers = message.offers.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId))
-				.flatMap(java.util.Optional::stream).toList();
+		var offers = offersFromList(message.offers);
 
 		if (offers.size() != message.offers.size()) {
 			Commercialize.LOGGER
@@ -200,6 +199,10 @@ public final class MarketBlockServerNetworking {
 		});
 
 		return true;
+	}
+
+	private static List<Offer> offersFromList(List<UUID> list) {
+		return list.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId)).flatMap(java.util.Optional::stream).toList();
 	}
 
 	private static DefaultedList<ItemStack> itemStackListFromOffers(List<Offer> offers) {
