@@ -77,12 +77,12 @@ public class MarketBlock extends DoubleBlockWithEntity {
 	// Interaction
 
 	@Override
-	public ActionResult onMasterBlockUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!world.isClient() || hand == Hand.OFF_HAND) {
-			return ActionResult.CONSUME;
+			return ActionResult.PASS;
 		}
 
-		var blockEntity = (MarketBlockEntity) world.getBlockEntity(pos);
+		var blockEntity = (MarketBlockEntity) world.getBlockEntity(position);
 		blockEntity.openMarketScreen(world, player);
 
 		return ActionResult.SUCCESS;
