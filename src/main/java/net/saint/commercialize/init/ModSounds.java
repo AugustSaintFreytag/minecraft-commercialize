@@ -18,6 +18,9 @@ public class ModSounds {
 	public static final SoundEvent CARD_INSERT_SOUND = SoundEvent.of(new Identifier(Commercialize.MOD_ID, "card_insert"));
 	public static final SoundEvent CARD_EJECT_SOUND = SoundEvent.of(new Identifier(Commercialize.MOD_ID, "card_eject"));
 
+	public static final SoundEvent SHIPPING_OPEN_SOUND = SoundEvent.of(new Identifier(Commercialize.MOD_ID, "shipping_open"));
+	public static final SoundEvent SHIPPING_CLOSE_SOUND = SoundEvent.of(new Identifier(Commercialize.MOD_ID, "shipping_close"));
+
 	public static final SoundEvent MAILBOX_DELIVERY_SOUND = SoundEvent.of(new Identifier(Commercialize.MOD_ID, "mailbox_delivery"));
 
 	// Init
@@ -30,6 +33,9 @@ public class ModSounds {
 		Registry.register(Registries.SOUND_EVENT, MARKET_CLOSE_SOUND.getId(), MARKET_CLOSE_SOUND);
 		Registry.register(Registries.SOUND_EVENT, CARD_INSERT_SOUND.getId(), CARD_INSERT_SOUND);
 		Registry.register(Registries.SOUND_EVENT, CARD_EJECT_SOUND.getId(), CARD_EJECT_SOUND);
+
+		Registry.register(Registries.SOUND_EVENT, SHIPPING_OPEN_SOUND.getId(), SHIPPING_OPEN_SOUND);
+		Registry.register(Registries.SOUND_EVENT, SHIPPING_CLOSE_SOUND.getId(), SHIPPING_CLOSE_SOUND);
 
 		Registry.register(Registries.SOUND_EVENT, MAILBOX_DELIVERY_SOUND.getId(), MAILBOX_DELIVERY_SOUND);
 	}
