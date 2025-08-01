@@ -255,8 +255,6 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	private void updateMarketScreen() {
 		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn(
-					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
 			return;
 		}
 

@@ -20,6 +20,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
+import net.saint.commercialize.Commercialize;
 
 /**
  * Abstract base class for blocks that span two vertical blocks (double height).
@@ -105,20 +106,20 @@ public abstract class DoubleBlockWithEntity extends BlockWithEntity {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient() || hand == Hand.OFF_HAND) {
-			return ActionResult.CONSUME;
-		}
-
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
 			// Interaction with upper half is deferred to lower half instead.
 			var lowerHalfPosition = position.down();
 			var lowerHalfBlockState = world.getBlockState(lowerHalfPosition);
+			var lowerHalfBlock = lowerHalfBlockState.getBlock();
 
-			if (lowerHalfBlockState.getBlock() instanceof DoubleBlockWithEntity lowerHalfBlock) {
-				return lowerHalfBlock.onMasterBlockUse(lowerHalfBlockState, world, lowerHalfPosition, player, hand, hit);
+			if (!(lowerHalfBlock instanceof DoubleBlockWithEntity)) {
+				Commercialize.LOGGER.error("Could not cast lower half for '{}' to expected double block type to forward interaction.",
+						lowerHalfBlock.getClass().getSimpleName());
+				return ActionResult.CONSUME;
 			}
 
-			return ActionResult.CONSUME;
+			var lowerHalfDoubleBlock = (DoubleBlockWithEntity) lowerHalfBlock;
+			return lowerHalfDoubleBlock.onMasterBlockUse(lowerHalfBlockState, world, lowerHalfPosition, player, hand, hit);
 		}
 
 		return onMasterBlockUse(state, world, position, player, hand, hit);
