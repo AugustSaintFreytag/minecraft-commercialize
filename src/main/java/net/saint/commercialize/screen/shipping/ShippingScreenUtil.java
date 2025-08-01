@@ -8,7 +8,7 @@ import net.saint.commercialize.data.item.ItemSalePriceUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 
-public final class ShippingBlockScreenUtil {
+public final class ShippingScreenUtil {
 
 	// Sale
 

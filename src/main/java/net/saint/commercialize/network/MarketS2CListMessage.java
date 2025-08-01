@@ -18,6 +18,7 @@ public final class MarketS2CListMessage {
 
 	public BlockPos position;
 	public int balance;
+	public String cardOwner;
 	public List<Offer> offers;
 	public boolean isCapped;
 
@@ -28,6 +29,7 @@ public final class MarketS2CListMessage {
 
 		message.position = buffer.readBlockPos();
 		message.balance = buffer.readInt();
+		message.cardOwner = buffer.readString(64);
 		message.offers = buffer.readList(Offer::fromBuffer);
 		message.isCapped = buffer.readBoolean();
 
@@ -39,6 +41,7 @@ public final class MarketS2CListMessage {
 	public void encodeToBuffer(PacketByteBuf buffer) {
 		buffer.writeBlockPos(position);
 		buffer.writeInt(balance);
+		buffer.writeString(cardOwner, 64);
 		buffer.writeCollection(offers, (localBuffer, offer) -> offer.toBuffer(localBuffer));
 		buffer.writeBoolean(isCapped);
 	}

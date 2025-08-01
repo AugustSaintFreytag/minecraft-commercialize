@@ -53,11 +53,11 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		var rootComponent = this.uiAdapter.rootComponent;
 
 		var valueDisplay = rootComponent.childById(LabelComponent.class, "value_display");
-		valueDisplay.text(ShippingBlockScreenUtil.textForSaleValueForInventory(handler.blockInventory));
+		valueDisplay.text(ShippingScreenUtil.textForSaleValueForInventory(handler.blockInventory));
 
 		var saleDisplay = rootComponent.childById(LabelComponent.class, "sale_display");
 		saleDisplay.text(LocalizationUtil.localizedText("gui", "shipping.sale_time_format",
-				ShippingBlockScreenUtil.textForNextShippingTime(client.world)));
+				ShippingScreenUtil.textForNextShippingTime(client.world)));
 	}
 
 	// Root

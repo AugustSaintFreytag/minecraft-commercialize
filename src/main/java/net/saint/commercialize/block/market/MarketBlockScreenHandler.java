@@ -1,17 +1,23 @@
 package net.saint.commercialize.block.market;
 
+import static net.saint.commercialize.util.Values.assertedValueInSequence;
+import static net.saint.commercialize.util.Values.nextValueInSequence;
+
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.screen.market.MarketScreenDelegate;
+import net.saint.commercialize.util.LocalizationUtil;
 
-public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
+public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 
 	// State
 
@@ -32,6 +38,32 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	@Override
 	default int getBalance() {
 		return getState().balance;
+	}
+
+	@Override
+	default boolean hasCardInHand() {
+		var heldItemStack = getPlayer().getMainHandStack();
+		return BankAccountAccessUtil.isPaymentCard(heldItemStack);
+	}
+
+	@Override
+	default boolean hasOwnedCardInHand() {
+		var player = getPlayer();
+		var playerName = player.getName().getString();
+		var cardOwnerName = getCardOwnerName();
+
+		return playerName == cardOwnerName;
+	}
+
+	@Override
+	default String getCardOwnerName() {
+		var ownerName = getState().cardOwner;
+
+		if (ownerName == null || ownerName.isEmpty()) {
+			return LocalizationUtil.localizedString("gui", "market.player_unknown");
+		}
+
+		return ownerName;
 	}
 
 	// Cart
@@ -94,7 +126,7 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 		return getState().marketOffers.offersAreCapped();
 	}
 
-	// Filtering & Sorting
+	// Search Term
 
 	@Override
 	default String getSearchTerm() {
@@ -107,16 +139,22 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 		onMarketScreenUpdate();
 	}
 
+	// Sort Mode
+
 	@Override
 	default OfferSortMode getSortMode() {
 		return getState().sortMode;
 	}
 
 	@Override
-	default void setSortMode(OfferSortMode sortMode) {
-		getState().sortMode = sortMode;
+	default void cycleSortMode() {
+		var state = getState();
+		state.sortMode = nextValueInSequence(getSupportedSortModes(), state.sortMode);
+
 		onMarketScreenUpdate();
 	}
+
+	// Sort Order
 
 	@Override
 	default OfferSortOrder getSortOrder() {
@@ -124,10 +162,14 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	}
 
 	@Override
-	default void setSortOrder(OfferSortOrder sortOrder) {
-		getState().sortOrder = sortOrder;
+	default void cycleSortOrder() {
+		var state = getState();
+		state.sortOrder = nextValueInSequence(getSupportedSortOrders(), state.sortOrder);
+
 		onMarketScreenUpdate();
 	}
+
+	// Filter Mode
 
 	@Override
 	default OfferFilterMode getFilterMode() {
@@ -135,19 +177,55 @@ public interface MarketBlockEntityScreenHandler extends MarketScreenDelegate {
 	}
 
 	@Override
-	default void setFilterMode(OfferFilterMode filterMode) {
-		getState().filterMode = filterMode;
+	default void cycleFilterMode() {
+		var state = getState();
+		state.filterMode = nextValueInSequence(getSupportedFilterModes(), state.filterMode);
+
 		onMarketScreenUpdate();
 	}
+
+	// Payment Method
 
 	@Override
 	default PaymentMethod getPaymentMethod() {
-		return getState().paymentMethod;
+		var state = getState();
+		state.paymentMethod = assertedValueInSequence(getSupportedPaymentMethods(), state.paymentMethod);
+
+		return state.paymentMethod;
 	}
 
 	@Override
-	default void setPaymentMethod(PaymentMethod paymentMethod) {
-		getState().paymentMethod = paymentMethod;
+	default void cyclePaymentMethod() {
+		var state = getState();
+		state.paymentMethod = nextValueInSequence(getSupportedPaymentMethods(), state.paymentMethod);
+
 		onMarketScreenUpdate();
 	}
+
+	// Ordered Properties
+
+	private OfferSortMode[] getSupportedSortModes() {
+		return OfferSortMode.values();
+	}
+
+	private OfferFilterMode[] getSupportedFilterModes() {
+		return OfferFilterMode.values();
+	}
+
+	private OfferSortOrder[] getSupportedSortOrders() {
+		return OfferSortOrder.values();
+	}
+
+	private PaymentMethod[] getSupportedPaymentMethods() {
+		if (hasCardInHand()) {
+			return new PaymentMethod[] { PaymentMethod.SPECIFIED_ACCOUNT };
+		}
+
+		if (Commercialize.CONFIG.requireCardForMarketPayment) {
+			return new PaymentMethod[] { PaymentMethod.INVENTORY };
+		}
+
+		return new PaymentMethod[] { PaymentMethod.INVENTORY, PaymentMethod.ACCOUNT };
+	}
+
 }

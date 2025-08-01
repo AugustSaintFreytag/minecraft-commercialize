@@ -106,16 +106,18 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
+		var cardOwner = cardOwnerForItemHeldByPlayer(player);
 
-		sendMarketDataResponse(responseSender, message.position, balance, preparedOffers, preparedOffersAreCapped);
+		sendMarketDataResponse(responseSender, message.position, balance, cardOwner, preparedOffers, preparedOffersAreCapped);
 	}
 
-	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, List<Offer> offers,
-			boolean offersAreCapped) {
+	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, String cardOwner,
+			List<Offer> offers, boolean offersAreCapped) {
 		var responseMessage = new MarketS2CListMessage();
 
 		responseMessage.position = position;
 		responseMessage.balance = balance;
+		responseMessage.cardOwner = cardOwner;
 		responseMessage.offers = offers;
 		responseMessage.isCapped = offersAreCapped;
 
@@ -129,14 +131,34 @@ public final class MarketBlockServerNetworking {
 
 	private static void onReceiveMarketOrderRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SOrderMessage message) {
-		var offers = message.offers.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId))
-				.flatMap(java.util.Optional::stream).toList();
+		var offers = offersFromList(message.offers);
 
 		if (offers.size() != message.offers.size()) {
 			Commercialize.LOGGER
 					.warn("Could not collect and prepare all requested offers from market. Some orders may be invalid or have expired.");
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_OFFERS);
 			return;
+		}
+
+		if (Commercialize.CONFIG.requireCardForMarketPayment && message.paymentMethod == PaymentMethod.ACCOUNT) {
+			Commercialize.LOGGER.warn(
+					"Player '{}' tried to order offers with payment method 'ACCOUNT' while configuration forbids direct-from-account payment.",
+					player.getName().getString());
+			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+			return;
+		}
+
+		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && message.paymentMethod == PaymentMethod.SPECIFIED_ACCOUNT) {
+			var cardOwner = cardOwnerForItemHeldByPlayer(player);
+
+			if (!cardOwner.equals(player.getName().getString())) {
+				Commercialize.LOGGER.warn(
+						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
+						player.getName().getString(), cardOwner);
+				sendMarketOrderResponse(responseSender, message.position, message.offers,
+						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+				return;
+			}
 		}
 
 		var offerTotal = offers.stream().mapToInt(offer -> offer.price).sum();
@@ -163,6 +185,22 @@ public final class MarketBlockServerNetworking {
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
 	}
 
+	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
+			MarketS2COrderMessage.Result result) {
+		var responseMessage = new MarketS2COrderMessage();
+
+		responseMessage.position = position;
+		responseMessage.offers = offers;
+		responseMessage.result = result;
+
+		var responseBuffer = PacketByteBufs.create();
+		responseMessage.encodeToBuffer(responseBuffer);
+
+		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
+	}
+
+	// Actions
+
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
 		var itemStackList = itemStackListFromOffers(offers);
 
@@ -184,6 +222,10 @@ public final class MarketBlockServerNetworking {
 		return true;
 	}
 
+	private static List<Offer> offersFromList(List<UUID> list) {
+		return list.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId)).flatMap(java.util.Optional::stream).toList();
+	}
+
 	private static DefaultedList<ItemStack> itemStackListFromOffers(List<Offer> offers) {
 		var itemStacks = offers.stream().map(offer -> offer.stack).toList();
 		var itemStackList = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
@@ -199,21 +241,7 @@ public final class MarketBlockServerNetworking {
 		offers.forEach(offer -> Commercialize.MARKET_MANAGER.removeOffer(offer));
 	}
 
-	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
-			MarketS2COrderMessage.Result result) {
-		var responseMessage = new MarketS2COrderMessage();
-
-		responseMessage.position = position;
-		responseMessage.offers = offers;
-		responseMessage.result = result;
-
-		var responseBuffer = PacketByteBufs.create();
-		responseMessage.encodeToBuffer(responseBuffer);
-
-		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
-	}
-
-	// Balance Utility
+	// Bank Account Utility
 
 	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
@@ -221,10 +249,24 @@ public final class MarketBlockServerNetworking {
 			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 		case ACCOUNT:
 			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
 		default:
 			Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
 			return 0;
 		}
+	}
+
+	private static String cardOwnerForItemHeldByPlayer(ServerPlayerEntity player) {
+		var heldItemStack = player.getMainHandStack();
+		var ownerName = BankAccountAccessUtil.getOwnerNameForCard(heldItemStack);
+
+		if (ownerName == null) {
+			return "";
+		}
+
+		return ownerName;
 	}
 
 	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
@@ -235,6 +277,10 @@ public final class MarketBlockServerNetworking {
 			break;
 		case ACCOUNT:
 			BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
+			break;
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			BankAccountAccessUtil.deductAccountBalanceForCard(heldItemStack, amount);
 			break;
 		default:
 			Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
