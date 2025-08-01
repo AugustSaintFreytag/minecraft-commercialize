@@ -127,7 +127,7 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 		var screenHandlerFactory = state.createScreenHandlerFactory(world, position);
 
 		if (screenHandlerFactory == null) {
-			return ActionResult.CONSUME;
+			return ActionResult.FAIL;
 		}
 
 		player.openHandledScreen(screenHandlerFactory);
