@@ -23,10 +23,6 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 
 	MarketBlockEntityScreenState getState();
 
-	// Event
-
-	void onMarketScreenUpdate();
-
 	// Player
 
 	@Override
