@@ -108,7 +108,10 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		return new ShippingBlockScreenHandler(syncId, playerInventory, this.inventory);
+		var screenHandler = new ShippingBlockScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
+		screenHandler.onOpen(player);
+
+		return screenHandler;
 	}
 
 	@Override
