@@ -1,5 +1,6 @@
 package net.saint.commercialize.init;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -19,18 +20,16 @@ public final class ModBlockEntities {
 	// Init
 
 	public static void initialize() {
-
 		MARKET_BLOCK_ENTITY = registerBlockEntity(MarketBlockEntity.ID, ModBlocks.MARKET_BLOCK, MarketBlockEntity::new);
-
 		SHIPPING_BLOCK_ENTITY = registerBlockEntity(ShippingBlockEntity.ID, ModBlocks.SHIPPING_BLOCK, ShippingBlockEntity::new);
 	}
 
 	// Registration
 
 	private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(Identifier id, Block block,
-			BlockEntityType.BlockEntityFactory<T> blockEntityConstructor) {
+			FabricBlockEntityTypeBuilder.Factory<T> blockEntityConstructor) {
 		return Registry.register(Registries.BLOCK_ENTITY_TYPE, id,
-				BlockEntityType.Builder.create(blockEntityConstructor, block).build(null));
+				FabricBlockEntityTypeBuilder.create(blockEntityConstructor, block).build(null));
 	}
 
 }
