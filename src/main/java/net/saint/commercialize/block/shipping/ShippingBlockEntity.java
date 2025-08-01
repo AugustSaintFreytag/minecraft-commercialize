@@ -90,16 +90,16 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 		ShippingExchangeTickingUtil.tickShippingIfNecessary(world, blockEntity, result -> {
 			switch (result) {
-			case SOLD:
-				world.playSound(null, blockEntity.getPos(), ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 1.5f, 0.75f);
-				break;
-			case NO_ITEMS:
-				// No feedback sound when not selling items.
-				// world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 0.5f, 0.25f);
-				break;
-			case FAILURE:
-				world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
+				case SOLD:
+					world.playSound(null, blockEntity.getPos(), ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 1.5f, 0.75f);
+					break;
+				case NO_ITEMS:
+					// No feedback sound when not selling items.
+					// world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 0.5f, 0.25f);
+					break;
+				case FAILURE:
+					world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+					break;
 			}
 		});
 	}
@@ -108,7 +108,10 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		return new ShippingBlockScreenHandler(syncId, playerInventory, this.inventory);
+		var screenHandler = new ShippingBlockScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
+		screenHandler.onOpen(player);
+
+		return screenHandler;
 	}
 
 	@Override

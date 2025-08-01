@@ -47,6 +47,24 @@
 		"category": "block",
 		"subtitle": "subtitles.commercialize.card_eject"
 	},
+	"shipping_open": {
+		"sounds": [
+			"commercialize:shipping_open_1",
+			"commercialize:shipping_open_2",
+			"commercialize:shipping_open_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.shipping_open"
+	},
+	"shipping_close": {
+		"sounds": [
+			"commercialize:shipping_close_1",
+			"commercialize:shipping_close_2",
+			"commercialize:shipping_close_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.shipping_close"
+	},
 	"mailbox_delivery": {
 		"sounds": [
 			"commercialize:mailbox_delivery_1",

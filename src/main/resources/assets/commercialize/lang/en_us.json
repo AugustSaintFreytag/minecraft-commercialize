@@ -117,6 +117,7 @@
 	"subtitles.commercialize.market_open": "Market block opened",
 	"subtitles.commercialize.market_close": "Market block closed",
 	"subtitles.commercialize.card_insert": "Card inserted into Market block",
-	"subtitles.commercialize.card_eject": "Card ejected from Market block"
-
+	"subtitles.commercialize.card_eject": "Card ejected from Market block",
+	"subtitles.commercialize.shipping_open": "Shipping block opened",
+	"subtitles.commercialize.shipping_close": "Shipping block closed"
 }
