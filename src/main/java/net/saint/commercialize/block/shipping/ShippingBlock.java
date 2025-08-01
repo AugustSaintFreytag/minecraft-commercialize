@@ -120,6 +120,10 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 	@Override
 	protected ActionResult onMasterBlockUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
+		if (world.isClient() || hand == Hand.OFF_HAND) {
+			return ActionResult.CONSUME;
+		}
+
 		var screenHandlerFactory = state.createScreenHandlerFactory(world, position);
 
 		if (screenHandlerFactory == null) {
