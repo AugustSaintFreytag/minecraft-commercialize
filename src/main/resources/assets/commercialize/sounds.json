@@ -11,12 +11,49 @@
 		],
 		"category": "gui"
 	},
+	"market_open": {
+		"sounds": [
+			"commercialize:market_open_1",
+			"commercialize:market_open_2",
+			"commercialize:market_open_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.market_open"
+	},
+	"market_close": {
+		"sounds": [
+			"commercialize:market_close_1",
+			"commercialize:market_close_2",
+			"commercialize:market_close_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.market_close"
+	},
+	"card_insert": {
+		"sounds": [
+			"commercialize:card_insert_1",
+			"commercialize:card_insert_2",
+			"commercialize:card_insert_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.card_insert"
+	},
+	"card_eject": {
+		"sounds": [
+			"commercialize:card_eject_1",
+			"commercialize:card_eject_2",
+			"commercialize:card_eject_3"
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.card_eject"
+	},
 	"mailbox_delivery": {
-		"subtitle": "subtitles.commercialize.mailbox_delivery",
 		"sounds": [
 			"commercialize:mailbox_delivery_1",
 			"commercialize:mailbox_delivery_2",
 			"commercialize:mailbox_delivery_3"
-		]
+		],
+		"category": "block",
+		"subtitle": "subtitles.commercialize.mailbox_delivery"
 	}
 }
