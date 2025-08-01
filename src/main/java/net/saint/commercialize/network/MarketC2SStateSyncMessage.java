@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.market.MarketBlockEntityScreenState;
+import net.saint.commercialize.block.market.MarketBlockStateSyncReason;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
@@ -19,12 +20,14 @@ public final class MarketC2SStateSyncMessage {
 	// Properties
 
 	public BlockPos position;
+	public MarketBlockStateSyncReason reason;
 	public MarketBlockEntityScreenState state;
 
 	// Encoding
 
 	public void encodeToBuffer(PacketByteBuf buffer) {
 		buffer.writeBlockPos(position);
+		buffer.writeEnumConstant(reason);
 		buffer.writeString(state.searchTerm, 255);
 		buffer.writeEnumConstant(state.sortMode);
 		buffer.writeEnumConstant(state.sortOrder);
@@ -39,6 +42,7 @@ public final class MarketC2SStateSyncMessage {
 		message.state = new MarketBlockEntityScreenState();
 
 		message.position = buffer.readBlockPos();
+		message.reason = buffer.readEnumConstant(MarketBlockStateSyncReason.class);
 		message.state.searchTerm = buffer.readString(255);
 		message.state.sortMode = buffer.readEnumConstant(OfferSortMode.class);
 		message.state.sortOrder = buffer.readEnumConstant(OfferSortOrder.class);
