@@ -9,6 +9,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -120,56 +122,57 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		var player = client.player;
 
 		switch (message.result) {
-		case INSUFFICIENT_FUNDS: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case INVIABLE_DELIVERY: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case INVIABLE_OFFERS: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case INVIABLE_PAYMENT_METHOD: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case FAILURE: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case SUCCESS: {
-			var offers = state.cartOffers.getOffers().toList();
-			var itemNames = MarketScreenUtil.textForOrderSummary(offers);
-			var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
+			case INSUFFICIENT_FUNDS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_DELIVERY: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_OFFERS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_PAYMENT_METHOD: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case FAILURE: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case SUCCESS: {
+				var offers = state.cartOffers.getOffers().toList();
+				var itemNames = MarketScreenUtil.textForOrderSummary(offers);
+				var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
 
-			player.sendMessage(displayText, true);
-			player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
+				player.sendMessage(displayText, true);
+				player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
 
-			state.cartOffers.clearOffers();
-			requestMarketData();
-			updateMarketScreen();
-			break;
-		}
+				state.cartOffers.clearOffers();
+				requestMarketData();
+				updateMarketScreen();
+				break;
+			}
 		}
 	}
 
-	public void sendStateSync() {
+	public void sendStateSync(MarketBlockStateSyncReason reason) {
 		var message = new MarketC2SStateSyncMessage();
 		message.position = this.getPos();
+		message.reason = reason;
 		message.state = this.state;
 
 		var buffer = PacketByteBufs.create();
@@ -231,15 +234,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 	// Screen
 
 	public void openMarketScreen(World world, PlayerEntity player) {
-		if (!world.isClient()) {
-			return;
-		}
-
 		var client = MinecraftClient.getInstance();
 		this.marketScreen = new MarketScreen();
 		this.marketScreen.delegate = this;
 		client.setScreen(marketScreen);
 
+		sendStateSync(MarketBlockStateSyncReason.INTERACTION_START);
 		requestMarketData();
 	}
 
@@ -249,8 +249,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 			return;
 		}
 
-		this.requestMarketData();
-		this.sendStateSync();
+		requestMarketData();
+		sendStateSync(MarketBlockStateSyncReason.UPDATE);
+	}
+
+	public void onMarketScreenClose() {
+		sendStateSync(MarketBlockStateSyncReason.INTERACTION_END);
 	}
 
 	private void updateMarketScreen() {

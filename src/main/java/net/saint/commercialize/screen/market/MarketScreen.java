@@ -59,6 +59,12 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return false;
 	}
 
+	@Override
+	public void close() {
+		delegate.onMarketScreenClose();
+		super.close();
+	}
+
 	// Update
 
 	public void updateDisplay() {

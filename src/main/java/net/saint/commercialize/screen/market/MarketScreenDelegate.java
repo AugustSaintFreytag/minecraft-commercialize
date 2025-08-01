@@ -11,6 +11,12 @@ import net.saint.commercialize.data.payment.PaymentMethod;
 
 public interface MarketScreenDelegate {
 
+	// Events
+
+	void onMarketScreenUpdate();
+
+	void onMarketScreenClose();
+
 	// Player
 
 	PlayerEntity getPlayer();
