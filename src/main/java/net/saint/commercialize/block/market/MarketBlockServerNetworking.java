@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
-import net.saint.commercialize.data.mail.MailSystemAccessUtil;
+import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
@@ -241,23 +241,21 @@ public final class MarketBlockServerNetworking {
 
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
 		var itemStackList = itemStackListFromOffers(offers);
+		return dispatchItemStacksToPlayer(server, player, itemStackList);
+	}
 
-		// Mail Delivery
+	private static boolean dispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
+			DefaultedList<ItemStack> itemStacks) {
+		if (!Commercialize.CONFIG.useMailDelivery) {
+			itemStacks.forEach(itemStack -> {
+				player.giveItemStack(itemStack);
+			});
 
-		if (Commercialize.CONFIG.useMailDelivery) {
-			var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStackList);
-			var didSuccessfullyDeliverOrder = MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
+			return true;
 
-			return didSuccessfullyDeliverOrder;
 		}
 
-		// Direct Delivery
-
-		itemStackList.forEach(itemStack -> {
-			player.giveItemStack(itemStack);
-		});
-
-		return true;
+		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks);
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {

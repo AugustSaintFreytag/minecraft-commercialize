@@ -10,6 +10,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
+import net.saint.commercialize.data.mail.MailTransitManager;
+import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
@@ -40,6 +42,7 @@ public class Commercialize implements ModInitializer {
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
 	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
+	public static MailTransitManager MAIL_TRANSIT_MANAGER;
 
 	public static boolean shouldTickMarket = true;
 
@@ -64,6 +67,7 @@ public class Commercialize implements ModInitializer {
 			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
 			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
+			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
 
 			reloadConfigs();
 		});
@@ -74,7 +78,9 @@ public class Commercialize implements ModInitializer {
 			}
 
 			var world = server.getOverworld();
+
 			MarketOfferTickingUtil.tickMarketOffersIfNecessary(world);
+			MailTransitUtil.tickMailTransitIfNecessary(world);
 		});
 
 	}
