@@ -28,7 +28,7 @@ public final class ModCommands {
 				}))
 
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
-					Commercialize.MARKET_MANAGER.clearOffers();
+					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
 					return 1;
 				}))
 
@@ -36,7 +36,7 @@ public final class ModCommands {
 					var server = context.getSource().getServer();
 					var world = server.getOverworld();
 
-					Commercialize.MARKET_MANAGER.clearOffers();
+					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
 
 					for (var i = 0; i < NUMBER_OF_GENERATIONS_PER_COMMAND; i++) {
 						MarketOfferTickingUtil.tickMarketOfferGeneration(world);

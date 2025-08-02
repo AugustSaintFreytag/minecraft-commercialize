@@ -2,7 +2,7 @@ package net.saint.commercialize.block.market;
 
 import java.util.Objects;
 
-import net.saint.commercialize.data.market.MarketOfferCollection;
+import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
@@ -12,11 +12,11 @@ public class MarketBlockEntityScreenState {
 
 	// Market
 
-	public MarketOfferCollection marketOffers = new MarketOfferCollection();
+	public MarketOfferManager marketOffers = new MarketOfferManager();
 
 	// Cart
 
-	public MarketOfferCollection cartOffers = new MarketOfferCollection();
+	public MarketOfferManager cartOffers = new MarketOfferManager();
 
 	// Balance
 
