@@ -103,6 +103,16 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("delivery")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("The interval in ticks to check if mail is ready to be delivered from the transit queue. (Default: 400)")
+	public int mailDeliveryCheckInterval = 400;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The effective chance mail gets delivered when out for delivery. Can be decreased from 1.0 (100%) to randomly delay delivery to next tick. (Default: 1.0)")
+	public double mailDeliveryChance = 1.0;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("A string added in the mailbox name to mark it as the main delivery destination for market orders. (Default: '(M)')")
 	public String mailboxMainMarker = "(M)";
 
