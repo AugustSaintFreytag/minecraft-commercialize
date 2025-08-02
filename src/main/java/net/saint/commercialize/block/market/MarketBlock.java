@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.ScreenHandler;
@@ -41,6 +42,10 @@ public class MarketBlock extends DoubleBlockWithEntity {
 
 	@Override
 	public BlockEntity createBlockEntity(BlockPos position, BlockState blockState) {
+		if (blockState.get(HALF) == DoubleBlockHalf.UPPER) {
+			return null;
+		}
+
 		return new MarketBlockEntity(position, blockState);
 	}
 
@@ -79,12 +84,18 @@ public class MarketBlock extends DoubleBlockWithEntity {
 	@Override
 	protected ActionResult onMasterBlockUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
-		if (!world.isClient() || hand == Hand.OFF_HAND) {
-			return ActionResult.PASS;
+		if (hand == Hand.OFF_HAND) {
+			return ActionResult.FAIL;
+		}
+
+		if (!world.isClient()) {
+			return ActionResult.SUCCESS;
 		}
 
 		var blockEntity = (MarketBlockEntity) world.getBlockEntity(position);
 		blockEntity.openMarketScreen(world, player);
+
+		player.swingHand(hand);
 
 		return ActionResult.SUCCESS;
 	}

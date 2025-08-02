@@ -78,7 +78,7 @@ public final class MarketBlockServerNetworking {
 		var blockEntity = world.getBlockEntity(position);
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
-			Commercialize.LOGGER.error("Could not mark market block entity at position {} as dirty, invalid type '{}'.", position,
+			Commercialize.LOGGER.error("Could not resolve market block entity at position {}, invalid type '{}'.", position,
 					blockEntity.getClass().getName());
 			return;
 		}
