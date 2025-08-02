@@ -7,38 +7,44 @@ import net.minecraft.nbt.NbtCompound;
 
 public class MailTransitItem {
 
+	// Configuration
+
+	public static final String TIME_DISPATCHED_NBT_KEY = "TimeDispatched";
+	public static final String RECIPIENT_NBT_KEY = "Recipient";
+	public static final String STACK_NBT_KEY = "Stack";
+
 	// Properties
 
 	public final long timeDispatched;
 	public final UUID recipient;
-	public final ItemStack item;
+	public final ItemStack stack;
 
 	// Init
 
-	public MailTransitItem(long timeDispatched, UUID recipient, ItemStack item) {
+	public MailTransitItem(long timeDispatched, UUID recipient, ItemStack stack) {
 		this.timeDispatched = timeDispatched;
 		this.recipient = recipient;
-		this.item = item;
+		this.stack = stack;
 	}
 
 	// NBT
 
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		nbt.putLong("timeDispatched", timeDispatched);
-		nbt.putUuid("recipient", recipient);
+		nbt.putLong(MailTransitItem.TIME_DISPATCHED_NBT_KEY, timeDispatched);
+		nbt.putUuid(MailTransitItem.RECIPIENT_NBT_KEY, recipient);
 
 		var itemNbt = new NbtCompound();
-		nbt.put("item", item.writeNbt(itemNbt));
+		nbt.put(MailTransitItem.STACK_NBT_KEY, stack.writeNbt(itemNbt));
 
 		return nbt;
 	}
 
 	public static MailTransitItem fromNbt(NbtCompound nbt) {
-		var timeDispatched = nbt.getLong("timeDispatched");
-		var recipient = nbt.getUuid("recipient");
-		var item = ItemStack.fromNbt(nbt.getCompound("item"));
+		var timeDispatched = nbt.getLong(MailTransitItem.TIME_DISPATCHED_NBT_KEY);
+		var recipient = nbt.getUuid(MailTransitItem.RECIPIENT_NBT_KEY);
+		var stack = ItemStack.fromNbt(nbt.getCompound(MailTransitItem.STACK_NBT_KEY));
 
-		return new MailTransitItem(timeDispatched, recipient, item);
+		return new MailTransitItem(timeDispatched, recipient, stack);
 	}
 
 }
