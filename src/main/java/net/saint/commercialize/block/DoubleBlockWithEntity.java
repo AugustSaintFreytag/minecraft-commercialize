@@ -5,7 +5,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,11 +36,6 @@ public abstract class DoubleBlockWithEntity extends BlockWithEntity {
 	public DoubleBlockWithEntity(Settings settings) {
 		super(settings);
 	}
-
-	// Entity
-
-	@Override
-	public abstract BlockEntity createBlockEntity(BlockPos position, BlockState blockState);
 
 	// Placement
 
@@ -79,7 +73,8 @@ public abstract class DoubleBlockWithEntity extends BlockWithEntity {
 		var twinBlockPosition = getOtherHalfBlockPosition(position, state);
 		var twinBlockState = world.getBlockState(twinBlockPosition);
 
-		if (twinBlockState.getBlock() == this) {
+		if (twinBlockState.getBlock() instanceof DoubleBlockWithEntity) {
+			world.removeBlockEntity(position);
 			world.setBlockState(twinBlockPosition, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
 			world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, twinBlockPosition, Block.getRawIdFromState(twinBlockState));
 		}
