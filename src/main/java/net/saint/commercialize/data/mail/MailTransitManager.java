@@ -1,7 +1,9 @@
 package net.saint.commercialize.data.mail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import net.minecraft.nbt.NbtCompound;
@@ -19,7 +21,7 @@ public final class MailTransitManager extends PersistentState {
 
 	// Properties
 
-	private List<MailTransitItem> items = new ArrayList<>();
+	private final AtomicReference<List<MailTransitItem>> items = new AtomicReference<>(Collections.emptyList());
 
 	// Load
 
@@ -36,7 +38,7 @@ public final class MailTransitManager extends PersistentState {
 	public NbtCompound writeNbt(NbtCompound nbt) {
 		var list = new NbtList();
 
-		for (MailTransitItem item : items) {
+		for (MailTransitItem item : items.get()) {
 			var itemNbt = new NbtCompound();
 			item.writeNbt(itemNbt);
 			list.add(itemNbt);
@@ -50,28 +52,40 @@ public final class MailTransitManager extends PersistentState {
 		var manager = new MailTransitManager();
 
 		var list = nbt.getList("items", 10); // 10 = NbtCompound
+		var newItems = new ArrayList<MailTransitItem>();
 
 		for (int i = 0; i < list.size(); i++) {
 			var itemNbt = list.getCompound(i);
-			manager.items.add(MailTransitItem.fromNbt(itemNbt));
+			newItems.add(MailTransitItem.fromNbt(itemNbt));
 		}
 
+		manager.items.set(Collections.unmodifiableList(newItems));
 		return manager;
 	}
 
 	// Access
 
 	public Stream<MailTransitItem> getItems() {
-		return items.stream();
+		return items.get().stream();
 	}
 
 	public void pushItem(MailTransitItem item) {
-		items.add(item);
+		items.updateAndGet(currentList -> {
+			var newList = new ArrayList<>(currentList);
+			newList.add(item);
+			return Collections.unmodifiableList(newList);
+		});
+
 		markDirty();
 	}
 
 	public void removeItem(MailTransitItem item) {
-		items.remove(item);
+		items.updateAndGet(currentList -> {
+			var newList = new ArrayList<>(currentList);
+			newList.remove(item);
+			return Collections.unmodifiableList(newList);
+		});
+
 		markDirty();
 	}
 
