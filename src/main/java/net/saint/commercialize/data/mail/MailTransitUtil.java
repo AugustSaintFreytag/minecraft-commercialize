@@ -1,5 +1,7 @@
 package net.saint.commercialize.data.mail;
 
+import java.util.UUID;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -7,6 +9,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MailTransitUtil {
 
@@ -35,7 +38,8 @@ public final class MailTransitUtil {
 
 		transitItemsOutForDelivery.forEach(transitItem -> {
 			var playerId = transitItem.recipient;
-			var playerName = server.getPlayerManager().getPlayer(playerId);
+			var playerName = playerNameForId(server, playerId);
+
 			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(transitItem.stack);
 
 			if (!deliverItem(server, transitItem)) {
@@ -47,6 +51,16 @@ public final class MailTransitUtil {
 			Commercialize.LOGGER.info("Completed delivery of '{}' to mailbox of player '{}'.", itemStackDescriptions, playerName);
 			Commercialize.MAIL_TRANSIT_MANAGER.removeItem(transitItem);
 		});
+	}
+
+	private static String playerNameForId(MinecraftServer server, UUID playerId) {
+		var playerProfile = server.getUserCache().getByUuid(playerId);
+
+		if (!playerProfile.isPresent()) {
+			return LocalizationUtil.localizedString("text", "player_unknown");
+		}
+
+		return playerProfile.get().getName();
 	}
 
 	private static boolean deliverItem(MinecraftServer server, MailTransitItem item) {
