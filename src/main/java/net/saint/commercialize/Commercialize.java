@@ -19,6 +19,7 @@ import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
 import net.saint.commercialize.init.ModConfigUtil;
+import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
@@ -50,6 +51,7 @@ public class Commercialize implements ModInitializer {
 		AutoConfig.register(CommercializeConfig.class, JanksonConfigSerializer::new);
 		CONFIG = AutoConfig.getConfigHolder(CommercializeConfig.class).getConfig();
 
+		ModItems.initialize();
 		ModBlocks.initialize();
 		ModBlockEntities.initialize();
 		ModScreenHandlers.initialize();
