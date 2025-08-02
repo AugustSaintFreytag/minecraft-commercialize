@@ -59,6 +59,12 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		return false;
 	}
 
+	@Override
+	public void close() {
+		delegate.onMarketScreenClose();
+		super.close();
+	}
+
 	// Update
 
 	public void updateDisplay() {
@@ -87,7 +93,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var paymentMethodButton = rootComponent.childById(TabButtonComponent.class, "payment_method");
 		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(delegate.getPaymentMethod()));
-		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod()));
+		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
 		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
 		totalDisplay.text(MarketScreenUtil.textForCartTotal(delegate.getCartTotal()));
@@ -98,7 +104,15 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
 		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod()));
+		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
+
+		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && delegate.hasCardInHand() && !delegate.hasOwnedCardInHand()) {
+			var balanceText = LocalizationUtil.localizedText("gui", "market.inviable_balance");
+			balanceDisplay.text(balanceText);
+
+			var tooltipText = LocalizationUtil.localizedText("gui", "market.inviable_account.tooltip", delegate.getCardOwnerName());
+			balanceDisplay.tooltip(tooltipText);
+		}
 
 		// Cart
 
@@ -219,13 +233,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 					var sprintKeyCode = KeyBindingHelper.getBoundKeyOf(client.options.sprintKey).getCode();
 					var isSprintKeyHeld = InputUtil.isKeyPressed(windowHandle, sprintKeyCode);
 
-					var sortMode = delegate.getSortMode();
-					var sortOrder = delegate.getSortOrder();
-
 					if (isSprintKeyHeld) {
-						delegate.setSortOrder(sortOrder.next());
+						delegate.cycleSortOrder();
 					} else {
-						delegate.setSortMode(sortMode.next());
+						delegate.cycleSortMode();
 					}
 
 					this.updateDisplay();
@@ -237,9 +248,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
 				MarketScreenAssets.STUB_ICON, component -> {
-					var filterMode = delegate.getFilterMode();
-					delegate.setFilterMode(filterMode.next());
-
+					delegate.cycleFilterMode();
 					this.updateDisplay();
 				});
 
@@ -308,9 +317,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				MarketScreenAssets.STUB_ICON, component -> {
-					var paymentMethod = delegate.getPaymentMethod();
-					delegate.setPaymentMethod(paymentMethod.next());
-
+					delegate.cyclePaymentMethod();
 					this.updateDisplay();
 				});
 

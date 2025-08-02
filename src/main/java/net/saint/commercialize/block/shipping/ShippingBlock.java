@@ -1,12 +1,14 @@
 package net.saint.commercialize.block.shipping;
 
+import java.util.HashMap;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.ScreenHandler;
@@ -21,11 +23,17 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.block.DoubleBlockWithEntity;
+import net.saint.commercialize.init.ModBlockEntities;
+import net.saint.commercialize.util.VoxelShapeUtil;
 
-public class ShippingBlock extends BlockWithEntity {
+public class ShippingBlock extends DoubleBlockWithEntity {
 
 	// Properties
 
@@ -33,33 +41,48 @@ public class ShippingBlock extends BlockWithEntity {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
+	private static final HashMap<DoubleBlockHalf, VoxelShape> SHAPES = new HashMap<>() {
+		{
+			this.put(DoubleBlockHalf.LOWER, VoxelShapes.cuboid(0, 0, 0.0625, 1, 1, 0.9375));
+			this.put(DoubleBlockHalf.UPPER, VoxelShapes.cuboid(0, 0, 0.0625, 1, 0.8125, 0.9375));
+		}
+	};
+
+	private static final HashMap<DoubleBlockHalf, HashMap<Direction, VoxelShape>> SHAPES_BY_DIRECTION = new HashMap<>() {
+		{
+			this.put(DoubleBlockHalf.LOWER, VoxelShapeUtil.createDirectionalShapes(SHAPES.get(DoubleBlockHalf.LOWER)));
+			this.put(DoubleBlockHalf.UPPER, VoxelShapeUtil.createDirectionalShapes(SHAPES.get(DoubleBlockHalf.UPPER)));
+		}
+	};
+
 	// Init
 
 	public ShippingBlock(Settings settings) {
 		super(settings);
 	}
 
-	// Block
+	// Entity
 
 	@Override
 	public BlockEntity createBlockEntity(BlockPos position, BlockState blockState) {
+		if (blockState.get(HALF) == DoubleBlockHalf.UPPER) {
+			return null;
+		}
+
 		return new ShippingBlockEntity(position, blockState);
 	}
 
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
-	}
+	// Placement
 
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext context) {
+	protected BlockState getMasterPlacementState(ItemPlacementContext context) {
 		return this.getDefaultState().with(FACING, context.getHorizontalPlayerFacing().getOpposite());
 	}
 
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
-		super.appendProperties(builder);
 		builder.add(FACING);
+		super.appendProperties(builder);
 	}
 
 	@Override
@@ -72,27 +95,31 @@ public class ShippingBlock extends BlockWithEntity {
 		return state.rotate(mirror.getRotation(state.get(FACING)));
 	}
 
-	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
-		if (state.getBlock() == newState.getBlock()) {
-			return;
-		}
+	// Shape
 
-		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
-		ItemScatterer.spawn(world, position, blockEntity);
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPES_BY_DIRECTION.get(state.get(HALF)).get(state.get(FACING));
 	}
 
-	// Ticker
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPES_BY_DIRECTION.get(state.get(HALF)).get(state.get(FACING));
+	}
+
+	// Mutation
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlocks.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
+	protected void onStateReplacedLowerHalf(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
+		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
+		ItemScatterer.spawn(world, position, blockEntity);
 	}
 
 	// Interaction
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onMasterBlockUse(BlockState state, World world, BlockPos position, PlayerEntity player, Hand hand,
+			BlockHitResult hit) {
 		if (world.isClient() || hand == Hand.OFF_HAND) {
 			return ActionResult.CONSUME;
 		}
@@ -100,12 +127,21 @@ public class ShippingBlock extends BlockWithEntity {
 		var screenHandlerFactory = state.createScreenHandlerFactory(world, position);
 
 		if (screenHandlerFactory == null) {
-			return ActionResult.CONSUME;
+			return ActionResult.FAIL;
 		}
 
 		player.openHandledScreen(screenHandlerFactory);
 		return ActionResult.SUCCESS;
 	}
+
+	// Ticker
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return checkType(type, ModBlockEntities.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
+	}
+
+	// Redstone
 
 	@Override
 	public boolean hasComparatorOutput(BlockState state) {

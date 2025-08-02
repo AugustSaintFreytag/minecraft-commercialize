@@ -22,9 +22,12 @@ public class MarketBlockEntityScreenState {
 
 	public int balance = 0;
 
+	public String cardOwner = "";
+
 	// Filtering & Sorting
 
 	public String searchTerm = "";
+
 	public OfferSortMode sortMode = OfferSortMode.ITEM_NAME;
 	public OfferSortOrder sortOrder = OfferSortOrder.ASCENDING;
 	public OfferFilterMode filterMode = OfferFilterMode.ALL;

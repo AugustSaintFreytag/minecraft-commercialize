@@ -1,19 +1,87 @@
 {
 	"variants": {
-		"facing=north": {
-			"model": "commercialize:block/shipping_block"
+		"half=upper,facing=north": {
+			"model": "commercialize:block/shipping_block_upper"
 		},
-		"facing=south": {
-			"model": "commercialize:block/shipping_block",
+		"half=upper,facing=south": {
+			"model": "commercialize:block/shipping_block_upper",
 			"y": 180
 		},
-		"facing=west": {
-			"model": "commercialize:block/shipping_block",
+		"half=upper,facing=west": {
+			"model": "commercialize:block/shipping_block_upper",
 			"y": 270
 		},
-		"facing=east": {
-			"model": "commercialize:block/shipping_block",
+		"half=upper,facing=east": {
+			"model": "commercialize:block/shipping_block_upper",
 			"y": 90
-		}
+		},
+		"half=lower,facing=north": [
+			{
+				"model": "commercialize:block/shipping_block_1"
+			},
+			{
+				"model": "commercialize:block/shipping_block_2"
+			},
+			{
+				"model": "commercialize:block/shipping_block_3"
+			},
+			{
+				"model": "commercialize:block/shipping_block_4"
+			}
+		],
+		"half=lower,facing=south": [
+			{
+				"model": "commercialize:block/shipping_block_1",
+				"y": 180
+			},
+			{
+				"model": "commercialize:block/shipping_block_2",
+				"y": 180
+			},
+			{
+				"model": "commercialize:block/shipping_block_3",
+				"y": 180
+			},
+			{
+				"model": "commercialize:block/shipping_block_4",
+				"y": 180
+			}
+		],
+		"half=lower,facing=west": [
+			{
+				"model": "commercialize:block/shipping_block_1",
+				"y": 270
+			},
+			{
+				"model": "commercialize:block/shipping_block_2",
+				"y": 270
+			},
+			{
+				"model": "commercialize:block/shipping_block_3",
+				"y": 270
+			},
+			{
+				"model": "commercialize:block/shipping_block_4",
+				"y": 270
+			}
+		],
+		"half=lower,facing=east": [
+			{
+				"model": "commercialize:block/shipping_block_1",
+				"y": 90
+			},
+			{
+				"model": "commercialize:block/shipping_block_2",
+				"y": 90
+			},
+			{
+				"model": "commercialize:block/shipping_block_3",
+				"y": 90
+			},
+			{
+				"model": "commercialize:block/shipping_block_4",
+				"y": 90
+			}
+		]
 	}
 }

@@ -6,6 +6,7 @@ import static net.saint.commercialize.util.Values.returnIfPresent;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.saint.commercialize.Commercialize;
@@ -16,6 +17,12 @@ public final class BankAccountAccessUtil {
 
 	public static int getBankAccountBalanceForPlayer(PlayerEntity player) {
 		return returnIfPresent(getBankAccountForPlayer(player), account -> {
+			return account.getBalance();
+		}, 0);
+	}
+
+	public static int getBankAccountBalanceForCard(ItemStack itemStack) {
+		return returnIfPresent(getBankAccountForCard(itemStack), account -> {
 			return account.getBalance();
 		}, 0);
 	}
@@ -47,6 +54,10 @@ public final class BankAccountAccessUtil {
 	}
 
 	// Access
+
+	public static String getOwnerNameForCard(ItemStack itemStack) {
+		return CardItem.getPlayerName(itemStack);
+	}
 
 	public static BankAccount getBankAccountForCard(ItemStack itemStack) {
 		var boundAccountId = CardItem.get(itemStack);
@@ -80,6 +91,13 @@ public final class BankAccountAccessUtil {
 		}
 
 		return account;
+	}
+
+	public static boolean isPaymentCard(ItemStack itemStack) {
+		if (itemStack.isEmpty()) {
+			return false;
+		}
+		return NumismaticsItems.CARDS.contains(itemStack.getItem());
 	}
 
 }

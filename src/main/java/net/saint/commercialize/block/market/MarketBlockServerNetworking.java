@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
@@ -18,6 +19,7 @@ import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
@@ -72,15 +74,51 @@ public final class MarketBlockServerNetworking {
 	private static void onReceiveMarketStateSync(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SStateSyncMessage message) {
 		var world = player.getWorld();
-		var blockEntity = world.getBlockEntity(message.position);
+		var position = message.position;
+		var blockEntity = world.getBlockEntity(position);
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
-			Commercialize.LOGGER.error("Could not mark market block entity at position {} as dirty, invalid type.", message.position);
+			Commercialize.LOGGER.error("Could not mark market block entity at position {} as dirty, invalid type '{}'.", position,
+					blockEntity.getClass().getName());
 			return;
 		}
 
 		var marketBlockEntity = (MarketBlockEntity) blockEntity;
 		marketBlockEntity.setState(message.state);
+
+		handleMarketInteraction(server, player, message.reason, position, marketBlockEntity);
+	}
+
+	private static void handleMarketInteraction(MinecraftServer server, ServerPlayerEntity player, MarketBlockStateSyncReason reason,
+			BlockPos position, MarketBlockEntity blockEntity) {
+		var world = player.getWorld();
+
+		switch (reason) {
+			case INTERACTION_START: {
+				world.playSound(null, position, ModSounds.MARKET_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
+
+				if (playerHoldsPaymentCard) {
+					world.playSound(null, position, ModSounds.CARD_INSERT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
+				}
+
+				break;
+			}
+			case INTERACTION_END: {
+				world.playSound(null, position, ModSounds.MARKET_CLOSE_SOUND, SoundCategory.BLOCKS, 0.5f, 1.0f);
+
+				var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
+
+				if (playerHoldsPaymentCard) {
+					world.playSound(null, position, ModSounds.CARD_EJECT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
+				}
+
+				break;
+			}
+			default: {
+				break;
+			}
+		}
 	}
 
 	// Market Data Request Handler
@@ -106,16 +144,18 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
+		var cardOwner = cardOwnerForItemHeldByPlayer(player);
 
-		sendMarketDataResponse(responseSender, message.position, balance, preparedOffers, preparedOffersAreCapped);
+		sendMarketDataResponse(responseSender, message.position, balance, cardOwner, preparedOffers, preparedOffersAreCapped);
 	}
 
-	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, List<Offer> offers,
-			boolean offersAreCapped) {
+	private static void sendMarketDataResponse(PacketSender responseSender, BlockPos position, int balance, String cardOwner,
+			List<Offer> offers, boolean offersAreCapped) {
 		var responseMessage = new MarketS2CListMessage();
 
 		responseMessage.position = position;
 		responseMessage.balance = balance;
+		responseMessage.cardOwner = cardOwner;
 		responseMessage.offers = offers;
 		responseMessage.isCapped = offersAreCapped;
 
@@ -129,14 +169,34 @@ public final class MarketBlockServerNetworking {
 
 	private static void onReceiveMarketOrderRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SOrderMessage message) {
-		var offers = message.offers.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId))
-				.flatMap(java.util.Optional::stream).toList();
+		var offers = offersFromList(message.offers);
 
 		if (offers.size() != message.offers.size()) {
 			Commercialize.LOGGER
 					.warn("Could not collect and prepare all requested offers from market. Some orders may be invalid or have expired.");
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_OFFERS);
 			return;
+		}
+
+		if (Commercialize.CONFIG.requireCardForMarketPayment && message.paymentMethod == PaymentMethod.ACCOUNT) {
+			Commercialize.LOGGER.warn(
+					"Player '{}' tried to order offers with payment method 'ACCOUNT' while configuration forbids direct-from-account payment.",
+					player.getName().getString());
+			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+			return;
+		}
+
+		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && message.paymentMethod == PaymentMethod.SPECIFIED_ACCOUNT) {
+			var cardOwner = cardOwnerForItemHeldByPlayer(player);
+
+			if (!cardOwner.equals(player.getName().getString())) {
+				Commercialize.LOGGER.warn(
+						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
+						player.getName().getString(), cardOwner);
+				sendMarketOrderResponse(responseSender, message.position, message.offers,
+						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+				return;
+			}
 		}
 
 		var offerTotal = offers.stream().mapToInt(offer -> offer.price).sum();
@@ -163,6 +223,22 @@ public final class MarketBlockServerNetworking {
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
 	}
 
+	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
+			MarketS2COrderMessage.Result result) {
+		var responseMessage = new MarketS2COrderMessage();
+
+		responseMessage.position = position;
+		responseMessage.offers = offers;
+		responseMessage.result = result;
+
+		var responseBuffer = PacketByteBufs.create();
+		responseMessage.encodeToBuffer(responseBuffer);
+
+		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
+	}
+
+	// Actions
+
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
 		var itemStackList = itemStackListFromOffers(offers);
 
@@ -184,6 +260,10 @@ public final class MarketBlockServerNetworking {
 		return true;
 	}
 
+	private static List<Offer> offersFromList(List<UUID> list) {
+		return list.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId)).flatMap(java.util.Optional::stream).toList();
+	}
+
 	private static DefaultedList<ItemStack> itemStackListFromOffers(List<Offer> offers) {
 		var itemStacks = offers.stream().map(offer -> offer.stack).toList();
 		var itemStackList = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
@@ -199,45 +279,49 @@ public final class MarketBlockServerNetworking {
 		offers.forEach(offer -> Commercialize.MARKET_MANAGER.removeOffer(offer));
 	}
 
-	private static void sendMarketOrderResponse(PacketSender responseSender, BlockPos position, List<UUID> offers,
-			MarketS2COrderMessage.Result result) {
-		var responseMessage = new MarketS2COrderMessage();
-
-		responseMessage.position = position;
-		responseMessage.offers = offers;
-		responseMessage.result = result;
-
-		var responseBuffer = PacketByteBufs.create();
-		responseMessage.encodeToBuffer(responseBuffer);
-
-		responseSender.sendPacket(MarketS2COrderMessage.ID, responseBuffer);
-	}
-
-	// Balance Utility
+	// Bank Account Utility
 
 	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
-		case INVENTORY:
-			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
-		case ACCOUNT:
-			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
-		default:
-			Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
-			return 0;
+			case INVENTORY:
+				return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+			case ACCOUNT:
+				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+			case SPECIFIED_ACCOUNT:
+				var heldItemStack = player.getMainHandStack();
+				return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
+			default:
+				Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
+				return 0;
 		}
+	}
+
+	private static String cardOwnerForItemHeldByPlayer(ServerPlayerEntity player) {
+		var heldItemStack = player.getMainHandStack();
+		var ownerName = BankAccountAccessUtil.getOwnerNameForCard(heldItemStack);
+
+		if (ownerName == null) {
+			return "";
+		}
+
+		return ownerName;
 	}
 
 	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
 		switch (paymentMethod) {
-		case INVENTORY:
-			var remainingAmount = InventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
-			InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
-			break;
-		case ACCOUNT:
-			BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
-			break;
-		default:
-			Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
+			case INVENTORY:
+				var remainingAmount = InventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
+				InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
+				break;
+			case ACCOUNT:
+				BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
+				break;
+			case SPECIFIED_ACCOUNT:
+				var heldItemStack = player.getMainHandStack();
+				BankAccountAccessUtil.deductAccountBalanceForCard(heldItemStack, amount);
+				break;
+			default:
+				Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
 		}
 	}
 

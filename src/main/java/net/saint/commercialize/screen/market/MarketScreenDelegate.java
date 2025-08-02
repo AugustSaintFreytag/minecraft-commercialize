@@ -11,11 +11,23 @@ import net.saint.commercialize.data.payment.PaymentMethod;
 
 public interface MarketScreenDelegate {
 
+	// Events
+
+	void onMarketScreenUpdate();
+
+	void onMarketScreenClose();
+
 	// Player
 
 	PlayerEntity getPlayer();
 
 	int getBalance();
+
+	boolean hasCardInHand();
+
+	boolean hasOwnedCardInHand();
+
+	String getCardOwnerName();
 
 	// Cart
 
@@ -39,26 +51,28 @@ public interface MarketScreenDelegate {
 
 	boolean getOffersAreCapped();
 
-	// Filtering & Sorting
+	// Search
 
 	String getSearchTerm();
 
 	void setSearchTerm(String searchTerm);
 
+	// Filtering & Sorting
+
 	OfferSortMode getSortMode();
 
-	void setSortMode(OfferSortMode sortMode);
+	void cycleSortMode();
 
 	OfferSortOrder getSortOrder();
 
-	void setSortOrder(OfferSortOrder sortOrder);
+	void cycleSortOrder();
 
 	OfferFilterMode getFilterMode();
 
-	void setFilterMode(OfferFilterMode filterMode);
+	void cycleFilterMode();
 
 	PaymentMethod getPaymentMethod();
 
-	void setPaymentMethod(PaymentMethod paymentMethod);
+	void cyclePaymentMethod();
 
 }

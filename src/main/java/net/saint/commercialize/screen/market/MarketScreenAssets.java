@@ -36,6 +36,7 @@ public final class MarketScreenAssets {
 	public static final TextureReference CONFIRM_ORDER_ICON = new TextureReference(ICON_TEXTURE, 112, 16, 16, 16);
 	public static final TextureReference WALLET_ICON = new TextureReference(ICON_TEXTURE, 96, 32, 16, 16);
 	public static final TextureReference CARD_ICON = new TextureReference(ICON_TEXTURE, 112, 32, 16, 16);
+	public static final TextureReference SPECIFIED_CARD_ICON = new TextureReference(ICON_TEXTURE, 128, 32, 16, 16);
 
 	// Icon Decoratives
 

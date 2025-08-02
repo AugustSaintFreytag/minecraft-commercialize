@@ -1,7 +1,7 @@
 package net.saint.commercialize.data.payment;
 
 public enum PaymentMethod {
-	INVENTORY, ACCOUNT;
+	INVENTORY, ACCOUNT, SPECIFIED_ACCOUNT;
 
 	public PaymentMethod next() {
 		var methods = values();

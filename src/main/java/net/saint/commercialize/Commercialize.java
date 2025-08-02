@@ -15,6 +15,7 @@ import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.market.MarketPersistentStorageUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.data.player.PlayerProfileManager;
+import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
 import net.saint.commercialize.init.ModConfigUtil;
@@ -50,6 +51,7 @@ public class Commercialize implements ModInitializer {
 		CONFIG = AutoConfig.getConfigHolder(CommercializeConfig.class).getConfig();
 
 		ModBlocks.initialize();
+		ModBlockEntities.initialize();
 		ModScreenHandlers.initialize();
 		ModSounds.initialize();
 		ModCommands.initialize();

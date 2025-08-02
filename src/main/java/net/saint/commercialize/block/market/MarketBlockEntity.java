@@ -1,6 +1,6 @@
 package net.saint.commercialize.block.market;
 
-import static net.saint.commercialize.util.Values.ifPresentAsString;
+import static net.saint.commercialize.util.Values.returnIfPresentAsString;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -9,6 +9,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +22,7 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
-import net.saint.commercialize.init.ModBlocks;
+import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
@@ -30,7 +33,7 @@ import net.saint.commercialize.screen.market.MarketScreen;
 import net.saint.commercialize.screen.market.MarketScreenUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityScreenHandler {
+public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenHandler {
 
 	// Configuration
 
@@ -49,7 +52,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Init
 
 	public MarketBlockEntity(BlockPos position, BlockState state) {
-		super(ModBlocks.MARKET_BLOCK_ENTITY, position, state);
+		super(ModBlockEntities.MARKET_BLOCK_ENTITY, position, state);
 	}
 
 	// Access
@@ -70,10 +73,10 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		super.readNbt(nbt);
 
 		state.searchTerm = nbt.getString("searchTerm");
-		state.sortMode = ifPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
-		state.sortOrder = ifPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
-		state.filterMode = ifPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
-		state.paymentMethod = ifPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
+		state.sortMode = returnIfPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
+		state.sortOrder = returnIfPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
+		state.filterMode = returnIfPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
+		state.paymentMethod = returnIfPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
 	}
 
 	@Override
@@ -95,10 +98,16 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		return nbt;
 	}
 
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
+	}
+
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
 		state.balance = message.balance;
+		state.cardOwner = message.cardOwner;
 
 		state.marketOffers.clearOffers();
 		state.marketOffers.addOffers(message.offers);
@@ -119,50 +128,57 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 		var player = client.player;
 
 		switch (message.result) {
-		case INSUFFICIENT_FUNDS: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case INVIABLE_DELIVERY: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case INVIABLE_OFFERS: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case FAILURE: {
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
-			player.sendMessage(displayText, true);
-			player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-			break;
-		}
-		case SUCCESS: {
-			var offers = state.cartOffers.getOffers().toList();
-			var itemNames = MarketScreenUtil.textForOrderSummary(offers);
-			var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
-			var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
+			case INSUFFICIENT_FUNDS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_DELIVERY: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_OFFERS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case INVIABLE_PAYMENT_METHOD: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case FAILURE: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
+				player.sendMessage(displayText, true);
+				player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
+				break;
+			}
+			case SUCCESS: {
+				var offers = state.cartOffers.getOffers().toList();
+				var itemNames = MarketScreenUtil.textForOrderSummary(offers);
+				var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
 
-			player.sendMessage(displayText, true);
-			player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
+				player.sendMessage(displayText, true);
+				player.playSound(ModSounds.ORDER_CONFIRM_SOUND, 1.0F, 1.0F);
 
-			state.cartOffers.clearOffers();
-			requestMarketData();
-			updateMarketScreen();
-			break;
-		}
+				state.cartOffers.clearOffers();
+				requestMarketData();
+				updateMarketScreen();
+				break;
+			}
 		}
 	}
 
-	public void sendStateSync() {
+	public void sendStateSync(MarketBlockStateSyncReason reason) {
 		var message = new MarketC2SStateSyncMessage();
 		message.position = this.getPos();
+		message.reason = reason;
 		message.state = this.state;
 
 		var buffer = PacketByteBufs.create();
@@ -224,15 +240,12 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 	// Screen
 
 	public void openMarketScreen(World world, PlayerEntity player) {
-		if (!world.isClient()) {
-			return;
-		}
-
 		var client = MinecraftClient.getInstance();
 		this.marketScreen = new MarketScreen();
 		this.marketScreen.delegate = this;
 		client.setScreen(marketScreen);
 
+		sendStateSync(MarketBlockStateSyncReason.INTERACTION_START);
 		requestMarketData();
 	}
 
@@ -242,14 +255,16 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockEntityS
 			return;
 		}
 
-		this.requestMarketData();
-		this.sendStateSync();
+		requestMarketData();
+		sendStateSync(MarketBlockStateSyncReason.UPDATE);
+	}
+
+	public void onMarketScreenClose() {
+		sendStateSync(MarketBlockStateSyncReason.INTERACTION_END);
 	}
 
 	private void updateMarketScreen() {
 		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn(
-					"Can not update market screen, missing screen reference. Update likely requested for inactive block or incorrect receiver.");
 			return;
 		}
 
