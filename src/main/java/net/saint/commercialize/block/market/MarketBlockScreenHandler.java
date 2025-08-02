@@ -56,7 +56,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var ownerName = getState().cardOwner;
 
 		if (ownerName == null || ownerName.isEmpty()) {
-			return LocalizationUtil.localizedString("gui", "market.player_unknown");
+			return LocalizationUtil.localizedString("text", "player_unknown");
 		}
 
 		return ownerName;
