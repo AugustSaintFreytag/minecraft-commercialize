@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
+import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
@@ -240,6 +241,12 @@ public final class MarketBlockServerNetworking {
 	// Actions
 
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
+		var playerCanReceiveDeliveries = MailSystemAccessUtil.getMailboxForPlayer(server, player) != null;
+
+		if (!playerCanReceiveDeliveries) {
+			return false;
+		}
+
 		var itemStackList = itemStackListFromOffers(offers);
 		return dispatchItemStacksToPlayer(server, player, itemStackList);
 	}
