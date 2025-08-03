@@ -55,6 +55,9 @@ public final class MarketScreenAssets {
 
 	// Indicator Graphics
 
+	public static final TextureReference POSITIVE_BALANCE_BACKDROP = new TextureReference(RIGHT_PANEL_TEXTURE, 45, 182, 109, 13);
+	public static final TextureReference NEGATIVE_BALANCE_BACKDROP = new TextureReference(RIGHT_PANEL_TEXTURE, 45, 197, 109, 13);
+
 	public static final TextureReference EMPTY_CART_INDICATOR = new TextureReference(ICON_TEXTURE, 16, 64, 48, 43);
 
 }
