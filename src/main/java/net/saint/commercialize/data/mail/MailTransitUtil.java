@@ -29,7 +29,13 @@ public final class MailTransitUtil {
 		var time = world.getTime();
 
 		var itemsOutForDelivery = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(item -> {
-			return time > item.timeDispatched + Commercialize.CONFIG.mailDeliveryTime;
+			// Final delivery time of the package under ideal conditions.
+			var deliveryTime = item.timeDispatched + Commercialize.CONFIG.mailDeliveryTime;
+
+			// Add hold time if a package could not be delivered and is now being held.
+			var holdTime = item.numberOfDeliveryAttempts * Commercialize.CONFIG.mailDeliveryTime;
+
+			return time > deliveryTime + holdTime;
 		}).filter(item -> {
 			if (Commercialize.CONFIG.mailDeliveryChance == 1.0) {
 				return true;
@@ -58,21 +64,25 @@ public final class MailTransitUtil {
 			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
 
 			if (!deliverTransitItem(server, item)) {
-				if (item.numberOfDeliveryAttempts > Commercialize.CONFIG.maxNumberOfDeliveryAttempts) {
-					itemsToBeDiscardedByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
-					Commercialize.LOGGER.info("Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
-							itemStackDescriptions, playerName, item.numberOfDeliveryAttempts);
-					return;
-				}
-
 				item.timeLastDeliveryAttempted = time;
 				item.numberOfDeliveryAttempts++;
+
+				if (item.numberOfDeliveryAttempts > Commercialize.CONFIG.maxNumberOfDeliveryAttempts) {
+					itemsToBeDiscardedByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
+					Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
+
+					Commercialize.LOGGER.info("Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
+							itemStackDescriptions, playerName, item.numberOfDeliveryAttempts + 1);
+					return;
+				}
 
 				Commercialize.LOGGER.info(
 						"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s). Item will remain in queue.",
 						itemStackDescriptions, playerName, item.numberOfDeliveryAttempts);
 
 				itemsNotDeliveredByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
+				Commercialize.MAIL_TRANSIT_MANAGER.updateItem(item);
+
 				return;
 			}
 
@@ -80,14 +90,9 @@ public final class MailTransitUtil {
 			Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
 		});
 
-		itemsToBeDiscardedByPlayer.forEach((playerId, items) -> {
-			items.forEach(item -> {
-				Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
-			});
-		});
-
 		if (Commercialize.CONFIG.notifyPlayersOfDeliveryAttempts) {
 			MailTransitNotificationUtil.notifyPlayersOfFailedDeliveryAttempts(server, itemsNotDeliveredByPlayer);
+			MailTransitNotificationUtil.notifyPlayersOfDeliveryDiscard(server, itemsToBeDiscardedByPlayer);
 		}
 	}
 
