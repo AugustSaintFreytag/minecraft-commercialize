@@ -115,15 +115,4 @@ public final class MailSystemAccessUtil {
 		return deliveryService.get();
 	}
 
-	// private static <T> T withDeliveryService(MinecraftServer server, Function<DeliveryService, T> block) {
-	// 	var deliveryService = DeliveryService.get(server);
-
-	// 	if (deliveryService.isEmpty()) {
-	// 		Commercialize.LOGGER.error("Could not get delivery service for server.");
-	// 		return;
-	// 	}
-
-	// 	block.accept(deliveryService.get());
-	// }
-
 }

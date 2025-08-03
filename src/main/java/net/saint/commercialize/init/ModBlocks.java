@@ -35,8 +35,8 @@ public final class ModBlocks {
 	// Registration
 
 	private static Block registerBlockAndItem(Identifier id, Block block) {
-		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
 		Registry.register(Registries.BLOCK, id, block);
+		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
 
 		return block;
 	}

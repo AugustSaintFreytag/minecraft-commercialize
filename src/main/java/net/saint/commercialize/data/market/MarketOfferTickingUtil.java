@@ -23,28 +23,29 @@ public final class MarketOfferTickingUtil {
 	}
 
 	public static void tickMarketOfferGeneration(World world) {
-		if (Commercialize.MARKET_MANAGER.size() >= Commercialize.CONFIG.maxNumberOfOffers) {
+		if (Commercialize.MARKET_OFFER_MANAGER.size() >= Commercialize.CONFIG.maxNumberOfOffers) {
 			return;
 		}
 
 		var numberOfOffersToGenerate = Math.max(0, Math.min(Commercialize.CONFIG.offerBatchSize,
-				Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_MANAGER.size()));
+				Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()));
 
 		for (int i = 0; i < numberOfOffersToGenerate; i++) {
 			var generatedOffer = MarketOfferGenerator.generateOffer(world);
-			generatedOffer.ifPresent(offer -> Commercialize.MARKET_MANAGER.addOffer(offer));
+			generatedOffer.ifPresent(offer -> Commercialize.MARKET_OFFER_MANAGER.addOffer(offer));
 		}
 	}
 
 	public static void tickMarketOfferExpiration(World world) {
 		var expiredOffers = new ArrayList<Offer>();
 
-		Commercialize.MARKET_MANAGER.getOffers().filter(offer -> (world.getTime() - offer.timestamp) >= offer.duration).forEach(offer -> {
-			expiredOffers.add(offer);
-		});
+		Commercialize.MARKET_OFFER_MANAGER.getOffers().filter(offer -> (world.getTime() - offer.timestamp) >= offer.duration)
+				.forEach(offer -> {
+					expiredOffers.add(offer);
+				});
 
 		expiredOffers.forEach(offer -> {
-			Commercialize.MARKET_MANAGER.removeOffer(offer);
+			Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer);
 		});
 	}
 

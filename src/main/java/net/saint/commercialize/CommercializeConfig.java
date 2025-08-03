@@ -64,8 +64,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("payment")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("Enforces the player to have a bound payment card in their inventory for paying from account in the market. (Default: true)")
-	public boolean requireCardForMarketPayment = true;
+	@Comment("Enforces the player to have a bound payment card in their inventory for paying from account in the market. (Default: false)")
+	public boolean requireCardForMarketPayment = false;
 
 	@ConfigEntry.Category("payment")
 	@ConfigEntry.Gui.Tooltip
@@ -103,7 +103,32 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("delivery")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("The interval in ticks to check if mail is ready to be delivered from the transit queue. (Default: 400)")
+	public int mailDeliveryCheckInterval = 400;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The effective chance mail gets delivered when out for delivery. Can be decreased from 1.0 (100%) to randomly delay delivery to next tick. (Default: 1.0)")
+	public double mailDeliveryChance = 1.0;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("A string added in the mailbox name to mark it as the main delivery destination for market orders. (Default: '(M)')")
 	public String mailboxMainMarker = "(M)";
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Send text message notifications to players when a delivery adressed to them could not be made (e.g., if they do not have a mailbox). (Default: true)")
+	public boolean notifyPlayersOfDeliveryAttempts = true;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The maximum number of attempts made to deliver packages to a player if it was previously not possible. (Default: 3)")
+	public int maxNumberOfDeliveryAttempts = 3;
+
+	@ConfigEntry.Category("delivery")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Do not deliver mail to players that are offline. Packages may be stuck in queue indefinitely if player has pending deliveries but never comes online again. (Default: true)")
+	public boolean suspendDeliveryAttemptsForOfflinePlayers = true;
 
 }

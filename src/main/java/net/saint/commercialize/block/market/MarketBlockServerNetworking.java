@@ -16,6 +16,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.mail.MailSystemAccessUtil;
+import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
@@ -78,7 +79,7 @@ public final class MarketBlockServerNetworking {
 		var blockEntity = world.getBlockEntity(position);
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
-			Commercialize.LOGGER.error("Could not mark market block entity at position {} as dirty, invalid type '{}'.", position,
+			Commercialize.LOGGER.error("Could not resolve market block entity at position {}, invalid type '{}'.", position,
 					blockEntity.getClass().getName());
 			return;
 		}
@@ -126,7 +127,7 @@ public final class MarketBlockServerNetworking {
 	private static void onReceiveMarketDataRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SQueryMessage message) {
 		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems;
-		var allOffers = Commercialize.MARKET_MANAGER.getOffers();
+		var allOffers = Commercialize.MARKET_OFFER_MANAGER.getOffers();
 
 		var preparedOffers = MarketOfferListingUtil.offersWithAppliedFilters(allOffers, player, message.filterMode, message.paymentMethod);
 		var preparedOffersAreCapped = false;
@@ -240,28 +241,33 @@ public final class MarketBlockServerNetworking {
 	// Actions
 
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
-		var itemStackList = itemStackListFromOffers(offers);
+		var playerCanReceiveDeliveries = MailSystemAccessUtil.getMailboxForPlayer(server, player) != null;
 
-		// Mail Delivery
-
-		if (Commercialize.CONFIG.useMailDelivery) {
-			var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStackList);
-			var didSuccessfullyDeliverOrder = MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
-
-			return didSuccessfullyDeliverOrder;
+		if (!playerCanReceiveDeliveries) {
+			return false;
 		}
 
-		// Direct Delivery
+		var itemStackList = itemStackListFromOffers(offers);
+		return dispatchItemStacksToPlayer(server, player, itemStackList);
+	}
 
-		itemStackList.forEach(itemStack -> {
-			player.giveItemStack(itemStack);
-		});
+	private static boolean dispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
+			DefaultedList<ItemStack> itemStacks) {
+		if (!Commercialize.CONFIG.useMailDelivery) {
+			itemStacks.forEach(itemStack -> {
+				player.giveItemStack(itemStack);
+			});
 
-		return true;
+			return true;
+
+		}
+
+		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks);
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {
-		return list.stream().map(offerId -> Commercialize.MARKET_MANAGER.getOffer(offerId)).flatMap(java.util.Optional::stream).toList();
+		return list.stream().map(offerId -> Commercialize.MARKET_OFFER_MANAGER.getOffer(offerId)).flatMap(java.util.Optional::stream)
+				.toList();
 	}
 
 	private static DefaultedList<ItemStack> itemStackListFromOffers(List<Offer> offers) {
@@ -276,7 +282,7 @@ public final class MarketBlockServerNetworking {
 	}
 
 	private static void removeOffers(List<Offer> offers) {
-		offers.forEach(offer -> Commercialize.MARKET_MANAGER.removeOffer(offer));
+		offers.forEach(offer -> Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer));
 	}
 
 	// Bank Account Utility

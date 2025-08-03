@@ -10,16 +10,60 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
+import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
 
-public final class MarketOfferCollection extends PersistentState {
+public final class MarketOfferManager extends PersistentState {
+
+	// Configuration
+
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market_offer_manager");
 
 	// Properties
 
 	private List<Offer> offers = new ArrayList<Offer>();
 	private Map<UUID, Offer> offersById = new HashMap<>();
 	private boolean offersAreCapped = false;
+
+	// Load
+
+	public static MarketOfferManager loadFromServer(MinecraftServer server) {
+		var persistentStateManager = server.getOverworld().getPersistentStateManager();
+		var state = persistentStateManager.getOrCreate(MarketOfferManager::fromNbt, MarketOfferManager::new, ID.toString());
+
+		return state;
+	}
+
+	// NBT
+
+	public NbtCompound writeNbt(NbtCompound nbt) {
+		var list = new net.minecraft.nbt.NbtList();
+
+		for (Offer offer : offers) {
+			var offerNbt = new net.minecraft.nbt.NbtCompound();
+			offer.writeNbt(offerNbt);
+			list.add(offerNbt);
+		}
+
+		nbt.put("offers", list);
+		return nbt;
+	}
+
+	public static MarketOfferManager fromNbt(NbtCompound nbt) {
+		var collection = new MarketOfferManager();
+
+		var list = nbt.getList("offers", 10); // 10 = NbtCompound
+
+		for (int i = 0; i < list.size(); i++) {
+			var offerNbt = list.getCompound(i);
+			collection.addOffer(Offer.fromNBT(offerNbt));
+		}
+
+		return collection;
+	}
 
 	// Access
 
@@ -99,34 +143,6 @@ public final class MarketOfferCollection extends PersistentState {
 	public void setOffersAreCapped(boolean capped) {
 		this.offersAreCapped = capped;
 		markDirty();
-	}
-
-	// NBT
-
-	public NbtCompound writeNbt(NbtCompound nbt) {
-		var list = new net.minecraft.nbt.NbtList();
-
-		for (Offer offer : offers) {
-			var offerNbt = new net.minecraft.nbt.NbtCompound();
-			offer.writeNbt(offerNbt);
-			list.add(offerNbt);
-		}
-
-		nbt.put("offers", list);
-		return nbt;
-	}
-
-	public static MarketOfferCollection fromNbt(NbtCompound nbt) {
-		var collection = new MarketOfferCollection();
-
-		var list = nbt.getList("offers", 10); // 10 = NbtCompound
-
-		for (int i = 0; i < list.size(); i++) {
-			var offerNbt = list.getCompound(i);
-			collection.addOffer(Offer.fromNBT(offerNbt));
-		}
-
-		return collection;
 	}
 
 }
