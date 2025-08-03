@@ -19,6 +19,7 @@ import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketScreenUtil {
@@ -208,6 +209,18 @@ public final class MarketScreenUtil {
 
 	public static Text textForCartTotal(int value) {
 		return Text.literal(CurrencyFormattingUtil.formatCurrency(value));
+	}
+
+	public static CurrencyDisplayComponent.Appearance appearanceForCartTotal(int total, int balance) {
+		if (total == 0) {
+			return CurrencyDisplayComponent.Appearance.NEUTRAL;
+		}
+
+		if (total > balance) {
+			return CurrencyDisplayComponent.Appearance.NEGATIVE;
+		}
+
+		return CurrencyDisplayComponent.Appearance.POSITIVE;
 	}
 
 	// Balance
