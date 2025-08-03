@@ -6,6 +6,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 
@@ -22,10 +23,14 @@ public final class ModCommands {
 
 		dispatcher.register(literal(Commercialize.MOD_ID)
 
+				// Mod
+
 				.then(literal("reload").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.reloadConfigs();
 					return 1;
 				}))
+
+				// Offers
 
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
@@ -53,12 +58,34 @@ public final class ModCommands {
 					return 1;
 				}))
 
-				.then(literal("doMarketTicking").requires(source -> source.hasPermissionLevel(4))
+				.then(literal("doOfferTicking").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("state", BoolArgumentType.bool())).executes(context -> {
 							var state = BoolArgumentType.getBool(context, "state");
 							Commercialize.shouldTickMarket = state;
+
 							return 1;
-						}))));
+						}))
+
+				// Mail
+
+				.then(literal("clearGlobalMailQueue").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+					Commercialize.MAIL_TRANSIT_MANAGER.clearItems();
+					return 1;
+				}))
+
+				.then(literal("clearMailQueue").requires(source -> source.hasPermissionLevel(4))
+						.then(argument("player", EntityArgumentType.player()).executes(context -> {
+							var player = EntityArgumentType.getPlayer(context, "player");
+							var pendingTransitItems = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(transitItem -> {
+								return transitItem.recipient == player.getUuid();
+							});
+
+							pendingTransitItems.forEach(transitItem -> {
+								Commercialize.MAIL_TRANSIT_MANAGER.removeItem(transitItem);
+							});
+
+							return 1;
+						})))));
 
 	}
 }
