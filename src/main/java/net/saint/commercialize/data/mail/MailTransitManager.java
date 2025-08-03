@@ -89,4 +89,9 @@ public final class MailTransitManager extends PersistentState {
 		markDirty();
 	}
 
+	public void clearItems() {
+		items.set(Collections.emptyList());
+		markDirty();
+	}
+
 }
