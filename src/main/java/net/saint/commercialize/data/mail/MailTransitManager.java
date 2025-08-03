@@ -89,6 +89,21 @@ public final class MailTransitManager extends PersistentState {
 		markDirty();
 	}
 
+	public void updateItem(MailTransitItem item) {
+		items.updateAndGet(currentList -> {
+			var newList = new ArrayList<>(currentList);
+			int index = newList.indexOf(item);
+
+			if (index != -1) {
+				newList.set(index, item);
+			}
+
+			return Collections.unmodifiableList(newList);
+		});
+
+		markDirty();
+	}
+
 	public void clearItems() {
 		items.set(Collections.emptyList());
 		markDirty();
