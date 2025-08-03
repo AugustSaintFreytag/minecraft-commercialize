@@ -33,6 +33,7 @@ import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.market.components.CartListComponent;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.screen.market.components.OfferListCapComponent;
 import net.saint.commercialize.screen.market.components.OfferListComponent;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -95,13 +96,15 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		paymentMethodButton.texture(MarketScreenUtil.textureForPaymentMethod(delegate.getPaymentMethod()));
 		paymentMethodButton.tooltip(MarketScreenUtil.tooltipTextForPaymentMethod(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
-		var totalDisplay = rootComponent.childById(LabelComponent.class, "total");
+		var totalDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "total");
+		var totalDisplayAppearance = MarketScreenUtil.appearanceForCartTotal(delegate.getCartTotal(), delegate.getBalance());
 		totalDisplay.text(MarketScreenUtil.textForCartTotal(delegate.getCartTotal()));
+		totalDisplay.appearance(totalDisplayAppearance);
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
 
-		var balanceDisplay = rootComponent.childById(LabelComponent.class, "balance");
+		var balanceDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "balance");
 		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
 		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
@@ -292,11 +295,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Displays
 
 		var totalDisplayComponent = makeTotalDisplayComponent();
-		totalDisplayComponent.positioning(Positioning.absolute(48, 129));
+		totalDisplayComponent.positioning(Positioning.absolute(46, 127));
 		rightSideComponent.child(totalDisplayComponent);
 
 		var balanceDisplayComponent = makeBalanceDisplayComponent();
-		balanceDisplayComponent.positioning(Positioning.absolute(48, 157));
+		balanceDisplayComponent.positioning(Positioning.absolute(46, 155));
 		rightSideComponent.child(balanceDisplayComponent);
 
 		// Tabs
@@ -365,29 +368,18 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	// Components
 
-	private LabelComponent makeTotalDisplayComponent() {
-		var totalDisplay = Components.label(Text.empty());
+	private CurrencyDisplayComponent makeTotalDisplayComponent() {
+		var displayComponent = new CurrencyDisplayComponent(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
+		displayComponent.id("total");
 
-		totalDisplay.id("total");
-		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
-		totalDisplay.color(Color.WHITE);
-		totalDisplay.shadow(true);
-		totalDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
-		totalDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-
-		return totalDisplay;
+		return displayComponent;
 	}
 
-	private LabelComponent makeBalanceDisplayComponent() {
-		var balanceDisplay = Components.label(Text.empty());
+	private CurrencyDisplayComponent makeBalanceDisplayComponent() {
+		var displayComponent = new CurrencyDisplayComponent(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
+		displayComponent.id("balance");
 
-		balanceDisplay.id("balance");
-		balanceDisplay.color(Color.WHITE);
-		balanceDisplay.shadow(true);
-		balanceDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
-		balanceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-
-		return balanceDisplay;
+		return displayComponent;
 	}
 
 	private LabelComponent makeTotalLabelComponent() {
