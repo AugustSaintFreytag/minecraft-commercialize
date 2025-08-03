@@ -1,5 +1,7 @@
 package net.saint.commercialize.data.mail;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.item.ItemStack;
@@ -9,9 +11,10 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
-import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MailTransitUtil {
+
+	// Ticking
 
 	public static void tickMailTransitIfNecessary(World world) {
 		var time = world.getTime();
@@ -25,8 +28,14 @@ public final class MailTransitUtil {
 		var server = world.getServer();
 		var time = world.getTime();
 
-		var transitItemsOutForDelivery = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(item -> {
-			return time > item.timeDispatched + Commercialize.CONFIG.mailDeliveryTime;
+		var itemsOutForDelivery = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(item -> {
+			// Final delivery time of the package under ideal conditions.
+			var deliveryTime = item.timeDispatched + Commercialize.CONFIG.mailDeliveryTime;
+
+			// Add hold time if a package could not be delivered and is now being held.
+			var holdTime = item.numberOfDeliveryAttempts * Commercialize.CONFIG.mailDeliveryTime;
+
+			return time > deliveryTime + holdTime;
 		}).filter(item -> {
 			if (Commercialize.CONFIG.mailDeliveryChance == 1.0) {
 				return true;
@@ -34,40 +43,66 @@ public final class MailTransitUtil {
 
 			var roll = world.getRandom().nextDouble();
 			return roll < Commercialize.CONFIG.mailDeliveryChance;
+		}).filter(item -> {
+			if (!Commercialize.CONFIG.suspendDeliveryAttemptsForOfflinePlayers) {
+				return true;
+			}
+
+			var player = MailTransitPlayerUtil.playerEntityForId(server, item.recipient);
+			var playerIsOnline = player != null;
+
+			return playerIsOnline;
 		});
 
-		transitItemsOutForDelivery.forEach(transitItem -> {
-			var playerId = transitItem.recipient;
-			var playerName = playerNameForId(server, playerId);
+		var itemsNotDeliveredByPlayer = new HashMap<UUID, List<MailTransitItem>>();
+		var itemsToBeDiscardedByPlayer = new HashMap<UUID, List<MailTransitItem>>();
 
-			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(transitItem.stack);
+		itemsOutForDelivery.forEach(item -> {
+			var playerId = item.recipient;
+			var playerName = MailTransitPlayerUtil.playerNameForId(server, playerId);
 
-			if (!deliverItem(server, transitItem)) {
-				Commercialize.LOGGER.warn("Could not deliver '{}' to mailbox of player '{}'. Item will remain in queue.",
-						itemStackDescriptions, playerName);
+			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
+
+			if (!deliverTransitItem(server, item)) {
+				item.timeLastDeliveryAttempted = time;
+				item.numberOfDeliveryAttempts++;
+
+				if (item.numberOfDeliveryAttempts > Commercialize.CONFIG.maxNumberOfDeliveryAttempts) {
+					itemsToBeDiscardedByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
+					Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
+
+					Commercialize.LOGGER.info("Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
+							itemStackDescriptions, playerName, item.numberOfDeliveryAttempts + 1);
+					return;
+				}
+
+				Commercialize.LOGGER.info(
+						"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s). Item will remain in queue.",
+						itemStackDescriptions, playerName, item.numberOfDeliveryAttempts);
+
+				itemsNotDeliveredByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
+				Commercialize.MAIL_TRANSIT_MANAGER.updateItem(item);
+
 				return;
 			}
 
 			Commercialize.LOGGER.info("Completed delivery of '{}' to mailbox of player '{}'.", itemStackDescriptions, playerName);
-			Commercialize.MAIL_TRANSIT_MANAGER.removeItem(transitItem);
+			Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
 		});
-	}
 
-	private static String playerNameForId(MinecraftServer server, UUID playerId) {
-		var playerProfile = server.getUserCache().getByUuid(playerId);
-
-		if (!playerProfile.isPresent()) {
-			return LocalizationUtil.localizedString("text", "player_unknown");
+		if (Commercialize.CONFIG.notifyPlayersOfDeliveryAttempts) {
+			MailTransitNotificationUtil.notifyPlayersOfFailedDeliveryAttempts(server, itemsNotDeliveredByPlayer);
+			MailTransitNotificationUtil.notifyPlayersOfDeliveryDiscard(server, itemsToBeDiscardedByPlayer);
 		}
-
-		return playerProfile.get().getName();
 	}
 
-	private static boolean deliverItem(MinecraftServer server, MailTransitItem item) {
-		var player = server.getPlayerManager().getPlayer(item.recipient);
+	// Delivery
+
+	private static boolean deliverTransitItem(MinecraftServer server, MailTransitItem item) {
+		var player = MailTransitPlayerUtil.playerEntityForId(server, item.recipient);
 
 		if (player == null) {
-			Commercialize.LOGGER.warn("Could not find player '{}' for mail delivery.", item.recipient);
+			Commercialize.LOGGER.warn("Could not find offline player '{}' for mail delivery.", item.recipient);
 			return false;
 		}
 
@@ -81,9 +116,9 @@ public final class MailTransitUtil {
 		var world = server.getOverworld();
 		var time = world.getTime();
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks);
-		var transitItem = new MailTransitItem(time, player.getUuid(), packagedOrder);
+		var item = new MailTransitItem(time, player.getUuid(), packagedOrder);
 
-		Commercialize.MAIL_TRANSIT_MANAGER.pushItem(transitItem);
+		Commercialize.MAIL_TRANSIT_MANAGER.pushItem(item);
 		return true;
 	}
 

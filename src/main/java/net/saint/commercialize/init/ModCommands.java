@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 
@@ -27,6 +28,7 @@ public final class ModCommands {
 
 				.then(literal("reload").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.reloadConfigs();
+					context.getSource().sendFeedback(() -> Text.literal("Commercialize configuration files reloaded."), true);
 					return 1;
 				}))
 
@@ -34,6 +36,7 @@ public final class ModCommands {
 
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
+					context.getSource().sendFeedback(() -> Text.literal("All market offers cleared."), true);
 					return 1;
 				}))
 
@@ -47,6 +50,11 @@ public final class ModCommands {
 						MarketOfferTickingUtil.tickMarketOfferGeneration(world);
 					}
 
+					context.getSource()
+							.sendFeedback(
+									() -> Text.literal(
+											"All market offers cleared, generated " + NUMBER_OF_GENERATIONS_PER_COMMAND + " new offer(s)."),
+									true);
 					return 1;
 				}))
 
@@ -55,6 +63,8 @@ public final class ModCommands {
 					var world = server.getOverworld();
 					MarketOfferTickingUtil.tickMarketOfferGeneration(world);
 
+					context.getSource().sendFeedback(
+							() -> Text.literal("Generated " + Commercialize.CONFIG.offerBatchSize + " market offer(s)."), true);
 					return 1;
 				}))
 
@@ -63,6 +73,8 @@ public final class ModCommands {
 							var state = BoolArgumentType.getBool(context, "state");
 							Commercialize.shouldTickMarket = state;
 
+							context.getSource().sendFeedback(() -> Text.literal("Market offer ticking is now set to: " + state + "."),
+									true);
 							return 1;
 						}))
 
@@ -70,6 +82,7 @@ public final class ModCommands {
 
 				.then(literal("clearGlobalMailQueue").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					Commercialize.MAIL_TRANSIT_MANAGER.clearItems();
+					context.getSource().sendFeedback(() -> Text.literal("Mail transit queue cleared for all players."), true);
 					return 1;
 				}))
 
@@ -84,6 +97,8 @@ public final class ModCommands {
 								Commercialize.MAIL_TRANSIT_MANAGER.removeItem(transitItem);
 							});
 
+							context.getSource()
+									.sendFeedback(() -> Text.literal("Mail transit queue cleared for player: " + player.getName()), true);
 							return 1;
 						})))));
 
