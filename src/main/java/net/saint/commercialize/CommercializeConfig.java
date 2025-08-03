@@ -64,8 +64,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("payment")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("Enforces the player to have a bound payment card in their inventory for paying from account in the market. (Default: true)")
-	public boolean requireCardForMarketPayment = true;
+	@Comment("Enforces the player to have a bound payment card in their inventory for paying from account in the market. (Default: false)")
+	public boolean requireCardForMarketPayment = false;
 
 	@ConfigEntry.Category("payment")
 	@ConfigEntry.Gui.Tooltip
