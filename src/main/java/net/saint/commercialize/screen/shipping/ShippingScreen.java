@@ -19,15 +19,15 @@ import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, ShippingBlockScreenHandler> {
+public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScreenHandler> {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_screen");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_screen");
 
 	// Init
 
-	public ShippingBlockScreen(ShippingBlockScreenHandler handler, PlayerInventory playerInventory, Text title) {
+	public ShippingScreen(ShippingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
 
 		handler.blockInventory.addListener(inventory -> {
@@ -66,7 +66,7 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 	protected void build(FlowLayout rootComponent) {
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(210), Sizing.fixed(177));
 
-		var textureComponent = Components.texture(ShippingBlockScreenAssets.PANEL);
+		var textureComponent = Components.texture(ShippingScreenAssets.PANEL);
 		textureComponent.sizing(Sizing.fixed(210), Sizing.fixed(177));
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		wrapperComponent.child(textureComponent);

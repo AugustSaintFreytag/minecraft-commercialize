@@ -16,11 +16,11 @@ import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModSounds;
 
-public class ShippingBlockScreenHandler extends ScreenHandler {
+public class ShippingScreenHandler extends ScreenHandler {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_screen_handler");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_screen_handler");
 
 	// Properties
 
@@ -30,13 +30,12 @@ public class ShippingBlockScreenHandler extends ScreenHandler {
 
 	// Init
 
-	public ShippingBlockScreenHandler(int syncId, PlayerInventory playerInventory) {
+	public ShippingScreenHandler(int syncId, PlayerInventory playerInventory) {
 		this(syncId, BlockPos.ORIGIN, playerInventory, new ShippingBlockInventory());
 	}
 
-	public ShippingBlockScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory,
-			ShippingBlockInventory blockInventory) {
-		super(ModScreenHandlers.SHIPPING_BLOCK_SCREEN_HANDLER, syncId);
+	public ShippingScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory, ShippingBlockInventory blockInventory) {
+		super(ModScreenHandlers.SHIPPING_SCREEN_HANDLER, syncId);
 
 		this.position = position;
 		this.playerInventory = playerInventory;

@@ -20,7 +20,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
-import net.saint.commercialize.screen.shipping.ShippingBlockScreenHandler;
+import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
@@ -108,7 +108,7 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		var screenHandler = new ShippingBlockScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
+		var screenHandler = new ShippingScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
 		screenHandler.onOpen(player);
 
 		return screenHandler;

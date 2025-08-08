@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.library.TextureReference;
 
-public final class ShippingBlockScreenAssets {
+public final class ShippingScreenAssets {
 
 	// Configuration
 
