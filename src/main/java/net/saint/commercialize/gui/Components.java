@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.common.ButtonComponent;
+import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.library.TextureReference;
@@ -118,6 +119,10 @@ public final class Components {
 
 	public static DropdownComponent dropdown(Sizing horizontalSizing) {
 		return io.wispforest.owo.ui.component.Components.dropdown(horizontalSizing);
+	}
+
+	public static SelectDropdownComponent selectDropdown(List<SelectDropdownComponent.Option> options) {
+		return new SelectDropdownComponent().options(options);
 	}
 
 	public static SlimSliderComponent slimSlider(SlimSliderComponent.Axis axis) {
