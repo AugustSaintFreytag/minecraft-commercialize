@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.screen.market.MarketScreenAssets;
 import net.saint.commercialize.util.LocalizationUtil;
 
@@ -81,7 +82,7 @@ public class CurrencyDisplayComponent extends FlowLayout {
 			case NEGATIVE:
 				return MarketScreenAssets.NEGATIVE_BALANCE_BACKDROP;
 			default:
-				return MarketScreenAssets.STUB_ICON;
+				return ScreenAssets.STUB;
 		}
 	}
 

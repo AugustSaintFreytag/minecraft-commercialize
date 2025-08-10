@@ -19,6 +19,7 @@ import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
@@ -28,10 +29,10 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortMode(OfferSortMode sortMode) {
 		return switch (sortMode) {
-			case ITEM_NAME -> MarketScreenAssets.SORT_BY_NAME_ICON;
-			case TIME_POSTED -> MarketScreenAssets.SORT_BY_TIME_ICON;
-			case PRICE -> MarketScreenAssets.SORT_BY_PRICE_ICON;
-			case PLAYER_NAME -> MarketScreenAssets.SORT_BY_PLAYER_ICON;
+			case ITEM_NAME -> ScreenAssets.SORT_BY_NAME_ICON;
+			case TIME_POSTED -> ScreenAssets.SORT_BY_TIME_ICON;
+			case PRICE -> ScreenAssets.SORT_BY_PRICE_ICON;
+			case PLAYER_NAME -> ScreenAssets.SORT_BY_PLAYER_ICON;
 		};
 	}
 
@@ -47,8 +48,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForFilterMode(OfferFilterMode filterMode) {
 		return switch (filterMode) {
-			case AFFORDABLE -> MarketScreenAssets.FILTER_BY_PRICE_ICON;
-			case ALL -> MarketScreenAssets.FILTER_BY_ALL_ICON;
+			case AFFORDABLE -> ScreenAssets.FILTER_BY_PRICE_ICON;
+			case ALL -> ScreenAssets.FILTER_BY_ALL_ICON;
 		};
 	}
 
@@ -63,8 +64,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortOrder(OfferSortOrder sortOrder) {
 		return switch (sortOrder) {
-			case ASCENDING -> MarketScreenAssets.SORT_ASCENDING_ICON;
-			case DESCENDING -> MarketScreenAssets.SORT_DESCENDING_ICON;
+			case ASCENDING -> ScreenAssets.SORT_ASCENDING_ICON;
+			case DESCENDING -> ScreenAssets.SORT_DESCENDING_ICON;
 		};
 	}
 
@@ -72,9 +73,9 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForPaymentMethod(PaymentMethod paymentMethod) {
 		return switch (paymentMethod) {
-			case INVENTORY -> MarketScreenAssets.WALLET_ICON;
-			case ACCOUNT -> MarketScreenAssets.CARD_ICON;
-			case SPECIFIED_ACCOUNT -> MarketScreenAssets.SPECIFIED_CARD_ICON;
+			case INVENTORY -> ScreenAssets.WALLET_ICON;
+			case ACCOUNT -> ScreenAssets.CARD_ICON;
+			case SPECIFIED_ACCOUNT -> ScreenAssets.SPECIFIED_CARD_ICON;
 		};
 	}
 

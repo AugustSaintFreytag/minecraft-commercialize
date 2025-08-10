@@ -30,7 +30,7 @@ public final class PlayerHeadUtil {
 		var row = index / TEXTURES_PER_ROW;
 		var column = index % TEXTURES_PER_ROW;
 
-		return new TextureReference(MarketScreenAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
+		return new TextureReference(MarketScreenAssets.PLAYER_HEADS_TEXTURE, column * 8, row * 8, 8, 8);
 	}
 
 	// Random from Name
@@ -47,7 +47,7 @@ public final class PlayerHeadUtil {
 		var row = index / TEXTURES_PER_ROW;
 		var column = index % TEXTURES_PER_ROW;
 
-		return new TextureReference(MarketScreenAssets.PLAYER_HEADS, column * 8, row * 8, 8, 8);
+		return new TextureReference(MarketScreenAssets.PLAYER_HEADS_TEXTURE, column * 8, row * 8, 8, 8);
 	}
 
 	// Utility
