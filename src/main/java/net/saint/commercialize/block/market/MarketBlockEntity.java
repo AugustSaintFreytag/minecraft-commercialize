@@ -116,7 +116,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
 				this.getPos().toShortString(), state.marketOffers.getOffers().count());
 
-		lastListingTick = world.getTime();
+		lastListingTick = world.getTimeOfDay();
 		updateMarketScreen();
 	}
 
@@ -223,7 +223,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 			return;
 		}
 
-		var currentTime = world.getTime();
+		var currentTime = world.getTimeOfDay();
 		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
 
 		var isScreenActive = blockEntity.marketScreen != null;

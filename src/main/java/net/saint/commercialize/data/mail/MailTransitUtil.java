@@ -17,7 +17,7 @@ public final class MailTransitUtil {
 	// Ticking
 
 	public static void tickMailTransitIfNecessary(World world) {
-		var time = world.getTime();
+		var time = world.getTimeOfDay();
 
 		if (time % Commercialize.CONFIG.mailDeliveryCheckInterval == 0) {
 			tickMailTransit(world);
@@ -26,7 +26,7 @@ public final class MailTransitUtil {
 
 	public static void tickMailTransit(World world) {
 		var server = world.getServer();
-		var time = world.getTime();
+		var time = world.getTimeOfDay();
 
 		var itemsOutForDelivery = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(item -> {
 			// Final delivery time of the package under ideal conditions.
@@ -114,7 +114,7 @@ public final class MailTransitUtil {
 	public static boolean packageAndDispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
 			DefaultedList<ItemStack> itemStacks) {
 		var world = server.getOverworld();
-		var time = world.getTime();
+		var time = world.getTimeOfDay();
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks);
 		var item = new MailTransitItem(time, player.getUuid(), packagedOrder);
 

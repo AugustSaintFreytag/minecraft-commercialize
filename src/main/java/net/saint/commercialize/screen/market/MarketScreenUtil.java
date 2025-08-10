@@ -162,7 +162,7 @@ public final class MarketScreenUtil {
 		components.add(TooltipComponent.of(sellerLabel.append(sellerValue).asOrderedText()));
 
 		// Time calculations
-		var currentTicks = world.getTime();
+		var currentTicks = world.getTimeOfDay();
 		var elapsedTicks = currentTicks - offer.timestamp;
 		var timeExpiresTicks = Math.max(0, offer.timestamp + offer.duration - currentTicks);
 

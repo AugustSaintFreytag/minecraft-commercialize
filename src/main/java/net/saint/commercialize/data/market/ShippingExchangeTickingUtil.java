@@ -31,7 +31,7 @@ public final class ShippingExchangeTickingUtil {
 	// Logic
 
 	public static void tickShippingIfNecessary(World world, ShippingBlockEntity blockEntity, Consumer<ShippingTickResult> callback) {
-		var time = world.getTime();
+		var time = world.getTimeOfDay();
 
 		if (time % Commercialize.CONFIG.shippingExchangeInterval == 0) {
 			tickShipping(world, blockEntity, callback);

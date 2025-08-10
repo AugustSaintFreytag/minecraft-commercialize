@@ -11,7 +11,7 @@ public final class MarketOfferTickingUtil {
 	// Logic
 
 	public static void tickMarketOffersIfNecessary(World world) {
-		var time = world.getTime();
+		var time = world.getTimeOfDay();
 
 		if (time % Commercialize.CONFIG.offerCheckInterval == 0) {
 			tickMarketOfferGeneration(world);
@@ -39,7 +39,7 @@ public final class MarketOfferTickingUtil {
 	public static void tickMarketOfferExpiration(World world) {
 		var expiredOffers = new ArrayList<Offer>();
 
-		Commercialize.MARKET_OFFER_MANAGER.getOffers().filter(offer -> (world.getTime() - offer.timestamp) >= offer.duration)
+		Commercialize.MARKET_OFFER_MANAGER.getOffers().filter(offer -> (world.getTimeOfDay() - offer.timestamp) >= offer.duration)
 				.forEach(offer -> {
 					expiredOffers.add(offer);
 				});

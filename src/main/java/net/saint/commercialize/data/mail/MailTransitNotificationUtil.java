@@ -38,7 +38,7 @@ public final class MailTransitNotificationUtil {
 	// Delivery Attempt (Message)
 
 	private static String deliveryAttemptMessageForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
-		var time = server.getOverworld().getTime();
+		var time = server.getOverworld().getTimeOfDay();
 		var numberOfPackages = items.size();
 		var numberOfPackagesAboutToExpire = numberOfItemsAboutToExpire(items);
 		var numberOfDeliveryAttempts = maxNumberOfPreviousDeliveryAttempts(items);
