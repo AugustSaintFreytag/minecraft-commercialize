@@ -17,6 +17,8 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
+import net.saint.commercialize.gui.common.TabButtonComponent;
+import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScreenHandler> {
@@ -128,6 +130,29 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		postAsDropdown.popoverWidth(95);
 		postAsDropdown.value(SellingPostStrategy.AS_STACK);
 		wrapperComponent.child(postAsDropdown);
+
+		// Tab Buttons
+
+		var postOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.post_offer"),
+				ScreenAssets.CONFIRM_ORDER_ICON, button -> {
+				});
+		postOfferTabButton.positioning(Positioning.absolute(191, 39));
+		postOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.post_offer.tooltip"));
+		wrapperComponent.child(postOfferTabButton);
+
+		var resetPriceTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.reset_price"),
+				ScreenAssets.RESET_PRICE_ICON, button -> {
+				});
+		resetPriceTabButton.positioning(Positioning.absolute(191, 68));
+		resetPriceTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.reset_price.tooltip"));
+		wrapperComponent.child(resetPriceTabButton);
+
+		var clearOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.clear_offer"),
+				ScreenAssets.EMPTY_CART_ICON, button -> {
+				});
+		clearOfferTabButton.positioning(Positioning.absolute(191, 97));
+		clearOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.clear_offer.tooltip"));
+		wrapperComponent.child(clearOfferTabButton);
 
 		// Finalize
 
