@@ -77,7 +77,7 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		valueLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(valueLabel);
 
-		var valueDisplay = Components.label(Text.of("..."));
+		var valueDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		valueDisplay.id("value_display");
 		valueDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		valueDisplay.positioning(Positioning.absolute(72, 45));
@@ -92,7 +92,7 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		saleLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(saleLabel);
 
-		var saleDisplay = Components.label(Text.of("..."));
+		var saleDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		saleDisplay.id("sale_display");
 		saleDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		saleDisplay.positioning(Positioning.absolute(70, 68));
