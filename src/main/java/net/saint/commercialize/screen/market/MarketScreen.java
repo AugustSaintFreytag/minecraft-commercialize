@@ -198,9 +198,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private FlowLayout makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(214), Sizing.fixed(192));
 
+		// Background
+
 		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
+
+		// Labels
 
 		var offersLabel = Components.label(LocalizationUtil.localizedText("gui", "market.offers"));
 		offersLabel.positioning(Positioning.absolute(32, 7));
