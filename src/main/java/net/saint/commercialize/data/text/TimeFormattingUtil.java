@@ -4,11 +4,8 @@ import net.saint.commercialize.util.LocalizationUtil;
 
 public final class TimeFormattingUtil {
 
-	private static final int NUMBER_OF_TICKS_PER_DAY = 24_000;
-
 	public static String formattedTime(long tickCount) {
-		// Convert ticks to total hours
-		var totalNumberOfHours = tickCount / (double) (NUMBER_OF_TICKS_PER_DAY / 24);
+		var totalNumberOfHours = tickCount / (double) TimePreset.ONE_HOUR;
 
 		// Fractional Hours
 
