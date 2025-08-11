@@ -74,7 +74,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		itemNameLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(itemNameLabel);
 
-		var itemNameDisplay = Components.label(Text.of("--"));
+		var itemNameDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		itemNameDisplay.id("item_name_display");
 		itemNameDisplay.positioning(Positioning.absolute(76, 44));
 		itemNameDisplay.sizing(Sizing.fixed(101), Sizing.fixed(8));
@@ -89,7 +89,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		priceLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(priceLabel);
 
-		var priceDisplay = Components.label(Text.of("--"));
+		var priceDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		priceDisplay.id("price_display");
 		priceDisplay.positioning(Positioning.absolute(77, 68));
 		priceDisplay.sizing(Sizing.fixed(97), Sizing.fixed(8));
