@@ -121,8 +121,8 @@ public final class Components {
 		return io.wispforest.owo.ui.component.Components.dropdown(horizontalSizing);
 	}
 
-	public static SelectDropdownComponent selectDropdown(List<SelectDropdownComponent.Option> options) {
-		return new SelectDropdownComponent().options(options);
+	public static <Value> SelectDropdownComponent<Value> selectDropdown(List<SelectDropdownComponent.Option<Value>> options) {
+		return new SelectDropdownComponent<Value>().options(options);
 	}
 
 	public static SlimSliderComponent slimSlider(SlimSliderComponent.Axis axis) {

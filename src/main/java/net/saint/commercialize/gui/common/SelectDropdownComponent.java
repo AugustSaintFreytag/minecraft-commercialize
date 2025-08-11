@@ -22,11 +22,11 @@ import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.icons.ScreenAssets;
 
-public class SelectDropdownComponent extends FlowLayout {
+public class SelectDropdownComponent<Value> extends FlowLayout {
 
 	// Library
 
-	public static record Option(String value, String label) {
+	public static record Option<Value>(Value value, String label) {
 	}
 
 	// Configuration
@@ -37,11 +37,12 @@ public class SelectDropdownComponent extends FlowLayout {
 
 	// State
 
-	protected List<Option> options = new ArrayList<>();
-	protected @Nullable String selectedValue = null;
-	protected @Nullable Consumer<String> onChange = null;
+	protected List<Option<Value>> options = new ArrayList<>();
+	protected @Nullable Value selectedValue = null;
+	protected @Nullable Consumer<Value> onChange = null;
 
-	protected int dropdownWidth = 80;
+	protected int dropdownHeight = 15;
+	protected int popoverWidth = 80;
 
 	// Init
 
@@ -53,12 +54,13 @@ public class SelectDropdownComponent extends FlowLayout {
 		containerComponent.id("container");
 		containerComponent.verticalAlignment(VerticalAlignment.CENTER);
 		containerComponent.horizontalAlignment(HorizontalAlignment.RIGHT);
-		containerComponent.sizing(Sizing.fill(100), Sizing.fixed(18));
+		containerComponent.sizing(Sizing.fill(100), Sizing.fixed(dropdownHeight));
 		containerComponent.surface(Surface.PANEL_INSET);
 		containerComponent.padding(Insets.of(3));
 
 		var selectedValueLabelComponent = Components.label(Text.of(OPTION_FALLBACK_DESCRIPTION));
 		selectedValueLabelComponent.id("selected_value");
+		selectedValueLabelComponent.sizing(Sizing.content());
 		selectedValueLabelComponent.margins(Insets.left(4));
 
 		var chevronComponent = Components.texture(CHEVRON_TEXTURE);
@@ -82,11 +84,11 @@ public class SelectDropdownComponent extends FlowLayout {
 
 	// Properties
 
-	public List<Option> options() {
+	public List<Option<Value>> options() {
 		return List.copyOf(options);
 	}
 
-	public SelectDropdownComponent options(List<Option> options) {
+	public SelectDropdownComponent<Value> options(List<Option<Value>> options) {
 		this.options = new ArrayList<>(options);
 
 		// Restore selection if still part of available options.
@@ -99,11 +101,11 @@ public class SelectDropdownComponent extends FlowLayout {
 		return this;
 	}
 
-	public @Nullable String value() {
+	public @Nullable Value value() {
 		return this.selectedValue;
 	}
 
-	public SelectDropdownComponent value(@Nullable String newValue) {
+	public SelectDropdownComponent<Value> value(@Nullable Value newValue) {
 		// Pre-check if value is a valid option.
 		if (newValue != null && this.options.stream().noneMatch(option -> Objects.equals(option.value(), newValue))) {
 			return this;
@@ -115,29 +117,38 @@ public class SelectDropdownComponent extends FlowLayout {
 		return this;
 	}
 
-	public SelectDropdownComponent onChange(Consumer<String> listener) {
+	public SelectDropdownComponent<Value> onChange(Consumer<Value> listener) {
 		this.onChange = listener;
 		return this;
 	}
 
 	public int dropdownWidth() {
-		return this.dropdownWidth;
+		return this.popoverWidth;
 	}
 
-	public SelectDropdownComponent dropdownWidth(int width) {
-		this.dropdownWidth = width;
+	public SelectDropdownComponent<Value> popoverWidth(int width) {
+		this.popoverWidth = width;
+		return this;
+	}
+
+	public SelectDropdownComponent<Value> dropdownHeight(int height) {
+		this.dropdownHeight = height;
+
+		var containerComponent = childById(FlowLayout.class, "container");
+		containerComponent.sizing(Sizing.fill(100), Sizing.fixed(height));
+
 		return this;
 	}
 
 	// Interaction
 
 	private void showDropdown() {
-		var dropdownComponent = Components.dropdown(Sizing.fixed(dropdownWidth));
+		var dropdownComponent = Components.dropdown(Sizing.fixed(popoverWidth));
 
 		dropdownComponent.id("dropdown");
 		dropdownComponent.surface(Surface.TOOLTIP);
 		dropdownComponent.padding(Insets.of(5));
-		dropdownComponent.positioning(Positioning.absolute(this.width() - dropdownWidth - 7, -3));
+		dropdownComponent.positioning(Positioning.absolute(this.width() - popoverWidth - 7, -3));
 		dropdownComponent.zIndex(1_000);
 		dropdownComponent.closeWhenNotHovered(true);
 
@@ -154,7 +165,7 @@ public class SelectDropdownComponent extends FlowLayout {
 		}
 	}
 
-	private void addOptionsToDropdown(DropdownComponent dropdown, List<Option> options) {
+	private void addOptionsToDropdown(DropdownComponent dropdown, List<Option<Value>> options) {
 		if (options.isEmpty()) {
 			dropdown.text(Text.of(OPTION_FALLBACK_DESCRIPTION));
 			return;
