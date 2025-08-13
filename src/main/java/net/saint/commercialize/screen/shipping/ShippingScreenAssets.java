@@ -8,7 +8,7 @@ public final class ShippingScreenAssets {
 
 	// Configuration
 
-	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/shipping_block.png");
+	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/shipping.png");
 
 	// Stubs
 

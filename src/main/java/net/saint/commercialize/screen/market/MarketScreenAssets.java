@@ -8,9 +8,9 @@ public final class MarketScreenAssets {
 
 	// Configuration
 
-	public static final Identifier LEFT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_left_panel.png");
-	public static final Identifier RIGHT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_right_panel.png");
-	public static final Identifier LIST_ITEMS_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_block_list_items.png");
+	public static final Identifier LEFT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_left_panel.png");
+	public static final Identifier RIGHT_PANEL_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_right_panel.png");
+	public static final Identifier LIST_ITEMS_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/market_list_items.png");
 
 	public static final Identifier PLAYER_HEADS_TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/player_heads.png");
 
