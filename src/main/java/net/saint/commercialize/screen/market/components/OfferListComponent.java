@@ -122,7 +122,8 @@ public class OfferListComponent extends FlowLayout {
 	public boolean onMouseDown(double mouseX, double mouseY, int button) {
 		this.playInteractionSound();
 		this.onPress.accept(this);
-		return super.onMouseDown(mouseX, mouseY, button);
+
+		return true;
 	}
 
 	private void playInteractionSound() {
