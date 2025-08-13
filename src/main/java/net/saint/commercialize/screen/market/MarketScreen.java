@@ -334,7 +334,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
 		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
-				MarketScreenAssets.EMPTY_CART_INDICATOR, component -> {
+				ScreenAssets.EMPTY_CART_ICON, component -> {
 					delegate.emptyCart();
 				});
 
