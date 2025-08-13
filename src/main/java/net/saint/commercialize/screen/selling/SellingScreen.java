@@ -20,6 +20,7 @@ import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.gui.common.TabButtonComponent;
+import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.util.LocalizationUtil;
 
@@ -183,7 +184,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		this.updateDisplay();
 	}
 
-	public FlowLayout openOverlay() {
+	private FlowLayout openOverlay() {
 		if (this.overlayComponent != null) {
 			// Re-create overlay even if it's already set up for convenience.
 			this.overlayComponent.remove();
@@ -199,13 +200,31 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		uiAdapter.rootComponent.child(overlayComponent);
 		this.overlayComponent = overlayComponent;
 
+		disableSlots();
+
 		return overlayWrapperComponent;
 	}
 
-	public void closeOverlay() {
+	private void closeOverlay() {
 		if (this.overlayComponent != null) {
 			this.overlayComponent.remove();
 			this.overlayComponent = null;
+		}
+
+		enableSlots();
+	}
+
+	private void disableSlots() {
+		for (var index = 0; index < NUMBER_OF_SLOTS; index++) {
+			var slot = (CustomSlot) this.handler.getSlot(index);
+			slot.setInteractible(false);
+		}
+	}
+
+	private void enableSlots() {
+		for (var index = 0; index < NUMBER_OF_SLOTS; index++) {
+			var slot = (CustomSlot) this.handler.getSlot(index);
+			slot.setInteractible(true);
 		}
 	}
 

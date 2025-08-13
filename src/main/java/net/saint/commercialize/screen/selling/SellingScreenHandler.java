@@ -7,9 +7,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
 
 public class SellingScreenHandler extends ScreenHandler {
@@ -43,13 +43,13 @@ public class SellingScreenHandler extends ScreenHandler {
 
 	private void makeSlotsForBlockInventory(SimpleInventory inventory) {
 		SlotGenerator.begin(this::addSlot, 68, -15).slotFactory((_inventory, index, x, y) -> {
-			return new Slot(_inventory, index, x, y);
+			return new CustomSlot(_inventory, index, x, y);
 		}).grid(inventory, 0, 1, 1);
 	}
 
 	private void makeSlotsForPlayerInventory(PlayerInventory inventory) {
 		SlotGenerator.begin(this::addSlot, -4, 108).slotFactory((_inventory, index, x, y) -> {
-			return new Slot(_inventory, index, x, y);
+			return new CustomSlot(_inventory, index, x, y);
 		}).playerInventory(inventory);
 	}
 
