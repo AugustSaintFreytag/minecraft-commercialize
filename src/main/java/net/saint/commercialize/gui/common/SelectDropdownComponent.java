@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +40,10 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 	protected List<Option<Value>> options = new ArrayList<>();
 	protected @Nullable Value selectedValue = null;
+
+	protected @Nullable Supplier<FlowLayout> openOverlay = null;
+	protected @Nullable Runnable closeOverlay = null;
+
 	protected @Nullable Consumer<Value> onChange = null;
 
 	protected int dropdownHeight = 15;
@@ -72,7 +77,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 		containerComponent.mouseDown().subscribe((mouseX, mouseY, button) -> {
 			if (button == 0) {
-				showDropdown();
+				openDropdown(mouseX, mouseY);
 				return true;
 			}
 
@@ -122,6 +127,14 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		return this;
 	}
 
+	public void onOpenOverlay(Supplier<FlowLayout> overlaySupplier) {
+		this.openOverlay = overlaySupplier;
+	}
+
+	public void onCloseOverlay(Runnable closeHandler) {
+		this.closeOverlay = closeHandler;
+	}
+
 	public int dropdownWidth() {
 		return this.popoverWidth;
 	}
@@ -142,27 +155,23 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 	// Interaction
 
-	private void showDropdown() {
+	private void openDropdown(double mouseX, double mouseY) {
 		var dropdownComponent = Components.dropdown(Sizing.fixed(popoverWidth));
 
 		dropdownComponent.id("dropdown");
 		dropdownComponent.surface(Surface.TOOLTIP);
 		dropdownComponent.padding(Insets.of(5));
-		dropdownComponent.positioning(Positioning.absolute(this.width() - popoverWidth - 7, -3));
-		dropdownComponent.zIndex(1_000);
-		dropdownComponent.closeWhenNotHovered(true);
+		dropdownComponent.positioning(Positioning.absolute(this.x() + this.width() - popoverWidth - 7, this.y() - 3));
+		dropdownComponent.closeWhenNotHovered(false);
 
 		addOptionsToDropdown(dropdownComponent, this.options);
 
-		this.child(dropdownComponent);
+		var hostComponent = openOverlay.get();
+		hostComponent.child(dropdownComponent);
 	}
 
-	private void removeDropdown() {
-		var dropdownComponent = childById(DropdownComponent.class, "dropdown");
-
-		if (dropdownComponent != null) {
-			dropdownComponent.remove();
-		}
+	private void closeDropdown() {
+		closeOverlay.run();
 	}
 
 	private void addOptionsToDropdown(DropdownComponent dropdown, List<Option<Value>> options) {
@@ -188,7 +197,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 					this.onChange.accept(value);
 				}
 
-				removeDropdown();
+				closeDropdown();
 			});
 		}
 	}

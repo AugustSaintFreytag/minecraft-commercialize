@@ -4,11 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen;
 import io.wispforest.owo.ui.container.FlowLayout;
+import io.wispforest.owo.ui.container.OverlayContainer;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -27,6 +29,8 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_screen");
 
+	private static final int NUMBER_OF_SLOTS = 9 * 4 + 1;
+
 	// Init
 
 	public SellingScreen(SellingScreenHandler handler, PlayerInventory playerInventory, Text title) {
@@ -36,6 +40,10 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 			this.updateDisplay();
 		});
 	}
+
+	// References
+
+	private OverlayContainer<FlowLayout> overlayComponent;
 
 	// Internals
 
@@ -63,10 +71,10 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(215));
 
-		var textureComponent = Components.texture(SellingScreenAssets.PANEL);
-		textureComponent.sizing(Sizing.fixed(215), Sizing.fixed(215));
-		textureComponent.positioning(Positioning.absolute(0, 0));
-		wrapperComponent.child(textureComponent);
+		var backgroundComponent = Components.texture(SellingScreenAssets.PANEL);
+		backgroundComponent.sizing(Sizing.fixed(215), Sizing.fixed(215));
+		backgroundComponent.positioning(Positioning.absolute(0, 0));
+		wrapperComponent.child(backgroundComponent);
 
 		// Item Row
 
@@ -113,6 +121,12 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		durationDropdown.sizing(Sizing.fixed(103), Sizing.fill(100));
 		durationDropdown.popoverWidth(75);
 		durationDropdown.value(TimePreset.THREE_DAYS);
+		durationDropdown.onOpenOverlay(() -> {
+			return openOverlay();
+		});
+		durationDropdown.onCloseOverlay(() -> {
+			closeOverlay();
+		});
 		wrapperComponent.child(durationDropdown);
 
 		// Post As Row
@@ -129,6 +143,12 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fill(100));
 		postAsDropdown.popoverWidth(95);
 		postAsDropdown.value(SellingPostStrategy.AS_STACK);
+		postAsDropdown.onOpenOverlay(() -> {
+			return openOverlay();
+		});
+		postAsDropdown.onCloseOverlay(() -> {
+			closeOverlay();
+		});
 		wrapperComponent.child(postAsDropdown);
 
 		// Tab Buttons
@@ -161,6 +181,32 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		rootComponent.id("selling_screen");
 
 		this.updateDisplay();
+	}
+
+	public FlowLayout openOverlay() {
+		if (this.overlayComponent != null) {
+			// Re-create overlay even if it's already set up for convenience.
+			this.overlayComponent.remove();
+		}
+
+		var overlayWrapperComponent = Containers.verticalFlow(Sizing.fill(100), Sizing.fill(100));
+		overlayWrapperComponent.id("overlay_wrapper");
+
+		var overlayComponent = Containers.overlay(overlayWrapperComponent);
+		overlayComponent.id("overlay");
+		overlayComponent.surface(Surface.BLANK);
+
+		uiAdapter.rootComponent.child(overlayComponent);
+		this.overlayComponent = overlayComponent;
+
+		return overlayWrapperComponent;
+	}
+
+	public void closeOverlay() {
+		if (this.overlayComponent != null) {
+			this.overlayComponent.remove();
+			this.overlayComponent = null;
+		}
 	}
 
 }
