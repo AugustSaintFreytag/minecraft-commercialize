@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -20,7 +21,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
-import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
+import net.saint.commercialize.screen.selling.SellingScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
@@ -108,10 +109,8 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		var screenHandler = new ShippingScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
-		screenHandler.onOpen(player);
-
-		return screenHandler;
+		// return new ShippingScreenHandler(syncId, playerInventory, this.inventory);
+		return new SellingScreenHandler(syncId, playerInventory, new SimpleInventory(1), getPos());
 	}
 
 	@Override
