@@ -8,6 +8,8 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
@@ -22,18 +24,21 @@ public class SellingScreenHandler extends ScreenHandler {
 
 	public final PlayerInventory playerInventory;
 	public final SimpleInventory blockInventory;
+	public final BlockPos position;
 
 	// Init
 
 	public SellingScreenHandler(int syncId, PlayerInventory playerInventory) {
-		this(syncId, playerInventory, new SimpleInventory(1));
+		// Convenience initializer to satisfy constraints. Actual construction is done in owning block entity.
+		this(syncId, playerInventory, new SimpleInventory(1), BlockPos.ORIGIN);
 	}
 
-	public SellingScreenHandler(int syncId, PlayerInventory playerInventory, SimpleInventory blockInventory) {
+	public SellingScreenHandler(int syncId, PlayerInventory playerInventory, SimpleInventory blockInventory, BlockPos position) {
 		super(ModScreenHandlers.SELLING_SCREEN_HANDLER, syncId);
 
 		this.playerInventory = playerInventory;
 		this.blockInventory = blockInventory;
+		this.position = position;
 
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
@@ -63,6 +68,19 @@ public class SellingScreenHandler extends ScreenHandler {
 	@Override
 	public ItemStack quickMove(PlayerEntity player, int slot) {
 		return ScreenUtils.handleSlotTransfer(this, slot, this.blockInventory.size());
+	}
+
+	@Override
+	public void onClosed(PlayerEntity player) {
+		var world = player.getWorld();
+
+		if (world.isClient()) {
+			super.onClosed(player);
+			return;
+		}
+
+		ItemScatterer.spawn(world, player.getBlockPos(), this.blockInventory);
+		super.onClosed(player);
 	}
 
 }
