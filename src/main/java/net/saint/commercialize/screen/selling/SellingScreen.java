@@ -3,6 +3,7 @@ package net.saint.commercialize.screen.selling;
 import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen;
+import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.OverlayContainer;
 import io.wispforest.owo.ui.core.Color;
@@ -19,6 +20,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
+import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
@@ -32,14 +34,12 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 	private static final int NUMBER_OF_SLOTS = 9 * 4 + 1;
 
+	public SellingScreenDelegate delegate;
+
 	// Init
 
 	public SellingScreen(SellingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
-
-		handler.blockInventory.addListener(inventory -> {
-			this.updateDisplay();
-		});
 	}
 
 	// References
@@ -60,16 +60,54 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 	// Update
 
+	@SuppressWarnings("unchecked")
 	public void updateDisplay() {
 		var rootComponent = this.uiAdapter.rootComponent;
+
+		if (delegate == null) {
+			// If delegate is not set, we cannot update the display.
+			return;
+		}
+
+		var itemStack = delegate.getItemStack();
+		var itemDescription = SellingScreenUtil.descriptionForItemStack(itemStack);
+		var itemNameDisplay = rootComponent.childById(LabelComponent.class, "item_name_display");
+		itemNameDisplay.text(itemDescription);
+
+		var itemOfferPrice = delegate.getOfferPrice();
+		var itemOfferPriceDescription = SellingScreenUtil.descriptionForItemOfferPrice(itemOfferPrice);
+		var priceDisplay = rootComponent.childById(LabelComponent.class, "price_display");
+		priceDisplay.text(itemOfferPriceDescription);
+
+		var itemOfferDuration = delegate.getOfferDuration();
+		var durationDropdown = (SelectDropdownComponent<Long>) rootComponent.childById(SelectDropdownComponent.class,
+				"offer_time_dropdown");
+		durationDropdown.value(itemOfferDuration);
+
+		var itemPostStrategy = delegate.getPostStrategy();
+		var postStrategyDropdown = (SelectDropdownComponent<SellingPostStrategy>) rootComponent.childById(SelectDropdownComponent.class,
+				"offer_post_as_dropdown");
+		postStrategyDropdown.value(itemPostStrategy);
 	}
 
-	// Root
+	// Set-Up
+
+	@Override
+	protected void init() {
+		super.init();
+
+		handler.blockInventory.addListener(inventory -> {
+			this.updateDisplay();
+		});
+
+		// Invoke post-init in screen handler to set up delegate and references.
+		handler.onOpened(this, handler.player());
+
+		updateDisplay();
+	}
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
-		// this.uiAdapter.enableInspector = true;
-
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(215));
 
 		var backgroundComponent = Components.texture(SellingScreenAssets.PANEL);
@@ -180,8 +218,6 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("selling_screen");
-
-		this.updateDisplay();
 	}
 
 	private FlowLayout openOverlay() {

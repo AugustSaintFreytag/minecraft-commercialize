@@ -6,15 +6,22 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.block.shipping.SellingScreenDelegateHandler;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
 
-public class SellingScreenHandler extends ScreenHandler {
+public class SellingScreenHandler extends ScreenHandler implements SellingScreenDelegateHandler {
+
+	// Library
+
+	public record InitMessage(BlockPos position) {
+	}
 
 	// Configuration
 
@@ -24,16 +31,23 @@ public class SellingScreenHandler extends ScreenHandler {
 
 	public final PlayerInventory playerInventory;
 	public final SimpleInventory blockInventory;
-	public final BlockPos position;
+
+	public BlockPos position;
+
+	public SellingScreen screen;
+
+	// State
+
+	private SellingScreenState state = new SellingScreenState();
 
 	// Init
 
 	public SellingScreenHandler(int syncId, PlayerInventory playerInventory) {
 		// Convenience initializer to satisfy constraints. Actual construction is done in owning block entity.
-		this(syncId, playerInventory, new SimpleInventory(1), BlockPos.ORIGIN);
+		this(syncId, BlockPos.ORIGIN, playerInventory, new SimpleInventory(1));
 	}
 
-	public SellingScreenHandler(int syncId, PlayerInventory playerInventory, SimpleInventory blockInventory, BlockPos position) {
+	public SellingScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory, SimpleInventory blockInventory) {
 		super(ModScreenHandlers.SELLING_SCREEN_HANDLER, syncId);
 
 		this.playerInventory = playerInventory;
@@ -42,6 +56,23 @@ public class SellingScreenHandler extends ScreenHandler {
 
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
+
+		blockInventory.addListener(inventory -> {
+			var itemStack = inventory.getStack(0);
+			this.state.selectedItem = itemStack;
+
+			if (!itemStack.isEmpty()) {
+				var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
+				var itemBaseValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
+				this.state.offerPrice = itemBaseValue * itemStack.getCount();
+			} else {
+				this.state.offerPrice = 0;
+			}
+
+			if (this.screen != null) {
+				this.screen.updateDisplay();
+			}
+		});
 	}
 
 	// Slots
@@ -58,6 +89,17 @@ public class SellingScreenHandler extends ScreenHandler {
 		}).playerInventory(inventory);
 	}
 
+	// Access
+
+	@Override
+	public SellingScreenState getState() {
+		return this.state;
+	}
+
+	public void setState(SellingScreenState state) {
+		this.state = state;
+	}
+
 	// Interaction
 
 	@Override
@@ -70,8 +112,14 @@ public class SellingScreenHandler extends ScreenHandler {
 		return ScreenUtils.handleSlotTransfer(this, slot, this.blockInventory.size());
 	}
 
-	@Override
-	public void onClosed(PlayerEntity player) {
+	// Lifecycle
+
+	public void onOpened(SellingScreen screen, PlayerEntity player) {
+		this.screen = screen;
+		screen.delegate = this;
+	}
+
+	public void onClosed(SellingScreen screen, PlayerEntity player) {
 		var world = player.getWorld();
 
 		if (world.isClient()) {
@@ -81,6 +129,33 @@ public class SellingScreenHandler extends ScreenHandler {
 
 		ItemScatterer.spawn(world, player.getBlockPos(), this.blockInventory);
 		super.onClosed(player);
+	}
+
+	@Override
+	public void onClosed(PlayerEntity player) {
+		onClosed(this.screen, player);
+	}
+
+	// Delegation
+
+	@Override
+	public void onScreenClose() {
+	}
+
+	@Override
+	public void onScreenUpdate() {
+	}
+
+	@Override
+	public void confirmOfferPost() {
+	}
+
+	@Override
+	public void clearOfferPost() {
+	}
+
+	@Override
+	public void resetOfferPrice() {
 	}
 
 }
