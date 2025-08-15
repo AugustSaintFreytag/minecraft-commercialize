@@ -22,6 +22,7 @@ import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.screen.selling.SellingScreenHandler;
+import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
@@ -35,14 +36,12 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	public final ShippingBlockInventory inventory = new ShippingBlockInventory();
 
+	private ShippingBlockViewMode viewMode = ShippingBlockViewMode.SELLING;
+
 	// Init
 
 	public ShippingBlockEntity(BlockPos position, BlockState state) {
 		super(ModBlockEntities.SHIPPING_BLOCK_ENTITY, position, state);
-
-		inventory.addListener(inventory -> {
-			this.markDirty();
-		});
 	}
 
 	// NBT
@@ -109,8 +108,14 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		// return new ShippingScreenHandler(syncId, playerInventory, this.inventory);
-		return new SellingScreenHandler(syncId, playerInventory, new SimpleInventory(1), getPos());
+		switch (viewMode) {
+			case SHIPPING:
+				return new ShippingScreenHandler(syncId, getPos(), playerInventory, this.inventory);
+			case SELLING:
+				return new SellingScreenHandler(syncId, getPos(), playerInventory, new SimpleInventory(1));
+			default:
+				throw new IllegalStateException("Can not create menu with invalid view mode: " + viewMode + ".");
+		}
 	}
 
 	@Override
