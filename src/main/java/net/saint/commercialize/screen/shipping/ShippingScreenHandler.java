@@ -28,6 +28,8 @@ public class ShippingScreenHandler extends ScreenHandler {
 	public final PlayerInventory playerInventory;
 	public final ShippingBlockInventory blockInventory;
 
+	public ShippingScreen screen;
+
 	// Init
 
 	public ShippingScreenHandler(int syncId, PlayerInventory playerInventory) {
@@ -46,7 +48,15 @@ public class ShippingScreenHandler extends ScreenHandler {
 		makeSlotsForPlayerInventory(playerInventory);
 	}
 
-	public void onOpen(PlayerEntity player) {
+	// Lifecycle
+
+	@Override
+	public void onClosed(PlayerEntity player) {
+		onClosed(this.screen, player);
+	}
+
+	public void onOpened(ShippingScreen screen, PlayerEntity player) {
+		this.screen = screen;
 		var world = player.getWorld();
 
 		if (world.isClient()) {
@@ -56,8 +66,8 @@ public class ShippingScreenHandler extends ScreenHandler {
 		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
-	@Override
-	public void onClosed(PlayerEntity player) {
+	public void onClosed(ShippingScreen screen, PlayerEntity player) {
+		this.screen = null;
 		var world = player.getWorld();
 
 		if (world.isClient()) {
