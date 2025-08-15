@@ -232,7 +232,7 @@
 			}
 		},
 		{
-			"name": "stand",
+			"name": "beam",
 			"from": [5, 1, 5],
 			"to": [11, 12, 11],
 			"rotation": {"angle": 0, "axis": "y", "origin": [5, 1, 5]},
@@ -276,7 +276,7 @@
 	],
 	"groups": [
 		{
-			"name": "Screen",
+			"name": "screen",
 			"origin": [2, 10, 1],
 			"color": 0,
 			"children": [
@@ -292,13 +292,13 @@
 			]
 		},
 		{
-			"name": "Stand",
+			"name": "beam",
 			"origin": [5, 1, 5],
 			"color": 0,
 			"children": [16]
 		},
 		{
-			"name": "Foot",
+			"name": "foot",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [17, 18]
