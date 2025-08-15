@@ -21,7 +21,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 
 	// State
 
-	MarketBlockEntityScreenState getState();
+	MarketBlockEntityState getState();
 
 	// Player
 
@@ -85,7 +85,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		}
 
 		cart.addOffer(offer);
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var cart = getState().cartOffers;
 
 		cart.removeOffer(offer);
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var cart = getState().cartOffers;
 
 		cart.clearOffers();
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 	@Override
 	default void setSearchTerm(String searchTerm) {
 		getState().searchTerm = searchTerm;
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	// Sort Mode
@@ -147,7 +147,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var state = getState();
 		state.sortMode = nextValueInSequence(getSupportedSortModes(), state.sortMode);
 
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	// Sort Order
@@ -162,7 +162,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var state = getState();
 		state.sortOrder = nextValueInSequence(getSupportedSortOrders(), state.sortOrder);
 
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	// Filter Mode
@@ -177,7 +177,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var state = getState();
 		state.filterMode = nextValueInSequence(getSupportedFilterModes(), state.filterMode);
 
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	// Payment Method
@@ -195,7 +195,7 @@ public interface MarketBlockScreenHandler extends MarketScreenDelegate {
 		var state = getState();
 		state.paymentMethod = nextValueInSequence(getSupportedPaymentMethods(), state.paymentMethod);
 
-		onMarketScreenUpdate();
+		onScreenUpdate();
 	}
 
 	// Ordered Properties

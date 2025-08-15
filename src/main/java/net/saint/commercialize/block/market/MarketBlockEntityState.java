@@ -8,7 +8,7 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 
-public class MarketBlockEntityScreenState {
+public class MarketBlockEntityState {
 
 	// Market
 

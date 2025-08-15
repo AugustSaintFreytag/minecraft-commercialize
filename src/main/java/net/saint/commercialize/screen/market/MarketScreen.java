@@ -63,7 +63,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	@Override
 	public void close() {
-		delegate.onMarketScreenClose();
+		delegate.onScreenClose();
 		super.close();
 	}
 

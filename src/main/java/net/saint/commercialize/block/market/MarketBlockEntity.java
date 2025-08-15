@@ -41,7 +41,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Properties
 
-	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
+	private MarketBlockEntityState state = new MarketBlockEntityState();
 
 	protected long lastListingTick = 0;
 
@@ -57,11 +57,11 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Access
 
-	public MarketBlockEntityScreenState getState() {
+	public MarketBlockEntityState getState() {
 		return state;
 	}
 
-	public void setState(MarketBlockEntityScreenState state) {
+	public void setState(MarketBlockEntityState state) {
 		this.state = state;
 		markDirty();
 	}
@@ -249,7 +249,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		requestMarketData();
 	}
 
-	public void onMarketScreenUpdate() {
+	public void onScreenUpdate() {
 		if (this.marketScreen == null) {
 			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
 			return;
@@ -259,7 +259,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		sendStateSync(MarketBlockStateSyncReason.UPDATE);
 	}
 
-	public void onMarketScreenClose() {
+	public void onScreenClose() {
 		sendStateSync(MarketBlockStateSyncReason.INTERACTION_END);
 	}
 
