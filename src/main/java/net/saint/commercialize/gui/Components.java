@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.common.ButtonComponent;
+import net.saint.commercialize.gui.common.CurrencyTextBoxComponent;
 import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.gui.common.TextureComponent;
@@ -83,6 +84,10 @@ public final class Components {
 
 	public static TextBoxComponent textBox(Sizing sizing) {
 		return new TextBoxComponent(sizing);
+	}
+
+	public static CurrencyTextBoxComponent currencyTextBox(Sizing sizing) {
+		return new CurrencyTextBoxComponent(sizing);
 	}
 
 	public static ButtonComponent button(Text message, Consumer<ButtonComponent> onPress) {
