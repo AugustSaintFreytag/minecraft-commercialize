@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import io.wispforest.owo.ui.component.DropdownComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
-import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.Insets;
@@ -46,7 +45,6 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 	protected @Nullable Consumer<Value> onChange = null;
 
-	protected int dropdownHeight = 15;
 	protected int popoverWidth = 80;
 
 	// Init
@@ -54,28 +52,25 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 	public SelectDropdownComponent() {
 		super(Sizing.fill(100), Sizing.fill(100), Algorithm.HORIZONTAL);
 
-		var containerComponent = Containers.horizontalFlow(Sizing.content(), Sizing.content());
-
-		containerComponent.id("container");
-		containerComponent.verticalAlignment(VerticalAlignment.CENTER);
-		containerComponent.horizontalAlignment(HorizontalAlignment.RIGHT);
-		containerComponent.sizing(Sizing.fill(100), Sizing.fixed(dropdownHeight));
-		containerComponent.surface(Surface.PANEL_INSET);
-		containerComponent.padding(Insets.of(3));
+		verticalAlignment(VerticalAlignment.CENTER);
+		horizontalAlignment(HorizontalAlignment.LEFT);
+		surface(Surface.VANILLA_TRANSLUCENT);
+		padding(Insets.of(3));
 
 		var selectedValueLabelComponent = Components.label(Text.of(OPTION_FALLBACK_DESCRIPTION));
 		selectedValueLabelComponent.id("selected_value");
 		selectedValueLabelComponent.sizing(Sizing.content());
 		selectedValueLabelComponent.margins(Insets.left(4));
+		selectedValueLabelComponent.shadow(true);
 
 		var chevronComponent = Components.texture(CHEVRON_TEXTURE);
 		chevronComponent.sizing(Sizing.fixed(7), Sizing.fixed(5));
-		chevronComponent.margins(Insets.of(0, 0, 5, 0));
+		chevronComponent.margins(Insets.of(0, 0, 0, 2));
 
-		containerComponent.child(selectedValueLabelComponent);
-		containerComponent.child(chevronComponent);
+		child(chevronComponent);
+		child(selectedValueLabelComponent);
 
-		containerComponent.mouseDown().subscribe((mouseX, mouseY, button) -> {
+		mouseDown().subscribe((mouseX, mouseY, button) -> {
 			if (button == 0) {
 				openDropdown(mouseX, mouseY);
 				return true;
@@ -83,8 +78,6 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 			return false;
 		});
-
-		this.child(containerComponent);
 	}
 
 	// Properties
@@ -122,11 +115,6 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		return this;
 	}
 
-	public SelectDropdownComponent<Value> onChange(Consumer<Value> listener) {
-		this.onChange = listener;
-		return this;
-	}
-
 	public void onOpenOverlay(Supplier<FlowLayout> overlaySupplier) {
 		this.openOverlay = overlaySupplier;
 	}
@@ -144,15 +132,6 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		return this;
 	}
 
-	public SelectDropdownComponent<Value> dropdownHeight(int height) {
-		this.dropdownHeight = height;
-
-		var containerComponent = childById(FlowLayout.class, "container");
-		containerComponent.sizing(Sizing.fill(100), Sizing.fixed(height));
-
-		return this;
-	}
-
 	// Interaction
 
 	private void openDropdown(double mouseX, double mouseY) {
@@ -160,7 +139,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 		dropdownComponent.id("dropdown");
 		dropdownComponent.surface(Surface.TOOLTIP);
-		dropdownComponent.padding(Insets.of(5));
+		dropdownComponent.padding(Insets.of(0));
 		dropdownComponent.positioning(Positioning.absolute(this.x() + this.width() - popoverWidth - 7, this.y() - 3));
 		dropdownComponent.closeWhenNotHovered(false);
 
