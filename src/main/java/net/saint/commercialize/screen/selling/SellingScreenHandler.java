@@ -13,6 +13,7 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.SellingScreenDelegateHandler;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
 
@@ -57,6 +58,11 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
 
+		initListeners();
+		initNetworking();
+	}
+
+	private void initListeners() {
 		blockInventory.addListener(inventory -> {
 			var itemStack = inventory.getStack(0);
 			this.state.selectedItem = itemStack;
@@ -72,6 +78,29 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 			if (this.screen != null) {
 				this.screen.updateDisplay();
 			}
+		});
+	}
+
+	private void initNetworking() {
+		addServerboundMessage(C2SStateSyncMessage.class, message -> {
+			var server = this.player().getServer();
+
+			server.execute(() -> {
+				var world = this.player().getWorld();
+				var blockEntity = world.getBlockEntity(this.position);
+
+				if (!(blockEntity instanceof ShippingBlockEntity)) {
+					Commercialize.LOGGER
+							.error("Expected block entity owning selling screen handler to be of type 'ShippingBlockEntity', got '"
+									+ blockEntity.getClass().getName() + "'.");
+					return;
+				}
+
+				var shippingBlockEntity = (ShippingBlockEntity) blockEntity;
+				var state = message.toState();
+
+				shippingBlockEntity.setSellingScreenState(state);
+			});
 		});
 	}
 
@@ -144,6 +173,10 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 
 	@Override
 	public void onScreenUpdate() {
+		// Called from client-side after screen update.
+		var message = new C2SStateSyncMessage(this.state.selectedItem, this.state.offerPrice, this.state.offerDuration,
+				this.state.offerPostStrategy);
+		sendMessage(message);
 	}
 
 	@Override
@@ -156,6 +189,23 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 
 	@Override
 	public void resetOfferPrice() {
+	}
+
+	// Library
+
+	private record C2SStateSyncMessage(ItemStack selectedItem, int offerPrice, long offerDuration, OfferPostStrategy offerPostStrategy) {
+
+		public SellingScreenState toState() {
+			var state = new SellingScreenState();
+
+			state.selectedItem = this.selectedItem;
+			state.offerPrice = this.offerPrice;
+			state.offerDuration = this.offerDuration;
+			state.offerPostStrategy = this.offerPostStrategy;
+
+			return state;
+		}
+
 	}
 
 }
