@@ -49,6 +49,10 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	// Access
 
+	public SellingScreenState getSellingScreenState() {
+		return this.sellingScreenState;
+	}
+
 	public void setSellingScreenState(SellingScreenState state) {
 		this.sellingScreenState = state;
 		this.markDirty();
@@ -126,9 +130,9 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
 		switch (viewMode) {
 			case SHIPPING:
-				return new ShippingScreenHandler(syncId, getPos(), playerInventory, this.inventory);
+				return new ShippingScreenHandler(syncId, this, playerInventory, this.inventory);
 			case SELLING:
-				return new SellingScreenHandler(syncId, getPos(), playerInventory, new SimpleInventory(1));
+				return new SellingScreenHandler(syncId, this, playerInventory, new SimpleInventory(1));
 			default:
 				throw new IllegalStateException("Can not create menu with invalid view mode: " + viewMode + ".");
 		}
