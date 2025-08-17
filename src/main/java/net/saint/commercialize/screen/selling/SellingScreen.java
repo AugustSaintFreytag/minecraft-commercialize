@@ -162,7 +162,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		postAsDropdown.positioning(Positioning.absolute(74, 101));
 		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		postAsDropdown.popoverWidth(95);
-		postAsDropdown.value(SellingPostStrategy.AS_STACK);
+		postAsDropdown.value(OfferPostStrategy.AS_STACK);
 
 		postAsDropdown.onChanged().subscribe(value -> {
 			this.delegate.updatePostStrategy(value);
@@ -234,7 +234,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		durationDropdown.value(itemOfferDuration);
 
 		var itemPostStrategy = delegate.getPostStrategy();
-		var postStrategyDropdown = (SelectDropdownComponent<SellingPostStrategy>) rootComponent.childById(SelectDropdownComponent.class,
+		var postStrategyDropdown = (SelectDropdownComponent<OfferPostStrategy>) rootComponent.childById(SelectDropdownComponent.class,
 				"offer_post_as_dropdown");
 		postStrategyDropdown.value(itemPostStrategy);
 	}

@@ -1,7 +1,7 @@
 package net.saint.commercialize.block.shipping;
 
 import net.minecraft.item.ItemStack;
-import net.saint.commercialize.screen.selling.SellingPostStrategy;
+import net.saint.commercialize.screen.selling.OfferPostStrategy;
 import net.saint.commercialize.screen.selling.SellingScreenDelegate;
 import net.saint.commercialize.screen.selling.SellingScreenState;
 
@@ -41,11 +41,11 @@ public interface SellingScreenDelegateHandler extends SellingScreenDelegate {
 
 	// Post Strategy
 
-	default SellingPostStrategy getPostStrategy() {
+	default OfferPostStrategy getPostStrategy() {
 		return getState().offerPostStrategy;
 	}
 
-	default void updatePostStrategy(SellingPostStrategy strategy) {
+	default void updatePostStrategy(OfferPostStrategy strategy) {
 		getState().offerPostStrategy = strategy;
 		onScreenUpdate();
 	}
