@@ -1,0 +1,9 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Saint for Commercialize",
+	"parent": "commercialize:block/shipping_block_upper",
+	"textures": {
+		"1": "commercialize:block/transparent",
+		"particle": "commercialize:block/blue_particle"
+	}
+}
