@@ -3,6 +3,7 @@ package net.saint.commercialize.screen.selling;
 import org.jetbrains.annotations.NotNull;
 
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen;
+import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.OverlayContainer;
 import io.wispforest.owo.ui.core.Color;
@@ -19,6 +20,8 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
+import net.saint.commercialize.gui.common.CurrencyTextBoxComponent;
+import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
@@ -32,14 +35,12 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 	private static final int NUMBER_OF_SLOTS = 9 * 4 + 1;
 
+	public SellingScreenDelegate delegate;
+
 	// Init
 
 	public SellingScreen(SellingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
-
-		handler.blockInventory.addListener(inventory -> {
-			this.updateDisplay();
-		});
 	}
 
 	// References
@@ -58,18 +59,24 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		return false;
 	}
 
-	// Update
+	// Set-Up
 
-	public void updateDisplay() {
-		var rootComponent = this.uiAdapter.rootComponent;
+	@Override
+	protected void init() {
+		super.init();
+
+		handler.blockInventory.addListener(inventory -> {
+			this.updateDisplay();
+		});
+
+		// Invoke post-init in screen handler to set up delegate and references.
+		handler.onOpened(this, handler.player());
+
+		updateDisplay();
 	}
-
-	// Root
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
-		// this.uiAdapter.enableInspector = true;
-
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(215));
 
 		var backgroundComponent = Components.texture(SellingScreenAssets.PANEL);
@@ -100,13 +107,18 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		priceLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(priceLabel);
 
-		var priceDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
-		priceDisplay.id("price_display");
-		priceDisplay.positioning(Positioning.absolute(77, 68));
-		priceDisplay.sizing(Sizing.fixed(97), Sizing.fixed(8));
-		priceDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-		priceDisplay.shadow(true);
-		wrapperComponent.child(priceDisplay);
+		var priceTextBox = Components.currencyTextBox(Sizing.fixed(101));
+		priceTextBox.id("price_input");
+		priceTextBox.positioning(Positioning.absolute(74, 64));
+		priceTextBox.sizing(Sizing.fixed(101), Sizing.fixed(14));
+		priceTextBox.setEditableColor(0xfcfcfc);
+		priceTextBox.setUneditableColor(0xfcfcfc);
+
+		priceTextBox.onValueChanged().subscribe(value -> {
+			this.delegate.updateOfferPrice(value);
+		});
+
+		wrapperComponent.child(priceTextBox);
 
 		// Duration Row
 
@@ -119,15 +131,22 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		var durationDropdown = Components.selectDropdown(SellingScreenUtil.offerDurationDropdownOptions());
 		durationDropdown.id("offer_time_dropdown");
 		durationDropdown.positioning(Positioning.absolute(74, 83));
-		durationDropdown.sizing(Sizing.fixed(103), Sizing.fill(100));
+		durationDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		durationDropdown.popoverWidth(75);
 		durationDropdown.value(TimePreset.THREE_DAYS);
+
+		durationDropdown.onChanged().subscribe(value -> {
+			this.delegate.updateOfferDuration(value);
+		});
+
 		durationDropdown.onOpenOverlay(() -> {
 			return openOverlay();
 		});
+
 		durationDropdown.onCloseOverlay(() -> {
 			closeOverlay();
 		});
+
 		wrapperComponent.child(durationDropdown);
 
 		// Post As Row
@@ -141,15 +160,22 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		var postAsDropdown = Components.selectDropdown(SellingScreenUtil.offerPostAsDropdownOptions());
 		postAsDropdown.id("offer_post_as_dropdown");
 		postAsDropdown.positioning(Positioning.absolute(74, 101));
-		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fill(100));
+		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		postAsDropdown.popoverWidth(95);
-		postAsDropdown.value(SellingPostStrategy.AS_STACK);
+		postAsDropdown.value(OfferPostStrategy.AS_STACK);
+
+		postAsDropdown.onChanged().subscribe(value -> {
+			this.delegate.updatePostStrategy(value);
+		});
+
 		postAsDropdown.onOpenOverlay(() -> {
 			return openOverlay();
 		});
+
 		postAsDropdown.onCloseOverlay(() -> {
 			closeOverlay();
 		});
+
 		wrapperComponent.child(postAsDropdown);
 
 		// Tab Buttons
@@ -180,9 +206,40 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("selling_screen");
-
-		this.updateDisplay();
 	}
+
+	// Update
+
+	@SuppressWarnings("unchecked")
+	public void updateDisplay() {
+		var rootComponent = this.uiAdapter.rootComponent;
+
+		if (delegate == null) {
+			// If delegate is not set, data can not be managed and display cannot be updated.
+			return;
+		}
+
+		var itemStack = delegate.getItemStack();
+		var itemDescription = SellingScreenUtil.descriptionForItemStack(itemStack);
+		var itemNameDisplay = rootComponent.childById(LabelComponent.class, "item_name_display");
+		itemNameDisplay.text(itemDescription);
+
+		var itemOfferPrice = delegate.getOfferPrice();
+		var priceInput = rootComponent.childById(CurrencyTextBoxComponent.class, "price_input");
+		priceInput.value(itemOfferPrice);
+
+		var itemOfferDuration = delegate.getOfferDuration();
+		var durationDropdown = (SelectDropdownComponent<Long>) rootComponent.childById(SelectDropdownComponent.class,
+				"offer_time_dropdown");
+		durationDropdown.value(itemOfferDuration);
+
+		var itemPostStrategy = delegate.getPostStrategy();
+		var postStrategyDropdown = (SelectDropdownComponent<OfferPostStrategy>) rootComponent.childById(SelectDropdownComponent.class,
+				"offer_post_as_dropdown");
+		postStrategyDropdown.value(itemPostStrategy);
+	}
+
+	// Overlay
 
 	private FlowLayout openOverlay() {
 		if (this.overlayComponent != null) {

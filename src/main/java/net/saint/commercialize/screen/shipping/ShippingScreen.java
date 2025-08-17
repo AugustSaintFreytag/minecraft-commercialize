@@ -29,10 +29,6 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 
 	public ShippingScreen(ShippingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
-
-		handler.blockInventory.addListener(inventory -> {
-			this.updateDisplay();
-		});
 	}
 
 	// Internals
@@ -60,7 +56,21 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 				ShippingScreenUtil.textForNextShippingTime(client.world)));
 	}
 
-	// Root
+	// Set-Up
+
+	@Override
+	protected void init() {
+		super.init();
+
+		handler.blockInventory.addListener(inventory -> {
+			this.updateDisplay();
+		});
+
+		// Invoke post-init in screen handler to set up delegate and references.
+		handler.onOpened(this, handler.player());
+
+		this.updateDisplay();
+	}
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
@@ -103,8 +113,6 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("shipping_block_screen");
-
-		this.updateDisplay();
 	}
 
 }

@@ -22,6 +22,8 @@ import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.screen.selling.SellingScreenHandler;
+import net.saint.commercialize.screen.selling.SellingScreenState;
+import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
@@ -30,19 +32,30 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_entity");
 
 	public static final String INVENTORY_NBT_KEY = "items";
+	public static final String SELLING_SCREEN_STATE_NBT_KEY = "selling_screen_state";
 
 	// Properties
 
 	public final ShippingBlockInventory inventory = new ShippingBlockInventory();
 
+	private ShippingBlockViewMode viewMode = ShippingBlockViewMode.SELLING;
+	private SellingScreenState sellingScreenState = new SellingScreenState();
+
 	// Init
 
 	public ShippingBlockEntity(BlockPos position, BlockState state) {
 		super(ModBlockEntities.SHIPPING_BLOCK_ENTITY, position, state);
+	}
 
-		inventory.addListener(inventory -> {
-			this.markDirty();
-		});
+	// Access
+
+	public SellingScreenState getSellingScreenState() {
+		return this.sellingScreenState;
+	}
+
+	public void setSellingScreenState(SellingScreenState state) {
+		this.sellingScreenState = state;
+		this.markDirty();
 	}
 
 	// NBT
@@ -51,18 +64,24 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 
-		if (!nbt.contains(INVENTORY_NBT_KEY)) {
-			return;
+		if (nbt.contains(INVENTORY_NBT_KEY)) {
+			var inventoryNbtCompound = nbt.getCompound(INVENTORY_NBT_KEY);
+			this.inventory.readNbtCompound(inventoryNbtCompound);
 		}
 
-		var inventoryNbtCompound = nbt.getCompound(INVENTORY_NBT_KEY);
-		this.inventory.readNbtCompound(inventoryNbtCompound);
+		if (nbt.contains(SELLING_SCREEN_STATE_NBT_KEY)) {
+			var sellingScreenStateNbtCompound = nbt.getCompound(SELLING_SCREEN_STATE_NBT_KEY);
+			this.sellingScreenState.readNbtCompound(sellingScreenStateNbtCompound);
+		}
 	}
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
 		var inventoryNbtCompound = this.inventory.toNbtCompound();
 		nbt.put(INVENTORY_NBT_KEY, inventoryNbtCompound);
+
+		var sellingScreenStateNbtCompound = this.sellingScreenState.toNbtCompound();
+		nbt.put(SELLING_SCREEN_STATE_NBT_KEY, sellingScreenStateNbtCompound);
 
 		super.writeNbt(nbt);
 	}
@@ -109,8 +128,14 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		// return new ShippingScreenHandler(syncId, playerInventory, this.inventory);
-		return new SellingScreenHandler(syncId, playerInventory, new SimpleInventory(1), getPos());
+		switch (viewMode) {
+			case SHIPPING:
+				return new ShippingScreenHandler(syncId, this, playerInventory, this.inventory);
+			case SELLING:
+				return new SellingScreenHandler(syncId, this, playerInventory, new SimpleInventory(1));
+			default:
+				throw new IllegalStateException("Can not create menu with invalid view mode: " + viewMode + ".");
+		}
 	}
 
 	@Override
