@@ -48,13 +48,13 @@ public final class SellingScreenUtil {
 		return options;
 	}
 
-	public static List<SelectDropdownComponent.Option<SellingPostStrategy>> offerPostAsDropdownOptions() {
-		var options = new ArrayList<SelectDropdownComponent.Option<SellingPostStrategy>>();
+	public static List<SelectDropdownComponent.Option<OfferPostStrategy>> offerPostAsDropdownOptions() {
+		var options = new ArrayList<SelectDropdownComponent.Option<OfferPostStrategy>>();
 
-		options.add(new SelectDropdownComponent.Option<SellingPostStrategy>(SellingPostStrategy.AS_STACK,
+		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_STACK,
 				LocalizationUtil.localizedString("gui", "selling.post_as.stack")));
 
-		options.add(new SelectDropdownComponent.Option<SellingPostStrategy>(SellingPostStrategy.AS_ITEMS,
+		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_ITEMS,
 				LocalizationUtil.localizedString("gui", "selling.post_as.items")));
 
 		return options;

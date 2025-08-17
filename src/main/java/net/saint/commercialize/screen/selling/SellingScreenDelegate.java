@@ -36,8 +36,8 @@ public interface SellingScreenDelegate {
 
 	// Post Strategy
 
-	SellingPostStrategy getPostStrategy();
+	OfferPostStrategy getPostStrategy();
 
-	void updatePostStrategy(SellingPostStrategy strategy);
+	void updatePostStrategy(OfferPostStrategy strategy);
 
 }

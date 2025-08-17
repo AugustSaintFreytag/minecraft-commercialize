@@ -10,8 +10,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModSounds;
@@ -24,7 +24,7 @@ public class ShippingScreenHandler extends ScreenHandler {
 
 	// Properties
 
-	public final BlockPos position;
+	public final ShippingBlockEntity owner;
 	public final PlayerInventory playerInventory;
 	public final ShippingBlockInventory blockInventory;
 
@@ -33,13 +33,14 @@ public class ShippingScreenHandler extends ScreenHandler {
 	// Init
 
 	public ShippingScreenHandler(int syncId, PlayerInventory playerInventory) {
-		this(syncId, BlockPos.ORIGIN, playerInventory, new ShippingBlockInventory());
+		this(syncId, null, playerInventory, new ShippingBlockInventory());
 	}
 
-	public ShippingScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory, ShippingBlockInventory blockInventory) {
+	public ShippingScreenHandler(int syncId, ShippingBlockEntity owner, PlayerInventory playerInventory,
+			ShippingBlockInventory blockInventory) {
 		super(ModScreenHandlers.SHIPPING_SCREEN_HANDLER, syncId);
 
-		this.position = position;
+		this.owner = owner;
 		this.playerInventory = playerInventory;
 		this.blockInventory = blockInventory;
 
@@ -63,7 +64,7 @@ public class ShippingScreenHandler extends ScreenHandler {
 			return;
 		}
 
-		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
 	public void onClosed(ShippingScreen screen, PlayerEntity player) {
@@ -74,7 +75,7 @@ public class ShippingScreenHandler extends ScreenHandler {
 			return;
 		}
 
-		world.playSound(null, position, ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 		super.onClosed(player);
 	}
 

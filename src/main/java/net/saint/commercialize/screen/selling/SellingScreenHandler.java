@@ -1,7 +1,11 @@
 package net.saint.commercialize.screen.selling;
 
+import static net.saint.commercialize.screen.selling.SellingScreenStateSync.overrideStateFromMessage;
+import static net.saint.commercialize.screen.selling.SellingScreenStateSync.stateFromMessage;
+
 import io.wispforest.owo.client.screens.ScreenUtils;
 import io.wispforest.owo.client.screens.SlotGenerator;
+import io.wispforest.owo.util.pond.OwoScreenHandlerExtension;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -13,8 +17,12 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.SellingScreenDelegateHandler;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
+import net.saint.commercialize.screen.selling.SellingScreenStateSync.C2SStateRequestMessage;
+import net.saint.commercialize.screen.selling.SellingScreenStateSync.C2SStateSyncMessage;
+import net.saint.commercialize.screen.selling.SellingScreenStateSync.S2CStateSyncMessage;
 
 public class SellingScreenHandler extends ScreenHandler implements SellingScreenDelegateHandler {
 
@@ -32,7 +40,7 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 	public final PlayerInventory playerInventory;
 	public final SimpleInventory blockInventory;
 
-	public BlockPos position;
+	public ShippingBlockEntity owner;
 
 	public SellingScreen screen;
 
@@ -44,19 +52,27 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 
 	public SellingScreenHandler(int syncId, PlayerInventory playerInventory) {
 		// Convenience initializer to satisfy constraints. Actual construction is done in owning block entity.
-		this(syncId, BlockPos.ORIGIN, playerInventory, new SimpleInventory(1));
+		this(syncId, null, playerInventory, new SimpleInventory(1));
 	}
 
-	public SellingScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory, SimpleInventory blockInventory) {
+	public SellingScreenHandler(int syncId, ShippingBlockEntity owner, PlayerInventory playerInventory, SimpleInventory blockInventory) {
 		super(ModScreenHandlers.SELLING_SCREEN_HANDLER, syncId);
 
 		this.playerInventory = playerInventory;
 		this.blockInventory = blockInventory;
-		this.position = position;
+		this.owner = owner;
 
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
 
+		initListeners();
+		initNetworking();
+
+		// Force attach player to screen handler because owo is just too fucking late.
+		((OwoScreenHandlerExtension) this).owo$attachToPlayer(playerInventory.player);
+	}
+
+	private void initListeners() {
 		blockInventory.addListener(inventory -> {
 			var itemStack = inventory.getStack(0);
 			this.state.selectedItem = itemStack;
@@ -72,6 +88,26 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 			if (this.screen != null) {
 				this.screen.updateDisplay();
 			}
+		});
+	}
+
+	private void initNetworking() {
+		// Server-bound messages are already running on the server main thread, no diversion needed.
+
+		addServerboundMessage(C2SStateSyncMessage.class, message -> {
+			var state = stateFromMessage(message);
+			this.owner.setSellingScreenState(state);
+		});
+
+		addServerboundMessage(C2SStateRequestMessage.class, message -> {
+			var state = this.owner.getSellingScreenState();
+			var response = new S2CStateSyncMessage(state.selectedItem, state.offerPrice, state.offerDuration, state.offerPostStrategy);
+			sendMessage(response);
+		});
+
+		addClientboundMessage(S2CStateSyncMessage.class, message -> {
+			overrideStateFromMessage(this.state, message);
+			screen.updateDisplay();
 		});
 	}
 
@@ -100,6 +136,11 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 		this.state = state;
 	}
 
+	public void requestState() {
+		var message = new C2SStateRequestMessage();
+		sendMessage(message);
+	}
+
 	// Interaction
 
 	@Override
@@ -117,6 +158,8 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 	public void onOpened(SellingScreen screen, PlayerEntity player) {
 		this.screen = screen;
 		screen.delegate = this;
+
+		requestState();
 	}
 
 	public void onClosed(SellingScreen screen, PlayerEntity player) {
@@ -144,6 +187,10 @@ public class SellingScreenHandler extends ScreenHandler implements SellingScreen
 
 	@Override
 	public void onScreenUpdate() {
+		// Called from client-side after screen update.
+		var message = new C2SStateSyncMessage(this.state.selectedItem, this.state.offerPrice, this.state.offerDuration,
+				this.state.offerPostStrategy);
+		sendMessage(message);
 	}
 
 	@Override
