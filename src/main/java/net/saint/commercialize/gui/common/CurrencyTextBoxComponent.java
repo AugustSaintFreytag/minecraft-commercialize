@@ -3,9 +3,15 @@ package net.saint.commercialize.gui.common;
 import org.lwjgl.glfw.GLFW;
 
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.util.EventSource;
+import io.wispforest.owo.util.EventStream;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 
 public class CurrencyTextBoxComponent extends TextBoxComponent {
+
+	// Properties
+
+	protected final EventStream<OnChanged> onValueChanged = OnChanged.newStream();
 
 	protected int value;
 
@@ -28,6 +34,7 @@ public class CurrencyTextBoxComponent extends TextBoxComponent {
 				// Discard error, keep original internal value, assume interaction canceled.
 			}
 
+			this.onValueChanged.sink().onChanged(this.value);
 			updateDisplayText();
 		});
 
@@ -42,6 +49,10 @@ public class CurrencyTextBoxComponent extends TextBoxComponent {
 	}
 
 	// Access
+
+	public EventSource<OnChanged> onValueChanged() {
+		return this.onValueChanged.source();
+	}
 
 	public int value() {
 		return this.value;
@@ -58,6 +69,20 @@ public class CurrencyTextBoxComponent extends TextBoxComponent {
 
 	protected void updateDisplayText() {
 		this.text(CurrencyFormattingUtil.formatCurrency(this.value));
+	}
+
+	// Library
+
+	public interface OnChanged {
+		void onChanged(int value);
+
+		static <V> EventStream<OnChanged> newStream() {
+			return new EventStream<>(subscribers -> v -> {
+				for (var subscriber : subscribers) {
+					subscriber.onChanged(v);
+				}
+			});
+		}
 	}
 
 }

@@ -3,7 +3,6 @@ package net.saint.commercialize.gui.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +16,8 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
+import io.wispforest.owo.util.EventSource;
+import io.wispforest.owo.util.EventStream;
 import net.minecraft.text.Text;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.library.TextureReference;
@@ -43,7 +44,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 	protected @Nullable Supplier<FlowLayout> openOverlay = null;
 	protected @Nullable Runnable closeOverlay = null;
 
-	protected @Nullable Consumer<Value> onChange = null;
+	protected final EventStream<OnChanged<Value>> onChanged = OnChanged.<Value>newStream();
 
 	protected int popoverWidth = 80;
 
@@ -81,6 +82,10 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 	}
 
 	// Properties
+
+	public EventSource<OnChanged<Value>> onChanged() {
+		return this.onChanged.source();
+	}
 
 	public List<Option<Value>> options() {
 		return List.copyOf(options);
@@ -172,9 +177,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 				this.selectedValue = value;
 				updateSelectedValueLabel();
 
-				if (this.onChange != null) {
-					this.onChange.accept(value);
-				}
+				this.onChanged.sink().onChanged(value);
 
 				closeDropdown();
 			});
@@ -202,6 +205,20 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		}
 
 		return OPTION_FALLBACK_DESCRIPTION;
+	}
+
+	// Library
+
+	public interface OnChanged<V> {
+		void onChanged(V value);
+
+		static <V> EventStream<OnChanged<V>> newStream() {
+			return new EventStream<>(subscribers -> v -> {
+				for (var subscriber : subscribers) {
+					subscriber.onChanged(v);
+				}
+			});
+		}
 	}
 
 }
