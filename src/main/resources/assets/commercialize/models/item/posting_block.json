@@ -4,6 +4,6 @@
 	"parent": "commercialize:item/shipping_block",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "commercialize:block/selling_block"
+		"0": "commercialize:block/posting_block"
 	}
 }
