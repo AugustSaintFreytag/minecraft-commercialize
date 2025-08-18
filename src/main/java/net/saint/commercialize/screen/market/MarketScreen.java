@@ -15,6 +15,7 @@ import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -186,9 +187,10 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		wrapperComponent.child(leftSideComponent);
 		wrapperComponent.child(rightSideComponent);
 
-		rootComponent.child(wrapperComponent);
-		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.id("market_screen");
+		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+		rootComponent.child(wrapperComponent);
 
 		updateDisplay();
 	}
