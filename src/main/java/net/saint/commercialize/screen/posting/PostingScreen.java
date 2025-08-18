@@ -1,4 +1,4 @@
-package net.saint.commercialize.screen.selling;
+package net.saint.commercialize.screen.posting;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScreenHandler> {
+public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScreenHandler> {
 
 	// Configuration
 
@@ -35,11 +35,11 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 
 	private static final int NUMBER_OF_SLOTS = 9 * 4 + 1;
 
-	public SellingScreenDelegate delegate;
+	public PostingScreenDelegate delegate;
 
 	// Init
 
-	public SellingScreen(SellingScreenHandler handler, PlayerInventory playerInventory, Text title) {
+	public PostingScreen(PostingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
 	}
 
@@ -79,7 +79,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 	protected void build(FlowLayout rootComponent) {
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(215));
 
-		var backgroundComponent = Components.texture(SellingScreenAssets.PANEL);
+		var backgroundComponent = Components.texture(PostingScreenAssets.PANEL);
 		backgroundComponent.sizing(Sizing.fixed(215), Sizing.fixed(215));
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		wrapperComponent.child(backgroundComponent);
@@ -128,7 +128,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		durationLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(durationLabel);
 
-		var durationDropdown = Components.selectDropdown(SellingScreenUtil.offerDurationDropdownOptions());
+		var durationDropdown = Components.selectDropdown(PostingScreenUtil.offerDurationDropdownOptions());
 		durationDropdown.id("offer_time_dropdown");
 		durationDropdown.positioning(Positioning.absolute(74, 83));
 		durationDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
@@ -157,7 +157,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		postAsLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(postAsLabel);
 
-		var postAsDropdown = Components.selectDropdown(SellingScreenUtil.offerPostAsDropdownOptions());
+		var postAsDropdown = Components.selectDropdown(PostingScreenUtil.offerPostAsDropdownOptions());
 		postAsDropdown.id("offer_post_as_dropdown");
 		postAsDropdown.positioning(Positioning.absolute(74, 101));
 		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
@@ -220,7 +220,7 @@ public class SellingScreen extends BaseOwoHandledScreen<FlowLayout, SellingScree
 		}
 
 		var itemStack = delegate.getItemStack();
-		var itemDescription = SellingScreenUtil.descriptionForItemStack(itemStack);
+		var itemDescription = PostingScreenUtil.descriptionForItemStack(itemStack);
 		var itemNameDisplay = rootComponent.childById(LabelComponent.class, "item_name_display");
 		itemNameDisplay.text(itemDescription);
 

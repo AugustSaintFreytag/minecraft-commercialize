@@ -1,10 +1,10 @@
-package net.saint.commercialize.screen.selling;
+package net.saint.commercialize.screen.posting;
 
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.library.TextureReference;
 
-public final class SellingScreenAssets {
+public final class PostingScreenAssets {
 
 	// Configuration
 

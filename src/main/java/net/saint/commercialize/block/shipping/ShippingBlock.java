@@ -11,7 +11,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -81,8 +80,8 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
-		builder.add(FACING);
 		super.appendProperties(builder);
+		builder.add(FACING);
 	}
 
 	@Override
@@ -112,6 +111,12 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 	@Override
 	protected void onStateReplacedLowerHalf(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
 		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
+		if (blockEntity == null || blockEntity.inventory == null) {
+			Commercialize.LOGGER
+					.error("Can not scatter items from shipping block for destruction, block entity or inventory not available.");
+			return;
+		}
+
 		ItemScatterer.spawn(world, position, blockEntity);
 	}
 
@@ -143,18 +148,6 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return checkType(type, ModBlockEntities.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
-	}
-
-	// Redstone
-
-	@Override
-	public boolean hasComparatorOutput(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
 	}
 
 }
