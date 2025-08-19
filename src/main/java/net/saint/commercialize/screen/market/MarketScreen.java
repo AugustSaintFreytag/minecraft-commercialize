@@ -23,7 +23,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.item.ItemNameAbbreviationUtil;
+import net.saint.commercialize.data.item.ItemNameFormattingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerHeadUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
@@ -425,7 +425,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
+		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
@@ -462,7 +462,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 9);
+		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 9);
 		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 

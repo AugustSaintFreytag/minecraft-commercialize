@@ -8,7 +8,9 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
-public class ItemNameAbbreviationUtil {
+public class ItemNameFormattingUtil {
+
+	// Configuration
 
 	private static Map<String, String> abbreviatedNameComponents = new HashMap<>() {
 		{
@@ -24,8 +26,14 @@ public class ItemNameAbbreviationUtil {
 		}
 	};
 
+	// Formatting
+
+	public static String itemName(ItemStack stack) {
+		return I18n.translate(stack.getTranslationKey());
+	}
+
 	public static Text abbreviatedItemText(ItemStack stack, int limit) {
-		var itemNameString = I18n.translate(stack.getTranslationKey());
+		var itemNameString = itemName(stack);
 		var abbreviatedItemNameString = abbreviatedItemName(itemNameString, limit);
 
 		return Text.of(abbreviatedItemNameString);
