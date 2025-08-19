@@ -16,6 +16,7 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
+import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.EventSource;
 import io.wispforest.owo.util.EventStream;
 import net.minecraft.text.Text;
@@ -72,12 +73,14 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		child(selectedValueLabelComponent);
 
 		mouseDown().subscribe((mouseX, mouseY, button) -> {
-			if (button == 0) {
-				openDropdown(mouseX, mouseY);
-				return true;
+			if (button != 0) {
+				return false;
 			}
 
-			return false;
+			UISounds.playButtonSound();
+
+			openDropdown(mouseX, mouseY);
+			return true;
 		});
 	}
 
@@ -145,6 +148,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		dropdownComponent.id("dropdown");
 		dropdownComponent.surface(Surface.TOOLTIP);
 		dropdownComponent.padding(Insets.of(0));
+		dropdownComponent.zIndex(999);
 		dropdownComponent.positioning(Positioning.absolute(this.x() + this.width() - popoverWidth - 7, this.y() - 3));
 		dropdownComponent.closeWhenNotHovered(false);
 

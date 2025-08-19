@@ -1,4 +1,4 @@
-package net.saint.commercialize.screen.selling;
+package net.saint.commercialize.screen.posting;
 
 public enum OfferPostStrategy {
 	AS_STACK, AS_ITEMS

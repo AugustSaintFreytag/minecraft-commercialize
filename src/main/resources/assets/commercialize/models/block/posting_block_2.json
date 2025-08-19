@@ -1,0 +1,8 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Saint for Commercialize",
+	"parent": "commercialize:block/posting_block",
+	"textures": {
+		"0": "commercialize:block/posting_block_2"
+	}
+}

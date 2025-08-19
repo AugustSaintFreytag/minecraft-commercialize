@@ -5,7 +5,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "commercialize:block/shipping_block",
-		"particle": "commercialize:block/red_particle"
+		"particle": "commercialize:block/blue_particle"
 	},
 	"elements": [
 		{

@@ -11,6 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.block.market.MarketBlock;
+import net.saint.commercialize.block.posting.PostingBlock;
 import net.saint.commercialize.block.shipping.ShippingBlock;
 
 public final class ModBlocks {
@@ -19,6 +20,7 @@ public final class ModBlocks {
 
 	public static Block MARKET_BLOCK;
 	public static Block SHIPPING_BLOCK;
+	public static Block POSTING_BLOCK;
 
 	// Init
 
@@ -30,6 +32,10 @@ public final class ModBlocks {
 		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
 				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
 		BlockRenderLayerMap.INSTANCE.putBlock(SHIPPING_BLOCK, RenderLayer.getCutout());
+
+		POSTING_BLOCK = registerBlockAndItem(PostingBlock.ID,
+				new PostingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
+		BlockRenderLayerMap.INSTANCE.putBlock(POSTING_BLOCK, RenderLayer.getCutout());
 	}
 
 	// Registration

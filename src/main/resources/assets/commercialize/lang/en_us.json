@@ -1,6 +1,7 @@
 {
-	"block.commercialize.market_block": "Market Block",
-	"block.commercialize.shipping_block": "Shipping Block",
+	"block.commercialize.market_block": "Market Terminal",
+	"block.commercialize.shipping_block": "Shipping Box",
+	"block.commercialize.posting_block": "Posting Box",
 	"item.commercialize.letter": "Letter",
 	"item.commercialize.letter_blank": "Blank Letter",
 	"text.commercialize.currency": "¤",

@@ -1,4 +1,4 @@
-package net.saint.commercialize.block.shipping;
+package net.saint.commercialize.block.posting;
 
 import java.util.HashMap;
 
@@ -32,11 +32,11 @@ import net.saint.commercialize.block.DoubleBlockWithEntity;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.util.VoxelShapeUtil;
 
-public class ShippingBlock extends DoubleBlockWithEntity {
+public class PostingBlock extends DoubleBlockWithEntity {
 
 	// Properties
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "posting_block");
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
@@ -56,7 +56,7 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 
 	// Init
 
-	public ShippingBlock(Settings settings) {
+	public PostingBlock(Settings settings) {
 		super(settings);
 	}
 
@@ -68,7 +68,7 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 			return null;
 		}
 
-		return new ShippingBlockEntity(position, blockState);
+		return new PostingBlockEntity(position, blockState);
 	}
 
 	// Placement
@@ -110,14 +110,14 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 
 	@Override
 	protected void onStateReplacedLowerHalf(BlockState state, World world, BlockPos position, BlockState newState, boolean moved) {
-		var blockEntity = (ShippingBlockEntity) world.getBlockEntity(position);
-		if (blockEntity == null || blockEntity.inventory == null) {
-			Commercialize.LOGGER
-					.error("Can not scatter items from shipping block for destruction, block entity or inventory not available.");
+		var blockEntity = world.getBlockEntity(position, ModBlockEntities.POSTING_BLOCK_ENTITY);
+
+		if (!blockEntity.isPresent()) {
+			Commercialize.LOGGER.error("Could not acquire block entity for posting block at position {}.", position);
 			return;
 		}
 
-		ItemScatterer.spawn(world, position, blockEntity);
+		ItemScatterer.spawn(world, position, blockEntity.get());
 	}
 
 	// Interaction
@@ -147,7 +147,7 @@ public class ShippingBlock extends DoubleBlockWithEntity {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlockEntities.SHIPPING_BLOCK_ENTITY, ShippingBlockEntity::tick);
+		return checkType(type, ModBlockEntities.POSTING_BLOCK_ENTITY, PostingBlockEntity::tick);
 	}
 
 }

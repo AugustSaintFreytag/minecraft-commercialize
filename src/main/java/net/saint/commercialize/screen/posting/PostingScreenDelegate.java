@@ -1,8 +1,8 @@
-package net.saint.commercialize.screen.selling;
+package net.saint.commercialize.screen.posting;
 
 import net.minecraft.item.ItemStack;
 
-public interface SellingScreenDelegate {
+public interface PostingScreenDelegate {
 
 	// Event
 

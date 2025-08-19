@@ -1,4 +1,4 @@
-package net.saint.commercialize.screen.selling;
+package net.saint.commercialize.screen.posting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public final class SellingScreenUtil {
+public final class PostingScreenUtil {
 
 	// Item Stack
 

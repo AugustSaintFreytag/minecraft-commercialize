@@ -8,6 +8,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.block.market.MarketBlockEntity;
+import net.saint.commercialize.block.posting.PostingBlockEntity;
 import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 
 public final class ModBlockEntities {
@@ -16,12 +17,14 @@ public final class ModBlockEntities {
 
 	public static BlockEntityType<MarketBlockEntity> MARKET_BLOCK_ENTITY;
 	public static BlockEntityType<ShippingBlockEntity> SHIPPING_BLOCK_ENTITY;
+	public static BlockEntityType<PostingBlockEntity> POSTING_BLOCK_ENTITY;
 
 	// Init
 
 	public static void initialize() {
 		MARKET_BLOCK_ENTITY = registerBlockEntity(MarketBlockEntity.ID, ModBlocks.MARKET_BLOCK, MarketBlockEntity::new);
 		SHIPPING_BLOCK_ENTITY = registerBlockEntity(ShippingBlockEntity.ID, ModBlocks.SHIPPING_BLOCK, ShippingBlockEntity::new);
+		POSTING_BLOCK_ENTITY = registerBlockEntity(PostingBlockEntity.ID, ModBlocks.POSTING_BLOCK, PostingBlockEntity::new);
 	}
 
 	// Registration
