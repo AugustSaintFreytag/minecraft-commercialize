@@ -2,7 +2,7 @@ package net.saint.commercialize.screen.posting;
 
 import net.minecraft.item.ItemStack;
 
-public final class PostingScreenStateSync {
+public final class PostingScreenStateNetworking {
 
 	private interface StateSyncMessage {
 		ItemStack selectedItem();
