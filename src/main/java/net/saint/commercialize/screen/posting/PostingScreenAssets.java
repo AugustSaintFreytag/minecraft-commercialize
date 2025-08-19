@@ -8,7 +8,7 @@ public final class PostingScreenAssets {
 
 	// Configuration
 
-	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/selling.png");
+	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/posting.png");
 
 	// Panel
 
