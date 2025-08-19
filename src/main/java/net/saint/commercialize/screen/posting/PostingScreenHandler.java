@@ -76,16 +76,17 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 
 	private void initListeners() {
 		blockInventory.addListener(inventory -> {
-			var itemStack = inventory.getStack(0);
-			this.state.stack = itemStack;
+			var isServer = this.owner != null;
 
-			if (!itemStack.isEmpty()) {
-				var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
-				var itemBaseValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
-				this.state.price = itemBaseValue * itemStack.getCount();
-			} else {
-				this.state.price = 0;
+			if (isServer) {
+				return;
 			}
+
+			var itemStack = inventory.getStack(0);
+			var postStrategy = this.state.postStrategy;
+
+			this.state.stack = itemStack;
+			this.state.price = PostingScreenUtil.basePriceForItemStack(itemStack, postStrategy);
 
 			if (this.screen != null) {
 				this.screen.updateDisplay();

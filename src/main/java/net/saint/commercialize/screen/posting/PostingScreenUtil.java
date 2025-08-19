@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TextFormattingUtil;
@@ -33,6 +35,23 @@ public final class PostingScreenUtil {
 		return Text.of(CurrencyFormattingUtil.formatCurrency(offerPrice));
 	}
 
+	// Price
+
+	public static int basePriceForItemStack(ItemStack itemStack, OfferPostStrategy strategy) {
+		if (itemStack.isEmpty()) {
+			return 0;
+		}
+
+		var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
+		var itemBaseValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
+
+		if (strategy == OfferPostStrategy.AS_STACK) {
+			return itemBaseValue * itemStack.getCount();
+		} else {
+			return itemBaseValue;
+		}
+	}
+
 	// Dropdown Options
 
 	public static List<SelectDropdownComponent.Option<Long>> offerDurationDropdownOptions() {
@@ -52,10 +71,10 @@ public final class PostingScreenUtil {
 		var options = new ArrayList<SelectDropdownComponent.Option<OfferPostStrategy>>();
 
 		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_STACK,
-				LocalizationUtil.localizedString("gui", "selling.post_as.stack")));
+				LocalizationUtil.localizedString("gui", "posting.post_as.stack")));
 
 		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_ITEMS,
-				LocalizationUtil.localizedString("gui", "selling.post_as.items")));
+				LocalizationUtil.localizedString("gui", "posting.post_as.items")));
 
 		return options;
 	}
