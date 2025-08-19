@@ -187,7 +187,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		wrapperComponent.child(leftSideComponent);
 		wrapperComponent.child(rightSideComponent);
 
-		rootComponent.id("market_screen");
 		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.child(wrapperComponent);

@@ -111,7 +111,6 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		saleDisplay.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(saleDisplay);
 
-		rootComponent.id("shipping_block_screen");
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 		rootComponent.child(wrapperComponent);

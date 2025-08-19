@@ -203,7 +203,6 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Finalize
 
-		rootComponent.id("selling_screen");
 		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 		rootComponent.child(wrapperComponent);
