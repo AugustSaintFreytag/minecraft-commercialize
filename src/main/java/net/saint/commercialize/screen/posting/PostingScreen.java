@@ -86,7 +86,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Item Row
 
-		var itemNameLabel = Components.label(LocalizationUtil.localizedText("gui", "selling.item"));
+		var itemNameLabel = Components.label(LocalizationUtil.localizedText("gui", "posting.item"));
 		itemNameLabel.positioning(Positioning.absolute(13, 44));
 		itemNameLabel.sizing(Sizing.fixed(58), Sizing.fixed(8));
 		itemNameLabel.color(Color.ofRgb(0x3F3F3F));
@@ -101,7 +101,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Price Row
 
-		var priceLabel = Components.label(LocalizationUtil.localizedText("gui", "selling.price"));
+		var priceLabel = Components.label(LocalizationUtil.localizedText("gui", "posting.price"));
 		priceLabel.positioning(Positioning.absolute(13, 68));
 		priceLabel.sizing(Sizing.fixed(58), Sizing.fixed(8));
 		priceLabel.color(Color.ofRgb(0x3F3F3F));
@@ -122,7 +122,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Duration Row
 
-		var durationLabel = Components.label(LocalizationUtil.localizedText("gui", "selling.duration"));
+		var durationLabel = Components.label(LocalizationUtil.localizedText("gui", "posting.duration"));
 		durationLabel.positioning(Positioning.absolute(13, 86));
 		durationLabel.sizing(Sizing.fixed(58), Sizing.fixed(8));
 		durationLabel.color(Color.ofRgb(0x3F3F3F));
@@ -151,7 +151,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Post As Row
 
-		var postAsLabel = Components.label(LocalizationUtil.localizedText("gui", "selling.post_as"));
+		var postAsLabel = Components.label(LocalizationUtil.localizedText("gui", "posting.post_as"));
 		postAsLabel.positioning(Positioning.absolute(13, 104));
 		postAsLabel.sizing(Sizing.fixed(58), Sizing.fixed(8));
 		postAsLabel.color(Color.ofRgb(0x3F3F3F));
@@ -180,25 +180,28 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		// Tab Buttons
 
-		var postOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.post_offer"),
+		var postOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.post_offer"),
 				ScreenAssets.CONFIRM_ORDER_ICON, button -> {
+					delegate.confirmOfferPost();
 				});
 		postOfferTabButton.positioning(Positioning.absolute(191, 39));
-		postOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.post_offer.tooltip"));
+		postOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.post_offer.tooltip"));
 		wrapperComponent.child(postOfferTabButton);
 
-		var resetPriceTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.reset_price"),
+		var resetPriceTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.reset_price"),
 				ScreenAssets.RESET_PRICE_ICON, button -> {
+					delegate.resetOfferPrice();
 				});
 		resetPriceTabButton.positioning(Positioning.absolute(191, 68));
-		resetPriceTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.reset_price.tooltip"));
+		resetPriceTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.reset_price.tooltip"));
 		wrapperComponent.child(resetPriceTabButton);
 
-		var clearOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "selling.clear_offer"),
+		var clearOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.clear_offer"),
 				ScreenAssets.EMPTY_CART_ICON, button -> {
+					delegate.clearOfferPost();
 				});
 		clearOfferTabButton.positioning(Positioning.absolute(191, 97));
-		clearOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "selling.clear_offer.tooltip"));
+		clearOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.clear_offer.tooltip"));
 		wrapperComponent.child(clearOfferTabButton);
 
 		// Finalize
