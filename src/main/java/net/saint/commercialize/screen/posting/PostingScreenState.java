@@ -2,6 +2,7 @@ package net.saint.commercialize.screen.posting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.saint.commercialize.data.text.TimePreset;
 
 public class PostingScreenState {
 
@@ -11,7 +12,7 @@ public class PostingScreenState {
 
 	public int price = 0;
 
-	public long duration = 0;
+	public long duration = TimePreset.THREE_DAYS;
 
 	public OfferPostStrategy postStrategy = OfferPostStrategy.AS_STACK;
 
