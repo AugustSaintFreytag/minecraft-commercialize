@@ -4,7 +4,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "commercialize:block/market_block",
-		"particle": "commercialize:block/market_block"
+		"particle": "commercialize:block/red_particle"
 	},
 	"elements": [
 		{
