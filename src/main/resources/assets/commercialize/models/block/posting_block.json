@@ -4,6 +4,6 @@
 	"parent": "commercialize:block/shipping_block",
 	"textures": {
 		"0": "commercialize:block/posting_block",
-		"particle": "commercialize:block/blue_particle"
+		"particle": "commercialize:block/red_particle"
 	}
 }

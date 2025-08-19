@@ -4,7 +4,7 @@
 	"parent": "minecraft:block/cube_all",
 	"textures": {
 		"1": "commercialize:block/transparent",
-		"particle": "commercialize:block/red_particle"
+		"particle": "commercialize:block/blue_particle"
 	},
 	"elements": [
 		{
