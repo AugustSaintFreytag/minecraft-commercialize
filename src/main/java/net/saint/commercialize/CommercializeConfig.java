@@ -60,6 +60,11 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("The default duration of market offers in ticks. (Default: 96,000 ticks = 4 days)")
 	public int offerDuration = 96_000;
 
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The maximum number of offers an individual player can post per in-game day. Limits reset at sunrise. (Default: 16)")
+	public int maxNumberOfPlayerOffersPerDay = 16;
+
 	// Payment
 
 	@ConfigEntry.Category("payment")

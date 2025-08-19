@@ -57,6 +57,8 @@
 	"text.autoconfig.commercialize.option.priceJitterFactor.@Tooltip": "The factor by which a determined market price can vary when generated. Applies to generated offers. (Default: 0.1)",
 	"text.autoconfig.commercialize.option.offerDuration": "Offer Duration",
 	"text.autoconfig.commercialize.option.offerDuration.@Tooltip": "The default duration of market offers in ticks. (Default: 96,000 ticks = 4 days)",
+	"text.autoconfig.commercialize.option.maxNumberOfPlayerOffersPerDay": "Maximum Number of Player Offers Per Day",
+	"text.autoconfig.commercialize.option.maxNumberOfPlayerOffersPerDay.@Tooltip": "The maximum number of offers an individual player can post per in-game day. Limits reset at sunrise. (Default: 16)",
 	"text.autoconfig.commercialize.option.maxNumberOfListedItems": "Maximum Number of Listed Items",
 	"text.autoconfig.commercialize.option.maxNumberOfListedItems.@Tooltip": "The maximum number of offers sent to be listed on a market screen before getting truncated. (Default: 100)",
 	"text.autoconfig.commercialize.option.listingRefreshInterval": "Listing Refresh Interval",
