@@ -18,7 +18,7 @@
 	"text.commercialize.offer.tooltip.time_posted_format": "%s ago",
 	"text.commercialize.offer.tooltip.time_expiring": "Expiration",
 	"text.commercialize.offer.tooltip.time_expiring_format": "In %s",
-	"text.commercialize.offer.tooltip.generated_seller": "Generated Offer",
+	"text.commercialize.offer.tooltip.generated_seller": "Generated Player",
 	"text.commercialize.delivery.market": "Market Delivery Network",
 	"text.commercialize.delivery.receipt_format": "Order: %s",
 	"text.commercialize.delivery.message": "Public market order, paid in full. Thank you for using the automated market delivery network. Have a nice day!",
