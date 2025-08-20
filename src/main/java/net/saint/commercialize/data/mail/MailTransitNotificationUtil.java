@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
@@ -38,7 +39,7 @@ public final class MailTransitNotificationUtil {
 	// Delivery Attempt (Message)
 
 	private static String deliveryAttemptMessageForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
-		var time = server.getOverworld().getTime();
+		var time = server.getOverworld().getTimeOfDay();
 		var numberOfPackages = items.size();
 		var numberOfPackagesAboutToExpire = numberOfItemsAboutToExpire(items);
 		var numberOfDeliveryAttempts = maxNumberOfPreviousDeliveryAttempts(items);
@@ -90,9 +91,9 @@ public final class MailTransitNotificationUtil {
 
 	private static void withOnlinePlayerParametersForItems(MinecraftServer server, List<MailTransitItem> items,
 			Consumer<PlayerParameters> block) {
-		var playerId = MailTransitPlayerUtil.playerIdFromItems(server, items);
-		var playerName = MailTransitPlayerUtil.playerNameForId(server, playerId);
-		var player = MailTransitPlayerUtil.playerEntityForId(server, playerId);
+		var playerId = MarketPlayerUtil.playerIdFromItems(server, items);
+		var playerName = MarketPlayerUtil.playerNameForId(server, playerId);
+		var player = MarketPlayerUtil.playerEntityForId(server, playerId);
 
 		if (player == null) {
 			// Player is offline, can not message.

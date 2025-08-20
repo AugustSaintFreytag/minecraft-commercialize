@@ -21,7 +21,7 @@ public class Offer {
 	public String sellerName;
 
 	public long timestamp;
-	public int duration;
+	public long duration;
 
 	public ItemStack stack;
 	public int price;
@@ -37,7 +37,7 @@ public class Offer {
 		offer.sellerId = buffer.readUuid();
 		offer.sellerName = buffer.readString(32767);
 		offer.timestamp = buffer.readLong();
-		offer.duration = buffer.readInt();
+		offer.duration = buffer.readLong();
 		offer.stack = buffer.readItemStack();
 		offer.price = buffer.readInt();
 
@@ -53,7 +53,7 @@ public class Offer {
 		offer.sellerId = nbt.getUuid("sellerId");
 		offer.sellerName = nbt.getString("sellerName");
 		offer.timestamp = nbt.getLong("timestamp");
-		offer.duration = nbt.getInt("duration");
+		offer.duration = nbt.getLong("duration");
 		offer.stack = ItemStack.fromNbt(nbt.getCompound("stack"));
 		offer.price = nbt.getInt("price");
 
@@ -69,7 +69,7 @@ public class Offer {
 		buffer.writeUuid(sellerId);
 		buffer.writeString(sellerName);
 		buffer.writeLong(timestamp);
-		buffer.writeInt(duration);
+		buffer.writeLong(duration);
 		buffer.writeItemStack(stack);
 		buffer.writeInt(price);
 	}
@@ -81,7 +81,7 @@ public class Offer {
 		nbt.putUuid("sellerId", sellerId);
 		nbt.putString("sellerName", sellerName);
 		nbt.putLong("timestamp", timestamp);
-		nbt.putInt("duration", duration);
+		nbt.putLong("duration", duration);
 		nbt.put("stack", stack.writeNbt(new NbtCompound()));
 		nbt.putInt("price", price);
 

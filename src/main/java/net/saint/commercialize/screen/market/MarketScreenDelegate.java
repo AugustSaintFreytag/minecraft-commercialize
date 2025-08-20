@@ -13,9 +13,9 @@ public interface MarketScreenDelegate {
 
 	// Events
 
-	void onMarketScreenUpdate();
+	void onScreenUpdate();
 
-	void onMarketScreenClose();
+	void onScreenClose();
 
 	// Player
 

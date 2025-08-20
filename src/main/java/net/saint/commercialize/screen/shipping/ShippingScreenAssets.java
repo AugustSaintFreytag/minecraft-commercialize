@@ -4,11 +4,11 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.library.TextureReference;
 
-public final class ShippingBlockScreenAssets {
+public final class ShippingScreenAssets {
 
 	// Configuration
 
-	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/shipping_block.png");
+	public static final Identifier TEXTURE = new Identifier(Commercialize.MOD_ID, "textures/gui/shipping.png");
 
 	// Stubs
 

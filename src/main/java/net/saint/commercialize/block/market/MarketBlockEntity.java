@@ -41,7 +41,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Properties
 
-	private MarketBlockEntityScreenState state = new MarketBlockEntityScreenState();
+	private MarketBlockEntityState state = new MarketBlockEntityState();
 
 	protected long lastListingTick = 0;
 
@@ -57,11 +57,11 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Access
 
-	public MarketBlockEntityScreenState getState() {
+	public MarketBlockEntityState getState() {
 		return state;
 	}
 
-	public void setState(MarketBlockEntityScreenState state) {
+	public void setState(MarketBlockEntityState state) {
 		this.state = state;
 		markDirty();
 	}
@@ -113,17 +113,11 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		state.marketOffers.addOffers(message.offers);
 		state.marketOffers.setOffersAreCapped(message.isCapped);
 
-		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
-				this.getPos().toShortString(), state.marketOffers.getOffers().count());
-
-		lastListingTick = world.getTime();
+		lastListingTick = world.getTimeOfDay();
 		updateMarketScreen();
 	}
 
 	public void receiveOrderMessage(MarketS2COrderMessage message) {
-		Commercialize.LOGGER.info("Received market order response with result '{}' for offer '{}' at pos '{}'.", message.result,
-				message.offers, this.getPos().toShortString());
-
 		var client = MinecraftClient.getInstance();
 		var player = client.player;
 
@@ -223,7 +217,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 			return;
 		}
 
-		var currentTime = world.getTime();
+		var currentTime = world.getTimeOfDay();
 		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
 
 		var isScreenActive = blockEntity.marketScreen != null;
@@ -249,7 +243,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		requestMarketData();
 	}
 
-	public void onMarketScreenUpdate() {
+	public void onScreenUpdate() {
 		if (this.marketScreen == null) {
 			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
 			return;
@@ -259,7 +253,7 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		sendStateSync(MarketBlockStateSyncReason.UPDATE);
 	}
 
-	public void onMarketScreenClose() {
+	public void onScreenClose() {
 		sendStateSync(MarketBlockStateSyncReason.INTERACTION_END);
 	}
 

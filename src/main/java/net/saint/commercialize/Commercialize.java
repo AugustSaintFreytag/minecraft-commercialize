@@ -12,6 +12,7 @@ import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.mail.MailTransitManager;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketOfferCacheManager;
 import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
@@ -42,6 +43,7 @@ public class Commercialize implements ModInitializer {
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
 	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
+	public static MarketOfferCacheManager MARKET_OFFER_CACHE_MANAGER;
 	public static MailTransitManager MAIL_TRANSIT_MANAGER;
 
 	public static boolean shouldTickMarket = true;
@@ -66,8 +68,13 @@ public class Commercialize implements ModInitializer {
 			ITEM_MANAGER = new ItemManager();
 			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
-			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
 			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
+			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
+			MARKET_OFFER_CACHE_MANAGER = new MarketOfferCacheManager();
+
+			MARKET_OFFER_MANAGER.STATE_MODIFIED.register(manager -> {
+				MARKET_OFFER_CACHE_MANAGER.clear();
+			});
 
 			reloadConfigs();
 		});

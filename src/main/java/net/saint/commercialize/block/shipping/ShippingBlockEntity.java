@@ -20,7 +20,8 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
-import net.saint.commercialize.screen.shipping.ShippingBlockScreenHandler;
+import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public class ShippingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 
@@ -38,10 +39,6 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	public ShippingBlockEntity(BlockPos position, BlockState state) {
 		super(ModBlockEntities.SHIPPING_BLOCK_ENTITY, position, state);
-
-		inventory.addListener(inventory -> {
-			this.markDirty();
-		});
 	}
 
 	// NBT
@@ -50,12 +47,10 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 
-		if (!nbt.contains(INVENTORY_NBT_KEY)) {
-			return;
+		if (nbt.contains(INVENTORY_NBT_KEY)) {
+			var inventoryNbtCompound = nbt.getCompound(INVENTORY_NBT_KEY);
+			this.inventory.readNbtCompound(inventoryNbtCompound);
 		}
-
-		var inventoryNbtCompound = nbt.getCompound(INVENTORY_NBT_KEY);
-		this.inventory.readNbtCompound(inventoryNbtCompound);
 	}
 
 	@Override
@@ -74,10 +69,14 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 		return nbt;
 	}
 
-	// Inventory
+	// Access
 
 	@Override
 	public DefaultedList<ItemStack> getItems() {
+		if (this.inventory == null) {
+			return DefaultedList.ofSize(0, ItemStack.EMPTY);
+		}
+
 		return this.inventory.getStacks();
 	}
 
@@ -108,15 +107,12 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-		var screenHandler = new ShippingBlockScreenHandler(syncId, this.getPos(), playerInventory, this.inventory);
-		screenHandler.onOpen(player);
-
-		return screenHandler;
+		return new ShippingScreenHandler(syncId, this, playerInventory, this.inventory);
 	}
 
 	@Override
 	public Text getDisplayName() {
-		return Text.of("Shipping Block");
+		return LocalizationUtil.localizedText("block", "shipping_block");
 	}
 
 }

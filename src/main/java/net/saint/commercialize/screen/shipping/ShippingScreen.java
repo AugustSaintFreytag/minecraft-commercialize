@@ -10,6 +10,7 @@ import io.wispforest.owo.ui.core.HorizontalAlignment;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -19,20 +20,16 @@ import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, ShippingBlockScreenHandler> {
+public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScreenHandler> {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_screen");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_screen");
 
 	// Init
 
-	public ShippingBlockScreen(ShippingBlockScreenHandler handler, PlayerInventory playerInventory, Text title) {
+	public ShippingScreen(ShippingScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);
-
-		handler.blockInventory.addListener(inventory -> {
-			this.updateDisplay();
-		});
 	}
 
 	// Internals
@@ -60,13 +57,27 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 				ShippingScreenUtil.textForNextShippingTime(client.world)));
 	}
 
-	// Root
+	// Set-Up
+
+	@Override
+	protected void init() {
+		super.init();
+
+		handler.blockInventory.addListener(inventory -> {
+			this.updateDisplay();
+		});
+
+		// Invoke post-init in screen handler to set up delegate and references.
+		handler.onOpened(this, handler.player());
+
+		this.updateDisplay();
+	}
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
 		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(210), Sizing.fixed(177));
 
-		var textureComponent = Components.texture(ShippingBlockScreenAssets.PANEL);
+		var textureComponent = Components.texture(ShippingScreenAssets.PANEL);
 		textureComponent.sizing(Sizing.fixed(210), Sizing.fixed(177));
 		textureComponent.positioning(Positioning.absolute(0, 0));
 		wrapperComponent.child(textureComponent);
@@ -77,7 +88,7 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		valueLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(valueLabel);
 
-		var valueDisplay = Components.label(Text.of("..."));
+		var valueDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		valueDisplay.id("value_display");
 		valueDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		valueDisplay.positioning(Positioning.absolute(72, 45));
@@ -92,7 +103,7 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		saleLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(saleLabel);
 
-		var saleDisplay = Components.label(Text.of("..."));
+		var saleDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		saleDisplay.id("sale_display");
 		saleDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 		saleDisplay.positioning(Positioning.absolute(70, 68));
@@ -100,11 +111,9 @@ public class ShippingBlockScreen extends BaseOwoHandledScreen<FlowLayout, Shippi
 		saleDisplay.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(saleDisplay);
 
-		rootComponent.child(wrapperComponent);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-		rootComponent.id("shipping_block_screen");
-
-		this.updateDisplay();
+		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+		rootComponent.child(wrapperComponent);
 	}
 
 }

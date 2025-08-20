@@ -27,7 +27,7 @@ public final class ShippingScreenUtil {
 
 	public static Text textForNextShippingTime(World world) {
 		var shippingInterval = Commercialize.CONFIG.shippingExchangeInterval;
-		var ticksToNextSale = shippingInterval - world.getTime() % shippingInterval;
+		var ticksToNextSale = shippingInterval - world.getTimeOfDay() % shippingInterval;
 		var formattedTime = TimeFormattingUtil.formattedTime(ticksToNextSale);
 
 		return Text.of(formattedTime);

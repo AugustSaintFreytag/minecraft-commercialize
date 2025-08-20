@@ -1,13 +1,14 @@
-package net.saint.commercialize.data.mail;
+package net.saint.commercialize.data.market;
 
 import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.saint.commercialize.data.mail.MailTransitItem;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public final class MailTransitPlayerUtil {
+public final class MarketPlayerUtil {
 
 	public static UUID playerIdFromItems(MinecraftServer server, List<MailTransitItem> items) {
 		if (items.isEmpty()) {

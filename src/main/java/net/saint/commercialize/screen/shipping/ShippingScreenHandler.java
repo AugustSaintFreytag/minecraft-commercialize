@@ -10,62 +10,77 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModSounds;
 
-public class ShippingBlockScreenHandler extends ScreenHandler {
+public class ShippingScreenHandler extends ScreenHandler {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_screen_handler");
+	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_screen_handler");
 
 	// Properties
 
-	public final BlockPos position;
+	public final ShippingBlockEntity owner;
 	public final PlayerInventory playerInventory;
 	public final ShippingBlockInventory blockInventory;
 
+	public ShippingScreen screen;
+
 	// Init
 
-	public ShippingBlockScreenHandler(int syncId, PlayerInventory playerInventory) {
-		this(syncId, BlockPos.ORIGIN, playerInventory, new ShippingBlockInventory());
+	public ShippingScreenHandler(int syncId, PlayerInventory playerInventory) {
+		this(syncId, null, playerInventory, new ShippingBlockInventory());
 	}
 
-	public ShippingBlockScreenHandler(int syncId, BlockPos position, PlayerInventory playerInventory,
+	public ShippingScreenHandler(int syncId, ShippingBlockEntity owner, PlayerInventory playerInventory,
 			ShippingBlockInventory blockInventory) {
-		super(ModScreenHandlers.SHIPPING_BLOCK_SCREEN_HANDLER, syncId);
+		super(ModScreenHandlers.SHIPPING_SCREEN_HANDLER, syncId);
 
-		this.position = position;
+		this.owner = owner;
 		this.playerInventory = playerInventory;
 		this.blockInventory = blockInventory;
 
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotForPaymentCard(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
+
+		onBeforeOpened();
 	}
 
-	public void onOpen(PlayerEntity player) {
-		var world = player.getWorld();
+	// Lifecycle
 
-		if (world.isClient()) {
+	public void onBeforeOpened() {
+		if (this.owner == null) {
 			return;
 		}
 
+		var world = this.owner.getWorld();
+		var position = this.owner.getPos();
 		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+	}
+
+	public void onOpened(ShippingScreen screen, PlayerEntity player) {
+		this.screen = screen;
 	}
 
 	@Override
 	public void onClosed(PlayerEntity player) {
+		onClosed(this.screen, player);
+	}
+
+	public void onClosed(ShippingScreen screen, PlayerEntity player) {
+		this.screen = null;
 		var world = player.getWorld();
 
 		if (world.isClient()) {
 			return;
 		}
 
-		world.playSound(null, position, ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 		super.onClosed(player);
 	}
 

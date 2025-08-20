@@ -63,7 +63,7 @@ public final class MarketOfferGenerator {
 		offer.isGenerated = true;
 		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
-		offer.timestamp = world.getTime();
+		offer.timestamp = world.getTimeOfDay();
 		offer.duration = Commercialize.CONFIG.offerDuration;
 		offer.stack = itemStack;
 		offer.price = price;

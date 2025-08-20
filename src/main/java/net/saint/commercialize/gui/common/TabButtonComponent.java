@@ -7,7 +7,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.library.TextureReference;
-import net.saint.commercialize.screen.market.MarketScreenAssets;
+import net.saint.commercialize.screen.icons.ScreenAssets;
 
 public class TabButtonComponent extends net.saint.commercialize.gui.common.ButtonComponent {
 
@@ -60,12 +60,12 @@ public class TabButtonComponent extends net.saint.commercialize.gui.common.Butto
 
 	private static TextureReference overlayTextureForSortOrder(OfferSortOrder sortOrder) {
 		if (sortOrder == null) {
-			return MarketScreenAssets.STUB_ICON;
+			return ScreenAssets.STUB;
 		}
 
 		return switch (sortOrder) {
-		case ASCENDING -> MarketScreenAssets.SORT_ASCENDING_ICON;
-		case DESCENDING -> MarketScreenAssets.SORT_DESCENDING_ICON;
+			case ASCENDING -> ScreenAssets.SORT_ASCENDING_ICON;
+			case DESCENDING -> ScreenAssets.SORT_DESCENDING_ICON;
 		};
 	}
 

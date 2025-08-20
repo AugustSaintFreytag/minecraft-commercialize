@@ -15,6 +15,7 @@ import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -22,7 +23,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.item.ItemNameAbbreviationUtil;
+import net.saint.commercialize.data.item.ItemNameFormattingUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerHeadUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
@@ -32,6 +33,7 @@ import net.saint.commercialize.gui.common.ScrollContainer;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.screen.market.components.CartListComponent;
 import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.screen.market.components.OfferListCapComponent;
@@ -62,7 +64,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	@Override
 	public void close() {
-		delegate.onMarketScreenClose();
+		delegate.onScreenClose();
 		super.close();
 	}
 
@@ -100,6 +102,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var totalDisplayAppearance = MarketScreenUtil.appearanceForCartTotal(delegate.getCartTotal(), delegate.getBalance());
 		totalDisplay.text(MarketScreenUtil.textForCartTotal(delegate.getCartTotal()));
 		totalDisplay.appearance(totalDisplayAppearance);
+		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
@@ -107,7 +110,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "balance");
 		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
 		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && delegate.hasCardInHand() && !delegate.hasOwnedCardInHand()) {
 			var balanceText = LocalizationUtil.localizedText("gui", "market.inviable_balance");
@@ -115,6 +117,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 			var tooltipText = LocalizationUtil.localizedText("gui", "market.inviable_account.tooltip", delegate.getCardOwnerName());
 			balanceDisplay.tooltip(tooltipText);
+		} else {
+			balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 		}
 
 		// Cart
@@ -145,8 +149,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offers = delegate.getOffers();
 		var offersAreCapped = delegate.getOffersAreCapped();
 		var numberOfOffers = offers.size();
-
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
 
 		offers.forEach(offer -> {
 			var offerIsInCart = delegate.hasOfferInCart(offer);
@@ -185,9 +187,9 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		wrapperComponent.child(leftSideComponent);
 		wrapperComponent.child(rightSideComponent);
 
-		rootComponent.child(wrapperComponent);
+		rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-		rootComponent.id("market_screen");
+		rootComponent.child(wrapperComponent);
 
 		updateDisplay();
 	}
@@ -197,9 +199,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private FlowLayout makeLeftSideComponent() {
 		var leftSideComponent = Containers.verticalFlow(Sizing.fixed(214), Sizing.fixed(192));
 
+		// Background
+
 		var backgroundComponent = Components.texture(MarketScreenAssets.LEFT_PANEL);
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		leftSideComponent.child(backgroundComponent);
+
+		// Labels
 
 		var offersLabel = Components.label(LocalizationUtil.localizedText("gui", "market.offers"));
 		offersLabel.positioning(Positioning.absolute(32, 7));
@@ -228,8 +234,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"),
-				MarketScreenAssets.STUB_ICON, component -> {
+		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"), ScreenAssets.STUB,
+				component -> {
 					// If sprint key is held, toggle sort order.
 
 					var windowHandle = client.getWindow().getHandle();
@@ -249,8 +255,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"),
-				MarketScreenAssets.STUB_ICON, component -> {
+		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"), ScreenAssets.STUB,
+				component -> {
 					delegate.cycleFilterMode();
 					this.updateDisplay();
 				});
@@ -305,7 +311,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Tabs
 
 		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
-				MarketScreenAssets.CONFIRM_ORDER_ICON, component -> {
+				ScreenAssets.CONFIRM_ORDER_ICON, component -> {
 					if (delegate.getCart().isEmpty()) {
 						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 						return;
@@ -319,7 +325,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(orderTabButton);
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
-				MarketScreenAssets.STUB_ICON, component -> {
+				ScreenAssets.STUB, component -> {
 					delegate.cyclePaymentMethod();
 					this.updateDisplay();
 				});
@@ -329,7 +335,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
 		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
-				MarketScreenAssets.EMPTY_CART_ICON, component -> {
+				ScreenAssets.EMPTY_CART_ICON, component -> {
 					delegate.emptyCart();
 				});
 
@@ -419,7 +425,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 12);
+		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 12);
 		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
@@ -456,7 +462,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameAbbreviationUtil.abbreviatedItemText(itemStack, 9);
+		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 9);
 		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
