@@ -1,0 +1,84 @@
+{
+	"variants": {
+		"half=upper,facing=north": {
+			"model": "commercialize:block/market_block_upper"
+		},
+		"half=upper,facing=south": {
+			"model": "commercialize:block/market_block_upper",
+			"y": 180
+		},
+		"half=upper,facing=west": {
+			"model": "commercialize:block/market_block_upper",
+			"y": 270
+		},
+		"half=upper,facing=east": {
+			"model": "commercialize:block/market_block_upper",
+			"y": 90
+		},
+		"half=lower,facing=north": [
+			{
+				"model": "commercialize:block/market_block",
+				"weight": 100
+			},
+			{
+				"model": "commercialize:block/market_block_bliss",
+				"weight": 1
+			},
+			{
+				"model": "commercialize:block/market_block_bsod",
+				"weight": 1
+			}
+		],
+		"half=lower,facing=south": [
+			{
+				"model": "commercialize:block/market_block",
+				"y": 180,
+				"weight": 100
+			},
+			{
+				"model": "commercialize:block/market_block_bliss",
+				"y": 180,
+				"weight": 1
+			},
+			{
+				"model": "commercialize:block/market_block_bsod",
+				"y": 180,
+				"weight": 1
+			}
+		],
+		"half=lower,facing=west": [
+			{
+				"model": "commercialize:block/market_block",
+				"y": 270,
+				"weight": 100
+			},
+			{
+				"model": "commercialize:block/market_block_bliss",
+				"y": 270,
+				"weight": 1
+			},
+			{
+				"model": "commercialize:block/market_block_bsod",
+				"y": 270,
+				"weight": 1
+			}
+		],
+		"half=lower,facing=east": [
+			{
+				"model": "commercialize:block/market_block",
+				"y": 90,
+				"weight": 100
+			},
+			{
+				"model": "commercialize:block/market_block_bliss",
+				"y": 90,
+				"weight": 100
+			},
+			{
+				"model": "commercialize:block/market_block_bsod",
+				"y": 90,
+				"weight": 1
+			}
+		]
+	}
+}

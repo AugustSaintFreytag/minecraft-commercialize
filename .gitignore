@@ -1,9 +1,13 @@
 # Project
-
+.vscode
 .gradle
 bin
 run
 build
+
+# File Types
+*.psd*
+*.afphoto*
 
 # System
 

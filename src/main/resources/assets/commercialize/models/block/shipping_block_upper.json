@@ -1,0 +1,24 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Saint for Commercialize",
+	"parent": "minecraft:block/cube_all",
+	"textures": {
+		"1": "commercialize:block/transparent",
+		"particle": "commercialize:block/blue_particle"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 1],
+			"to": [16, 13, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 11, 1]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"east": {"uv": [0, 0, 14, 13], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"west": {"uv": [0, 0, 14, 13], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 14], "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 14], "texture": "#1"}
+			}
+		}
+	]
+}
