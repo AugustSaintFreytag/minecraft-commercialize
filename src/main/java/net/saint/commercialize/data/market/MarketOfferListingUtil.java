@@ -31,11 +31,11 @@ public final class MarketOfferListingUtil {
 		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems + 1;
 
 		switch (filterMode) {
-		case AFFORDABLE:
-			var balance = playerBalanceForPaymentMethod(player, paymentMethod);
-			return offers.filter(offer -> offer.price <= balance).limit(maxNumberOfOffers).toList();
-		default:
-			return offers.limit(maxNumberOfOffers).toList();
+			case AFFORDABLE:
+				var balance = playerBalanceForPaymentMethod(player, paymentMethod);
+				return offers.filter(offer -> offer.price <= balance).limit(maxNumberOfOffers).toList();
+			default:
+				return offers.limit(maxNumberOfOffers).toList();
 		}
 	}
 
@@ -76,20 +76,20 @@ public final class MarketOfferListingUtil {
 		}
 
 		switch (sortMode) {
-		case TIME_POSTED:
-			mutableOffers.sort(timePostedComparator());
-			break;
-		case PRICE:
-			mutableOffers.sort(priceComparator());
-			break;
-		case ITEM_NAME:
-			mutableOffers.sort(itemNameComparator());
-			break;
-		case PLAYER_NAME:
-			mutableOffers.sort(playerNameComparator());
-			break;
-		default:
-			break;
+			case TIME_POSTED:
+				mutableOffers.sort(timePostedComparator());
+				break;
+			case PRICE:
+				mutableOffers.sort(priceComparator());
+				break;
+			case ITEM_NAME:
+				mutableOffers.sort(itemNameComparator());
+				break;
+			case PLAYER_NAME:
+				mutableOffers.sort(playerNameComparator());
+				break;
+			default:
+				break;
 		}
 
 		if (sortOrder == OfferSortOrder.DESCENDING) {
@@ -141,12 +141,12 @@ public final class MarketOfferListingUtil {
 
 	private static int playerBalanceForPaymentMethod(PlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
-		case INVENTORY:
-			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
-		case ACCOUNT:
-			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
-		default:
-			return 0;
+			case INVENTORY:
+				return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+			case ACCOUNT:
+				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+			default:
+				return 0;
 		}
 	}
 
