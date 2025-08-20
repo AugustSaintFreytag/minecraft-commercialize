@@ -128,7 +128,7 @@ public final class MarketBlockServerNetworking {
 	private static void onReceiveMarketDataRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SQueryMessage message) {
 		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems;
-		var preparedOffers = MarketOfferListingUtil.offersForQuery(player, message);
+		var preparedOffers = MarketOfferListingUtil.offersWithAppliedQuery(player, message);
 		var preparedOffersAreCapped = false;
 
 		if (preparedOffers.size() > maxNumberOfOffers) {
