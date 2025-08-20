@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScreenHandler> {
@@ -49,12 +50,11 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 	public void updateDisplay() {
 		var rootComponent = this.uiAdapter.rootComponent;
 
-		var valueDisplay = rootComponent.childById(LabelComponent.class, "value_display");
+		var valueDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "value_display");
 		valueDisplay.text(ShippingScreenUtil.textForSaleValueForInventory(handler.blockInventory));
 
 		var saleDisplay = rootComponent.childById(LabelComponent.class, "sale_display");
-		saleDisplay.text(LocalizationUtil.localizedText("gui", "shipping.sale_time_format",
-				ShippingScreenUtil.textForNextShippingTime(client.world)));
+		saleDisplay.text(ShippingScreenUtil.textForNextShippingTime(client.world));
 	}
 
 	// Set-Up
@@ -83,32 +83,25 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		wrapperComponent.child(textureComponent);
 
 		var valueLabel = Components.label(LocalizationUtil.localizedText("gui", "shipping.value"));
-		valueLabel.positioning(Positioning.absolute(32, 45));
-		valueLabel.sizing(Sizing.fixed(35), Sizing.fixed(7));
+		valueLabel.positioning(Positioning.absolute(26, 46));
+		valueLabel.sizing(Sizing.fixed(35), Sizing.fixed(10));
 		valueLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(valueLabel);
 
-		var valueDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
+		var valueDisplay = new CurrencyDisplayComponent(LocalizationUtil.localizedText("text", "no_value"),
+				CurrencyDisplayComponent.Appearance.NEUTRAL);
 		valueDisplay.id("value_display");
-		valueDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-		valueDisplay.positioning(Positioning.absolute(72, 45));
-		valueDisplay.sizing(Sizing.fixed(106), Sizing.fixed(11));
-		valueDisplay.color(Color.WHITE);
-		valueDisplay.shadow(true);
+		valueDisplay.tooltip(LocalizationUtil.localizedText("gui", "shipping.value.tooltip"));
+		valueDisplay.positioning(Positioning.absolute(87, 44));
+		valueDisplay.sizing(Sizing.fixed(101), Sizing.fixed(13));
 		wrapperComponent.child(valueDisplay);
-
-		var saleLabel = Components.label(LocalizationUtil.localizedText("gui", "shipping.sale"));
-		saleLabel.positioning(Positioning.absolute(32, 68));
-		saleLabel.sizing(Sizing.fixed(35), Sizing.fixed(7));
-		saleLabel.color(Color.ofRgb(0x3F3F3F));
-		wrapperComponent.child(saleLabel);
 
 		var saleDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		saleDisplay.id("sale_display");
-		saleDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
-		saleDisplay.positioning(Positioning.absolute(70, 68));
-		saleDisplay.sizing(Sizing.fixed(111), Sizing.fixed(7));
-		saleDisplay.color(Color.ofRgb(0x3F3F3F));
+		saleDisplay.horizontalTextAlignment(HorizontalAlignment.CENTER);
+		saleDisplay.positioning(Positioning.absolute(32, 71));
+		saleDisplay.sizing(Sizing.fixed(149), Sizing.fixed(8));
+		saleDisplay.color(Color.ofRgb(0x6f6f6f)); // #6f6f6fff
 		wrapperComponent.child(saleDisplay);
 
 		rootComponent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
