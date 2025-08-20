@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
@@ -17,12 +18,28 @@ import net.saint.commercialize.data.offer.OfferFilterMode;
 import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.network.MarketC2SQueryMessage;
 
 public final class MarketOfferListingUtil {
 
+	// Entry
+
+	public static List<Offer> offersForQuery(ServerPlayerEntity player, MarketC2SQueryMessage message) {
+		var allOffers = Commercialize.MARKET_OFFER_MANAGER.getOffers();
+		var preparedOffers = MarketOfferListingUtil.offersWithAppliedFilters(allOffers, player, message.filterMode, message.paymentMethod);
+
+		if (!message.searchTerm.isEmpty()) {
+			preparedOffers = MarketOfferListingUtil.offersForSearchTerm(preparedOffers.stream(), player, message.searchTerm);
+		}
+
+		preparedOffers = MarketOfferListingUtil.offersWithAppliedSorting(preparedOffers, message.sortMode, message.sortOrder);
+
+		return preparedOffers;
+	}
+
 	// Filtering
 
-	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, PlayerEntity player, OfferFilterMode filterMode,
+	public static List<Offer> offersWithAppliedFilters(Stream<Offer> offers, ServerPlayerEntity player, OfferFilterMode filterMode,
 			PaymentMethod paymentMethod) {
 		if (filterMode == null) {
 			filterMode = OfferFilterMode.ALL;
@@ -39,7 +56,7 @@ public final class MarketOfferListingUtil {
 		}
 	}
 
-	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, PlayerEntity player, String searchTerm) {
+	public static List<Offer> offersForSearchTerm(Stream<Offer> offers, ServerPlayerEntity player, String searchTerm) {
 		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems + 1;
 
 		if (searchTerm.isEmpty()) {
@@ -49,21 +66,25 @@ public final class MarketOfferListingUtil {
 		var sanitizedSearchTerm = searchTerm.toLowerCase();
 
 		return offers.filter(offer -> {
-			var stack = offer.stack;
-			var item = stack.getItem();
-			var itemId = Registries.ITEM.getId(item);
-
-			var itemName = stack.getName().getString().toLowerCase();
-			var itemNamespace = itemId.getNamespace().toLowerCase();
-			var itemTooltipLines = offer.stack.getTooltip(player, TooltipContext.BASIC).stream().map(line -> line.getString()).toList();
-			var itemTooltip = String.join("", itemTooltipLines).toLowerCase();
-			var sellerName = offer.sellerName.toLowerCase();
-
-			var didMatch = itemName.contains(sanitizedSearchTerm) || itemNamespace.contains(sanitizedSearchTerm)
-					|| itemTooltip.contains(sanitizedSearchTerm) || sellerName.contains(sanitizedSearchTerm);
-
-			return didMatch;
+			return offerMatchesSearchTerm(offer, player, sanitizedSearchTerm);
 		}).limit(maxNumberOfOffers).toList();
+	}
+
+	public static boolean offerMatchesSearchTerm(Offer offer, ServerPlayerEntity player, String searchTerm) {
+		var stack = offer.stack;
+		var item = stack.getItem();
+		var itemId = Registries.ITEM.getId(item);
+
+		var itemName = stack.getName().getString().toLowerCase();
+		var itemNamespace = itemId.getNamespace().toLowerCase();
+		var itemTooltipLines = offer.stack.getTooltip(player, TooltipContext.BASIC).stream().map(line -> line.getString()).toList();
+		var itemTooltip = String.join("", itemTooltipLines).toLowerCase();
+		var sellerName = offer.sellerName.toLowerCase();
+
+		var didMatch = itemName.contains(searchTerm) || itemNamespace.contains(searchTerm) || itemTooltip.contains(searchTerm)
+				|| sellerName.contains(searchTerm);
+
+		return didMatch;
 	}
 
 	// Sorting
