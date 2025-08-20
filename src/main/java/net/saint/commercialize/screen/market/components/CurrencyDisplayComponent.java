@@ -4,6 +4,7 @@ import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.HorizontalAlignment;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import net.minecraft.text.Text;
@@ -51,7 +52,7 @@ public class CurrencyDisplayComponent extends FlowLayout {
 	// Init
 
 	public CurrencyDisplayComponent(Text description, Appearance highlightStyle) {
-		super(Sizing.fixed(109), Sizing.fixed(13), FlowLayout.Algorithm.VERTICAL);
+		super(Sizing.fixed(97), Sizing.fixed(13), FlowLayout.Algorithm.VERTICAL);
 
 		this.text = description;
 		this.appearance = highlightStyle;
@@ -59,13 +60,14 @@ public class CurrencyDisplayComponent extends FlowLayout {
 		var textureComponent = Components.texture(backgroundTexture());
 		textureComponent.id("background");
 		textureComponent.positioning(Positioning.absolute(0, 0));
-		textureComponent.sizing(Sizing.fixed(109), Sizing.fixed(13));
+		textureComponent.sizing(Sizing.fill(100), Sizing.fill(100));
 		this.child(textureComponent);
 
 		var currencyDisplay = Components.label(description);
 		currencyDisplay.id("amount");
-		currencyDisplay.positioning(Positioning.absolute(2, 2));
-		currencyDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
+		currencyDisplay.positioning(Positioning.absolute(0, 0));
+		currencyDisplay.margins(Insets.both(2, 2));
+		currencyDisplay.sizing(Sizing.fill(100), Sizing.fill(100));
 		currencyDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
 		currencyDisplay.color(Color.WHITE);

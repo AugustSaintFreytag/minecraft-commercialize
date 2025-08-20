@@ -7,6 +7,7 @@ import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.item.ItemSalePriceUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public final class ShippingScreenUtil {
 
@@ -30,7 +31,10 @@ public final class ShippingScreenUtil {
 		var ticksToNextSale = shippingInterval - world.getTimeOfDay() % shippingInterval;
 		var formattedTime = TimeFormattingUtil.formattedTime(ticksToNextSale);
 
-		return Text.of(formattedTime);
+		var saleTimeComponent = LocalizationUtil.localizedString("gui", "shipping.sale_time_format", formattedTime);
+		var saleLabelComponent = LocalizationUtil.localizedString("gui", "shipping.sale");
+
+		return Text.of(saleLabelComponent + " " + saleTimeComponent);
 	}
 
 }
