@@ -148,7 +148,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var offers = delegate.getOffers();
 		var offersAreCapped = delegate.getOffersAreCapped();
-		var numberOfOffers = offers.size();
 
 		offers.forEach(offer -> {
 			var offerIsInCart = delegate.hasOfferInCart(offer);
@@ -301,11 +300,11 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Displays
 
 		var totalDisplayComponent = makeTotalDisplayComponent();
-		totalDisplayComponent.positioning(Positioning.absolute(46, 127));
+		totalDisplayComponent.positioning(Positioning.absolute(58, 127));
 		rightSideComponent.child(totalDisplayComponent);
 
 		var balanceDisplayComponent = makeBalanceDisplayComponent();
-		balanceDisplayComponent.positioning(Positioning.absolute(46, 155));
+		balanceDisplayComponent.positioning(Positioning.absolute(58, 155));
 		rightSideComponent.child(balanceDisplayComponent);
 
 		// Tabs
