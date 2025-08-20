@@ -13,6 +13,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -226,6 +227,16 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 
 	// Lifecycle
 
+	public void onBeforeOpened() {
+		if (this.owner == null) {
+			return;
+		}
+
+		var world = this.owner.getWorld();
+		var position = this.owner.getPos();
+		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+	}
+
 	public void onOpened(PostingScreen screen, PlayerEntity player) {
 		this.screen = screen;
 		screen.delegate = this;
@@ -242,6 +253,8 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		}
 
 		player.giveItemStack(this.blockInventory.getStack(0));
+		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+
 		super.onClosed(player);
 	}
 

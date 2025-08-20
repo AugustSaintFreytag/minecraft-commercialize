@@ -47,24 +47,29 @@ public class ShippingScreenHandler extends ScreenHandler {
 		makeSlotsForBlockInventory(blockInventory);
 		makeSlotForPaymentCard(blockInventory);
 		makeSlotsForPlayerInventory(playerInventory);
+
+		onBeforeOpened();
 	}
 
 	// Lifecycle
 
-	@Override
-	public void onClosed(PlayerEntity player) {
-		onClosed(this.screen, player);
+	public void onBeforeOpened() {
+		if (this.owner == null) {
+			return;
+		}
+
+		var world = this.owner.getWorld();
+		var position = this.owner.getPos();
+		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
 	public void onOpened(ShippingScreen screen, PlayerEntity player) {
 		this.screen = screen;
-		var world = player.getWorld();
+	}
 
-		if (world.isClient()) {
-			return;
-		}
-
-		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+	@Override
+	public void onClosed(PlayerEntity player) {
+		onClosed(this.screen, player);
 	}
 
 	public void onClosed(ShippingScreen screen, PlayerEntity player) {
