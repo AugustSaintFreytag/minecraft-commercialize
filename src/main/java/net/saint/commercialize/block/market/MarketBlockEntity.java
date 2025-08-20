@@ -113,17 +113,11 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 		state.marketOffers.addOffers(message.offers);
 		state.marketOffers.setOffersAreCapped(message.isCapped);
 
-		Commercialize.LOGGER.info("Received market data for market block entity at pos '{}' from server: {} offer(s) available.",
-				this.getPos().toShortString(), state.marketOffers.getOffers().count());
-
 		lastListingTick = world.getTimeOfDay();
 		updateMarketScreen();
 	}
 
 	public void receiveOrderMessage(MarketS2COrderMessage message) {
-		Commercialize.LOGGER.info("Received market order response with result '{}' for offer '{}' at pos '{}'.", message.result,
-				message.offers, this.getPos().toShortString());
-
 		var client = MinecraftClient.getInstance();
 		var player = client.player;
 

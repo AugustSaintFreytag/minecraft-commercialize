@@ -45,7 +45,7 @@ public final class MarketOfferPostingUtil {
 		Commercialize.MARKET_OFFER_MANAGER.addOffers(offers);
 		updatePostQuotaForPlayer(player, offers.size());
 
-		Commercialize.LOGGER.info("Player {} posted {} offer(s) to market.", player.getPlayerListName(), offers.size());
+		Commercialize.LOGGER.info("Player '{}' posted {} offer(s) to market.", player.getName().getString(), offers.size());
 
 		return OfferPostingResult.SUCCESS;
 	}

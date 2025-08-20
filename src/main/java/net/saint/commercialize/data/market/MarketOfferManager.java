@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -23,6 +25,12 @@ public final class MarketOfferManager extends PersistentState {
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market_offer_manager");
 
 	// Properties
+
+	public final Event<StateModified> STATE_MODIFIED = EventFactory.createArrayBacked(StateModified.class, listeners -> manager -> {
+		for (var listener : listeners) {
+			listener.onStateModified(manager);
+		}
+	});
 
 	private List<Offer> offers = new ArrayList<Offer>();
 	private Map<UUID, Offer> offersById = new HashMap<>();
@@ -63,6 +71,14 @@ public final class MarketOfferManager extends PersistentState {
 		}
 
 		return collection;
+	}
+
+	// Modification
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		STATE_MODIFIED.invoker().onStateModified(this);
 	}
 
 	// Access
@@ -143,6 +159,13 @@ public final class MarketOfferManager extends PersistentState {
 	public void setOffersAreCapped(boolean capped) {
 		this.offersAreCapped = capped;
 		markDirty();
+	}
+
+	// Events
+
+	@FunctionalInterface
+	public interface StateModified {
+		void onStateModified(MarketOfferManager manager);
 	}
 
 }

@@ -18,14 +18,17 @@ import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
+import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketBlockServerNetworking {
 
@@ -127,16 +130,8 @@ public final class MarketBlockServerNetworking {
 	private static void onReceiveMarketDataRequest(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
 			MarketC2SQueryMessage message) {
 		var maxNumberOfOffers = Commercialize.CONFIG.maxNumberOfListedItems;
-		var allOffers = Commercialize.MARKET_OFFER_MANAGER.getOffers();
-
-		var preparedOffers = MarketOfferListingUtil.offersWithAppliedFilters(allOffers, player, message.filterMode, message.paymentMethod);
+		var preparedOffers = MarketOfferListingUtil.offersWithAppliedQuery(player, message);
 		var preparedOffersAreCapped = false;
-
-		if (!message.searchTerm.isEmpty()) {
-			preparedOffers = MarketOfferListingUtil.offersForSearchTerm(preparedOffers.stream(), player, message.searchTerm);
-		}
-
-		preparedOffers = MarketOfferListingUtil.offersWithAppliedSorting(preparedOffers, message.sortMode, message.sortOrder);
 
 		if (preparedOffers.size() > maxNumberOfOffers) {
 			// If offers are maximum size plus one, remove one and mark as capped.
@@ -219,6 +214,7 @@ public final class MarketBlockServerNetworking {
 		}
 
 		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
+		payOutOfferAmountsToSellers(server, offers);
 		removeOffers(offers);
 
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
@@ -262,7 +258,19 @@ public final class MarketBlockServerNetworking {
 
 		}
 
-		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks);
+		var packageMessage = messageForPackagedDelivery(itemStacks);
+		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
+
+		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
+	}
+
+	private static String messageForPackagedDelivery(List<ItemStack> itemStacks) {
+		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
+		var itemStackDescription = String.join(", ", itemStackDescriptions);
+		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
+				+ LocalizationUtil.localizedString("text", "delivery.message");
+
+		return packageMessage;
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {
@@ -328,6 +336,27 @@ public final class MarketBlockServerNetworking {
 				break;
 			default:
 				Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
+		}
+	}
+
+	private static void payOutOfferAmountsToSellers(MinecraftServer server, List<Offer> offers) {
+		for (var offer : offers) {
+			if (offer.isGenerated) {
+				// Generated offers will be skipped, no seller to pay out to.
+				continue;
+			}
+
+			var seller = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
+
+			if (seller == null) {
+				Commercialize.LOGGER.error("Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
+						offer.sellerName, offer.sellerId, offer.price, offer.id);
+				continue;
+			}
+
+			BankAccountAccessUtil.depositAccountBalanceForPlayer(seller, offer.price);
+			Commercialize.LOGGER.info("Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
+					offer.price, offer.id);
 		}
 	}
 
