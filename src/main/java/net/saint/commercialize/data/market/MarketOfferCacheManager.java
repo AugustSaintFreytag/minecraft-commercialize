@@ -1,5 +1,7 @@
 package net.saint.commercialize.data.market;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,9 @@ public class MarketOfferCacheManager {
 		var flippedPredicate = flippedOrderPredicate(predicate);
 
 		if (offersByPredicate.containsKey(flippedPredicate)) {
-			var offers = offersByPredicate.get(flippedPredicate).reversed();
+			var offers = new ArrayList<Offer>(offersByPredicate.get(flippedPredicate));
+			Collections.reverse(offers);
+
 			offersByPredicate.put(predicate, offers);
 
 			return offers.stream();
