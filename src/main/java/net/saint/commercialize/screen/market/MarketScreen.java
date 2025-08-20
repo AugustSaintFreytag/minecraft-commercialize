@@ -150,8 +150,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var offersAreCapped = delegate.getOffersAreCapped();
 		var numberOfOffers = offers.size();
 
-		Commercialize.LOGGER.info("Rendering {} offer(s) in market screen with cap: {}.", numberOfOffers, offersAreCapped);
-
 		offers.forEach(offer -> {
 			var offerIsInCart = delegate.hasOfferInCart(offer);
 			var offerComponent = makeOfferListComponent(offer, offerIsInCart);
