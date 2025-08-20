@@ -18,6 +18,7 @@ import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
+import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.init.ModSounds;
@@ -219,6 +220,7 @@ public final class MarketBlockServerNetworking {
 		}
 
 		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
+		payOutOfferAmountsToSellers(server, offers);
 		removeOffers(offers);
 
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
@@ -328,6 +330,27 @@ public final class MarketBlockServerNetworking {
 				break;
 			default:
 				Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
+		}
+	}
+
+	private static void payOutOfferAmountsToSellers(MinecraftServer server, List<Offer> offers) {
+		for (var offer : offers) {
+			if (offer.isGenerated) {
+				// Generated offers will be skipped, no seller to pay out to.
+				continue;
+			}
+
+			var seller = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
+
+			if (seller == null) {
+				Commercialize.LOGGER.error("Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
+						offer.sellerName, offer.sellerId, offer.price, offer.id);
+				continue;
+			}
+
+			BankAccountAccessUtil.depositAccountBalanceForPlayer(seller, offer.price);
+			Commercialize.LOGGER.info("Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
+					offer.price, offer.id);
 		}
 	}
 
