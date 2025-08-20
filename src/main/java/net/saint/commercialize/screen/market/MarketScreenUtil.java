@@ -116,7 +116,7 @@ public final class MarketScreenUtil {
 		var components = new ArrayList<TooltipComponent>();
 
 		// Title
-		var title = LocalizationUtil.localizedText("text", "offer.tooltip.title").copy();
+		var title = titleTextForOffer(offer).copy();
 		title.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xf1c513)).withBold(true));
 		components.add(TooltipComponent.of(title.asOrderedText()));
 
@@ -184,6 +184,14 @@ public final class MarketScreenUtil {
 		components.add(TooltipComponent.of(expiryLabel.append(expiryValue).asOrderedText()));
 
 		return components;
+	}
+
+	private static Text titleTextForOffer(Offer offer) {
+		if (offer.isGenerated) {
+			return LocalizationUtil.localizedText("text", "offer.tooltip.title.generated");
+		} else {
+			return LocalizationUtil.localizedText("text", "offer.tooltip.title.real");
+		}
 	}
 
 	// Seller

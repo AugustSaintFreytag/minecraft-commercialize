@@ -21,12 +21,14 @@ import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketBlockServerNetworking {
 
@@ -256,7 +258,19 @@ public final class MarketBlockServerNetworking {
 
 		}
 
-		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks);
+		var packageMessage = messageForPackagedDelivery(itemStacks);
+		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
+
+		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
+	}
+
+	private static String messageForPackagedDelivery(List<ItemStack> itemStacks) {
+		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
+		var itemStackDescription = String.join(", ", itemStackDescriptions);
+		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
+				+ LocalizationUtil.localizedString("text", "delivery.message");
+
+		return packageMessage;
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {

@@ -113,10 +113,10 @@ public final class MailTransitUtil {
 	// Dispatch
 
 	public static boolean packageAndDispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
-			DefaultedList<ItemStack> itemStacks) {
+			DefaultedList<ItemStack> itemStacks, String message, String sender) {
 		var world = server.getOverworld();
 		var time = world.getTimeOfDay();
-		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks);
+		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
 		var item = new MailTransitItem(time, player.getUuid(), packagedOrder);
 
 		Commercialize.MAIL_TRANSIT_MANAGER.pushItem(item);
@@ -124,8 +124,8 @@ public final class MailTransitUtil {
 	}
 
 	public static boolean packageAndDeliverItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
-			DefaultedList<ItemStack> itemStacks) {
-		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks);
+			DefaultedList<ItemStack> itemStacks, String message, String sender) {
+		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
 		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
 	}
 

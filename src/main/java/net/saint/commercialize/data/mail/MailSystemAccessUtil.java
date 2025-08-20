@@ -13,28 +13,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.collection.DefaultedList;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.mixin.DeliveryServiceAccessor;
-import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MailSystemAccessUtil {
 
 	// Delivery
 
-	public static ItemStack packageItemStacksForDelivery(List<ItemStack> itemStacks) {
+	public static ItemStack packageItemStacksForDelivery(List<ItemStack> itemStacks, String message, String sender) {
 		var itemStackList = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
 
 		for (var index = 0; index < itemStacks.size(); index++) {
 			itemStackList.set(index, itemStacks.get(index));
 		}
 
-		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
-		var itemStackDescription = String.join(", ", itemStackDescriptions);
-		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
-				+ LocalizationUtil.localizedString("text", "delivery.signature");
-		var packageSender = LocalizationUtil.localizedString("text", "delivery.sender");
-		var packageItemStack = PackageItem.create(itemStackList, packageMessage, packageSender);
-
+		var packageItemStack = PackageItem.create(itemStackList, message, sender);
 		return packageItemStack;
 	}
 
