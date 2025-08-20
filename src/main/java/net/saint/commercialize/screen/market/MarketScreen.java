@@ -102,6 +102,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var totalDisplayAppearance = MarketScreenUtil.appearanceForCartTotal(delegate.getCartTotal(), delegate.getBalance());
 		totalDisplay.text(MarketScreenUtil.textForCartTotal(delegate.getCartTotal()));
 		totalDisplay.appearance(totalDisplayAppearance);
+		totalDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 
 		var balanceLabel = rootComponent.childById(LabelComponent.class, "balance_label");
 		balanceLabel.text(MarketScreenUtil.labelTextForBalance(delegate.getPaymentMethod()));
@@ -109,7 +110,6 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var balanceDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "balance");
 		var balance = delegate.getBalance();
 		balanceDisplay.text(MarketScreenUtil.textForBalance(balance));
-		balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 
 		if (!Commercialize.CONFIG.allowForeignCardsForMarketPayment && delegate.hasCardInHand() && !delegate.hasOwnedCardInHand()) {
 			var balanceText = LocalizationUtil.localizedText("gui", "market.inviable_balance");
@@ -117,6 +117,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 			var tooltipText = LocalizationUtil.localizedText("gui", "market.inviable_account.tooltip", delegate.getCardOwnerName());
 			balanceDisplay.tooltip(tooltipText);
+		} else {
+			balanceDisplay.tooltip(MarketScreenUtil.tooltipTextForBalance(delegate.getPaymentMethod(), delegate.getCardOwnerName()));
 		}
 
 		// Cart

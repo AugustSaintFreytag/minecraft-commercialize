@@ -12,7 +12,6 @@ import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.screen.market.MarketScreenAssets;
-import net.saint.commercialize.util.LocalizationUtil;
 
 public class CurrencyDisplayComponent extends FlowLayout {
 
@@ -69,7 +68,6 @@ public class CurrencyDisplayComponent extends FlowLayout {
 		currencyDisplay.sizing(Sizing.fixed(105), Sizing.fixed(11));
 		currencyDisplay.horizontalTextAlignment(HorizontalAlignment.RIGHT);
 
-		currencyDisplay.tooltip(LocalizationUtil.localizedText("gui", "market.total.tooltip"));
 		currencyDisplay.color(Color.WHITE);
 		currencyDisplay.shadow(true);
 		this.child(currencyDisplay);
