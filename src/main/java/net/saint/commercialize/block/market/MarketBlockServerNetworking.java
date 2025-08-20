@@ -259,7 +259,7 @@ public final class MarketBlockServerNetworking {
 		}
 
 		var packageMessage = messageForPackagedDelivery(itemStacks);
-		var packageSender = LocalizationUtil.localizedString("text", "delivery.sender");
+		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
 
 		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
 	}
@@ -268,7 +268,7 @@ public final class MarketBlockServerNetworking {
 		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
 		var itemStackDescription = String.join(", ", itemStackDescriptions);
 		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
-				+ LocalizationUtil.localizedString("text", "delivery.signature");
+				+ LocalizationUtil.localizedString("text", "delivery.message");
 
 		return packageMessage;
 	}
