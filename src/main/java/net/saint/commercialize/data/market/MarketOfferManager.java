@@ -73,6 +73,14 @@ public final class MarketOfferManager extends PersistentState {
 		return collection;
 	}
 
+	// Modification
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		STATE_MODIFIED.invoker().onStateModified(this);
+	}
+
 	// Access
 
 	public Stream<Offer> getOffers() {
