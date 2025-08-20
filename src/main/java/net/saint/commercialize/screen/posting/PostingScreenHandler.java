@@ -125,14 +125,43 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		});
 
 		addServerboundMessage(C2SPostOfferActionMessage.class, message -> {
+			var world = this.owner.getWorld();
+			var server = world.getServer();
 			var player = (ServerPlayerEntity) this.player();
-			var server = player.getServer();
+			var position = this.owner.getPos();
 			var draft = message.draft();
 
 			var result = MarketOfferPostingUtil.postOfferToMarket(server, player, draft);
 
-			if (result == MarketOfferPostingUtil.OfferPostingResult.SUCCESS) {
-				this.blockInventory.clear();
+			switch (result) {
+				case SUCCESS: {
+					this.blockInventory.clear();
+
+					var itemDescription = ItemDescriptionUtil.descriptionForItemStack(draft.stack());
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_confirm", itemDescription);
+					player.sendMessage(displayText, true);
+					world.playSound(null, position, ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 0.75f, 0.75f);
+					world.playSound(null, position, ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 0.75f, 0.75f);
+					break;
+				}
+				case OUT_OF_QUOTA: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_out_of_quota");
+					player.sendMessage(displayText, true);
+					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+					break;
+				}
+				case INVALID: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_invalid");
+					player.sendMessage(displayText, true);
+					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+					break;
+				}
+				default: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_failure");
+					player.sendMessage(displayText, true);
+					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+					break;
+				}
 			}
 
 			var response = new S2CPostOfferActionMessage(result, draft.stack());
@@ -145,36 +174,6 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		});
 
 		addClientboundMessage(S2CPostOfferActionMessage.class, message -> {
-			var player = player();
-			var result = message.result();
-
-			switch (result) {
-				case SUCCESS: {
-					var itemDescription = ItemDescriptionUtil.descriptionForItemStack(message.stack());
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_confirm", itemDescription);
-					player.sendMessage(displayText, true);
-					player.playSound(ModSounds.MAILBOX_DELIVERY_SOUND, 1.5f, 0.75f);
-					break;
-				}
-				case OUT_OF_QUOTA: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_out_of_quota");
-					player.sendMessage(displayText, true);
-					player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-					break;
-				}
-				case INVALID: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_invalid");
-					player.sendMessage(displayText, true);
-					player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-					break;
-				}
-				default: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_failure");
-					player.sendMessage(displayText, true);
-					player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
-					break;
-				}
-			}
 		});
 	}
 
