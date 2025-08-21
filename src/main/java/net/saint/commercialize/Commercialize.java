@@ -80,7 +80,9 @@ public class Commercialize implements ModInitializer {
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
 
 			reloadConfigs(server);
+		});
 
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
 			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
 			MARKET_OFFER_CACHE_MANAGER = new MarketOfferCacheManager();
