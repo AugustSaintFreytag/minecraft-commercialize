@@ -1,0 +1,82 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:stone",
+			"stack": "64",
+			"markup": "1.0",
+			"availability": "extremelyCommon"
+		},
+		{
+			"item": "minecraft:cobblestone",
+			"stack": "64",
+			"markup": "1.0",
+			"availability": "extremelyCommon"
+		},
+		{
+			"item": "minecraft:andesite",
+			"stack": "64",
+			"markup": "1.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:granite",
+			"stack": "64",
+			"markup": "1.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:diorite",
+			"stack": "64",
+			"markup": "1.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:deepslate",
+			"stack": "64",
+			"markup": "1.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:tuff",
+			"stack": "64",
+			"markup": "1.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:calcite",
+			"stack": "32",
+			"markup": "1.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:basalt",
+			"stack": "64",
+			"markup": "1.3",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:blackstone",
+			"stack": "64",
+			"markup": "1.5",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:sandstone",
+			"stack": "64",
+			"markup": "1.2",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:red_sandstone",
+			"stack": "64",
+			"markup": "1.3",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:dripstone_block",
+			"stack": "64",
+			"markup": "1.3",
+			"availability": "uncommon"
+		}
+	]
+}
