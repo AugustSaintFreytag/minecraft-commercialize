@@ -1,5 +1,7 @@
 package net.saint.commercialize;
 
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,7 @@ public class Commercialize implements ModInitializer {
 	public static final String MOD_NAME = "Commercialize";
 	public static final String MOD_ID = "commercialize";
 
-	// Properties
+	// References
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
@@ -45,6 +47,12 @@ public class Commercialize implements ModInitializer {
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
 	public static MarketOfferCacheManager MARKET_OFFER_CACHE_MANAGER;
 	public static MailTransitManager MAIL_TRANSIT_MANAGER;
+
+	// Paths
+
+	public static final Path MOD_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(Commercialize.MOD_ID);
+
+	// State
 
 	public static boolean shouldTickMarket = true;
 
