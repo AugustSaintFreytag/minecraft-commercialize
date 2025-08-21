@@ -1,0 +1,10 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:glass",
+			"stack": "32-64",
+			"markup": "1.1",
+			"availability": "veryCommon"
+		}
+	]
+}

@@ -1,5 +1,7 @@
 package net.saint.commercialize;
 
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,8 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
 import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.mail.MailTransitManager;
@@ -20,7 +24,7 @@ import net.saint.commercialize.data.player.PlayerProfileManager;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
-import net.saint.commercialize.init.ModConfigUtil;
+import net.saint.commercialize.init.ModConfig;
 import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
@@ -33,7 +37,7 @@ public class Commercialize implements ModInitializer {
 	public static final String MOD_NAME = "Commercialize";
 	public static final String MOD_ID = "commercialize";
 
-	// Properties
+	// References
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
@@ -45,6 +49,12 @@ public class Commercialize implements ModInitializer {
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
 	public static MarketOfferCacheManager MARKET_OFFER_CACHE_MANAGER;
 	public static MailTransitManager MAIL_TRANSIT_MANAGER;
+
+	// Paths
+
+	public static final Path MOD_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(Commercialize.MOD_ID);
+
+	// State
 
 	public static boolean shouldTickMarket = true;
 
@@ -64,10 +74,15 @@ public class Commercialize implements ModInitializer {
 		ModServerNetworking.initialize();
 		InventoryAccessUtil.initialize();
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			ITEM_MANAGER = new ItemManager();
 			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
 			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
+
+			reloadConfigs(server);
+		});
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
 			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
 			MARKET_OFFER_CACHE_MANAGER = new MarketOfferCacheManager();
@@ -75,8 +90,6 @@ public class Commercialize implements ModInitializer {
 			MARKET_OFFER_MANAGER.STATE_MODIFIED.register(manager -> {
 				MARKET_OFFER_CACHE_MANAGER.clear();
 			});
-
-			reloadConfigs();
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -92,10 +105,12 @@ public class Commercialize implements ModInitializer {
 
 	}
 
-	public static void reloadConfigs() {
-		ModConfigUtil.reloadItemConfigs();
-		ModConfigUtil.reloadPlayerConfigs();
-		ModConfigUtil.reloadOfferTemplateConfigs();
+	public static void reloadConfigs(MinecraftServer server) {
+		ModConfig.assertConfigStructure(server.getResourceManager());
+
+		ModConfig.reloadItemConfigs();
+		ModConfig.reloadPlayerConfigs();
+		ModConfig.reloadOfferTemplateConfigs();
 	}
 
 }

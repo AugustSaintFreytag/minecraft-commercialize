@@ -1,0 +1,29 @@
+{
+	"values": {
+		"minecraft:bone": 16,
+		"minecraft:bucket_of_cod": 64,
+		"minecraft:bucket_of_pufferfish": 96,
+		"minecraft:bucket_of_salmon": 64,
+		"minecraft:bucket_of_tropical_fish": 48,
+		"minecraft:cod": 16,
+		"minecraft:egg": 40,
+		"minecraft:ender_pearl": 192,
+		"minecraft:feather": 8,
+		"minecraft:glow_ink_sac": 32,
+		"minecraft:honey_bottle": 32,
+		"minecraft:honeycomb": 24,
+		"minecraft:ink_sac": 16,
+		"minecraft:leather": 32,
+		"minecraft:nautilus_shell": 16,
+		"minecraft:phantom_membrane": 32,
+		"minecraft:pufferfish": 64,
+		"minecraft:rabbit_foot": 64,
+		"minecraft:rabbit_hide": 18,
+		"minecraft:rotten_flesh": 2,
+		"minecraft:salmon": 16,
+		"minecraft:spider_eye": 18,
+		"minecraft:tropical_fish": 8,
+		"naturalist:antler": 48,
+		"naturalist:snail_shell": 4
+	}
+}

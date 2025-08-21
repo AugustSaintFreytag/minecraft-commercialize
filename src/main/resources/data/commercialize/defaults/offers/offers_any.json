@@ -1,0 +1,54 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:redstone",
+			"stack": "4-64",
+			"markup": "1.2",
+			"availability": "extremelyCommon"
+		},
+		{
+			"item": "minecraft:glowstone_dust",
+			"stack": "4-32",
+			"markup": "1.7",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:iron_ingot",
+			"stack": "4-64",
+			"availability": "extremelyCommon"
+		},
+		{
+			"item": "minecraft:gold_ingot",
+			"stack": "1-32",
+			"markup": "1.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:diamond",
+			"stack": "1-8",
+			"markup": "1.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:emerald",
+			"stack": "1-8",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:ender_pearl",
+			"markup": "1.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:copper_ingot",
+			"stack": "4-64",
+			"availability": "extremelyCommon"
+		},
+		{
+			"item": "minecraft:quartz",
+			"stack": "1-32",
+			"markup": "1.3",
+			"availability": "uncommon"
+		}
+	]
+}

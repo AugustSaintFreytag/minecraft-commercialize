@@ -1,0 +1,30 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"Xrg",
+		"LrL",
+		"XeX"
+	],
+	"key": {
+		"X": {
+			"item": "create:industrial_iron_block"
+		},
+		"r": {
+			"item": "minecraft:redstone"
+		},
+		"L": {
+			"item": "minecraft:lapis_lazuli"
+		},
+		"e": {
+			"item": "minecraft:ender_pearl"
+		},
+		"g": {
+			"item": "minecraft:tinted_glass"
+		}
+		
+	},
+	"result": {
+		"item": "commercialize:shipping_block",
+		"count": 1
+	}
+}

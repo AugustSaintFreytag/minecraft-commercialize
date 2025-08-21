@@ -1,0 +1,24 @@
+{
+	"values": {
+		"minecraft:acacia_log": 4,
+		"minecraft:acacia_planks": 1,
+		"minecraft:bamboo_block": 3,
+		"minecraft:bamboo_planks": 1,
+		"minecraft:birch_log": 4,
+		"minecraft:birch_planks": 1,
+		"minecraft:cherry_log": 4,
+		"minecraft:cherry_planks": 1,
+		"minecraft:crimson_log": 10,
+		"minecraft:crimson_planks": 3,
+		"minecraft:dark_oak_log": 4,
+		"minecraft:dark_oak_planks": 1,
+		"minecraft:jungle_log": 4,
+		"minecraft:jungle_planks": 1,
+		"minecraft:mangrove_log": 4,
+		"minecraft:mangrove_planks": 1,
+		"minecraft:oak_log": 4,
+		"minecraft:oak_planks": 1,
+		"minecraft:spruce_log": 4,
+		"minecraft:spruce_planks": 1
+	}
+}

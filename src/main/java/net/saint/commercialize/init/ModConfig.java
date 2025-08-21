@@ -1,9 +1,29 @@
 package net.saint.commercialize.init;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
+import net.minecraft.resource.ResourceManager;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.util.ConfigDefaultsUtil;
 import net.saint.commercialize.util.ConfigLoadUtil;
 
-public final class ModConfigUtil {
+public final class ModConfig {
+
+	public static void assertConfigStructure(ResourceManager resourceManager) {
+		try {
+			// Create directories if they don't already exist.
+			Files.createDirectories(Commercialize.MOD_CONFIG_DIR);
+
+			// Check if directory is empty, if so, copy over all defaults.
+			if (Files.list(Commercialize.MOD_CONFIG_DIR).findAny().isEmpty()) {
+				Commercialize.LOGGER.info("Config directory '{}' is empty, copying default config files.", Commercialize.MOD_CONFIG_DIR);
+				ConfigDefaultsUtil.copyAllDefaultConfigs(resourceManager);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create config directory or copy default config files.", e);
+		}
+	}
 
 	public static void reloadItemConfigs() {
 		Commercialize.ITEM_MANAGER.clearItemValues();
