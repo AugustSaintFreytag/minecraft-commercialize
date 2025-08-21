@@ -1,7 +1,6 @@
 package net.saint.commercialize.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,7 +12,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.common.IdentifierAdapter;
@@ -28,15 +26,12 @@ public final class ConfigLoadUtil {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Identifier.class, new IdentifierAdapter())
 			.create();
 
-	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(Commercialize.MOD_ID);
-
 	// Load
 
 	public static List<ItemsConfig> loadItemConfigs() {
 		var itemConfigs = new ArrayList<ItemsConfig>();
 
-		assertConfigDirectoriesAndFiles();
-		forEachConfigFileInStream("items_*.json", (file, reader) -> {
+		forEachConfigFileInStream("items/items_*.json", (file, reader) -> {
 			var rootObject = JsonParser.parseReader(reader).getAsJsonObject();
 
 			if (!rootObject.has("values")) {
@@ -54,8 +49,7 @@ public final class ConfigLoadUtil {
 	public static List<OffersConfig> loadOfferTemplateConfigs() {
 		var offerTemplateConfigs = new ArrayList<OffersConfig>();
 
-		assertConfigDirectoriesAndFiles();
-		forEachConfigFileInStream("offers_*.json", (file, reader) -> {
+		forEachConfigFileInStream("offers/offers_*.json", (file, reader) -> {
 			var rootObject = JsonParser.parseReader(reader).getAsJsonObject();
 
 			if (!rootObject.has("offers")) {
@@ -75,8 +69,7 @@ public final class ConfigLoadUtil {
 	}
 
 	public static PlayersConfig loadPlayerConfigs() {
-		assertConfigDirectoriesAndFiles();
-		Path configFile = CONFIG_DIR.resolve("players.json");
+		Path configFile = Commercialize.MOD_CONFIG_DIR.resolve("players/players.json");
 
 		if (!Files.exists(configFile)) {
 			Commercialize.LOGGER.warn("Players config file '{}' not found, using defaults.", configFile.getFileName());
@@ -100,7 +93,7 @@ public final class ConfigLoadUtil {
 	}
 
 	private static void forEachConfigFileInStream(String pattern, BiConsumer<Path, Reader> fileReaderConsumer) {
-		try (var stream = Files.newDirectoryStream(CONFIG_DIR, pattern)) {
+		try (var stream = Files.newDirectoryStream(Commercialize.MOD_CONFIG_DIR, pattern)) {
 			for (var file : stream) {
 				try (var reader = Files.newBufferedReader(file)) {
 					fileReaderConsumer.accept(file, reader);
@@ -110,32 +103,6 @@ public final class ConfigLoadUtil {
 			}
 		} catch (IOException e) {
 			Commercialize.LOGGER.error("Could not list config files with pattern '{}'", pattern, e);
-		}
-	}
-
-	// Assertions
-
-	private static void assertConfigDirectoriesAndFiles() {
-		try {
-			Files.createDirectories(CONFIG_DIR);
-			// TODO: Add all default config files here to be copied.
-			// TODO: Only copy if master config file is missing.
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create config directory or copy default config files.", e);
-		}
-	}
-
-	private static void copyIfMissing(String resourceName) throws IOException {
-		var target = CONFIG_DIR.resolve(resourceName);
-
-		if (Files.exists(target)) {
-			return;
-		}
-
-		try (InputStream in = ConfigLoadUtil.class.getResourceAsStream("/assets/commercialize/config/" + resourceName)) {
-			Files.copy(in, target);
-		} catch (IOException e) {
-			Commercialize.LOGGER.error("Could not copy default config file '" + resourceName + "' to game config directory.", e);
 		}
 	}
 

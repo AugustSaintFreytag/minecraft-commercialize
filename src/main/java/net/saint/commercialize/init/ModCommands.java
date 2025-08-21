@@ -27,7 +27,8 @@ public final class ModCommands {
 				// Mod
 
 				.then(literal("reload").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
-					Commercialize.reloadConfigs();
+					var server = context.getSource().getServer();
+					Commercialize.reloadConfigs(server);
 					context.getSource().sendFeedback(() -> Text.literal("Commercialize configuration files reloaded."), true);
 					return 1;
 				}))
