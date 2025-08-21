@@ -1,0 +1,32 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"ELE",
+		"RgR",
+		"XeX"
+	],
+	"key": {
+		"E": {
+			"item": "create:electron_tube"
+		},
+		"X": {
+			"item": "create:industrial_iron_block"
+		},
+		"L": {
+			"item": "create:redstone_link"
+		},
+		"R": {
+			"item": "minecraft:red_dye"
+		},
+		"e": {
+			"item": "minecraft:ender_pearl"
+		},
+		"g": {
+			"item": "minecraft:tinted_glass"
+		}
+	},
+	"result": {
+		"item": "commercialize:market_block",
+		"count": 1
+	}
+}
