@@ -13,7 +13,6 @@
 		"minecraft:snow_block": 1,
 		"minecraft:mud": 2,
 		"minecraft:packed_mud": 3,
-		"minecraft:mud_bricks": 4,
-		"minecraft:obsidian": 52
+		"minecraft:mud_bricks": 4
 	}
 }
