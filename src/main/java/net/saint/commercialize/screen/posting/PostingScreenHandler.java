@@ -81,6 +81,8 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		// Server/Client communication is not possible until player is attached but even 
 		// right before the initial screen render, it's still not ready.
 		((OwoScreenHandlerExtension) this).owo$attachToPlayer(playerInventory.player);
+
+		onBeforeOpened();
 	}
 
 	private void initListeners() {
@@ -233,6 +235,7 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 
 		var world = this.owner.getWorld();
 		var position = this.owner.getPos();
+
 		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
