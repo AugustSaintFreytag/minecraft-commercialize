@@ -10,10 +10,12 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
+import net.saint.commercialize.data.item.ItemManagerNetworking;
 import net.saint.commercialize.data.mail.MailTransitManager;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferCacheManager;
@@ -103,6 +105,11 @@ public class Commercialize implements ModInitializer {
 			MailTransitUtil.tickMailTransitIfNecessary(world);
 		});
 
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			var player = handler.getPlayer();
+			ItemManagerNetworking.syncItemRegistryToPlayer(player);
+		});
+
 	}
 
 	public static void reloadConfigs(MinecraftServer server) {
@@ -111,6 +118,8 @@ public class Commercialize implements ModInitializer {
 		ModConfig.reloadItemConfigs();
 		ModConfig.reloadPlayerConfigs();
 		ModConfig.reloadOfferTemplateConfigs();
+
+		ItemManagerNetworking.syncItemRegistryToAllPlayers(server);
 	}
 
 }
