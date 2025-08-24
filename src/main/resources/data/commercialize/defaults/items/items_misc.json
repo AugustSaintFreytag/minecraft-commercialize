@@ -1,4 +1,16 @@
 {
 	"values": {
+		"create_bic_bit:frying_oil_bottle": 56,
+		"create_ironworks:charcoal_dust": 12,
+		"createaddition:biomass": 18,
+		"deeperdarker:grime_brick": 32,
+		"minecraft:arrow": 12,
+		"minecraft:bone": 16,
+		"minecraft:bone_meal": 16,
+		"minecraft:charcoal": 8,
+		"minecraft:feather": 8,
+		"minecraft:flint": 6,
+		"minecraft:slime_ball": 52,
+		"minecraft:string": 4
 	}
 }
