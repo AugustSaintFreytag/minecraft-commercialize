@@ -60,6 +60,7 @@ public class ShippingScreenHandler extends ScreenHandler {
 
 		var world = this.owner.getWorld();
 		var position = this.owner.getPos();
+
 		world.playSound(null, position, ModSounds.SHIPPING_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
@@ -80,7 +81,7 @@ public class ShippingScreenHandler extends ScreenHandler {
 			return;
 		}
 
-		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		world.playSound(null, this.owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 		super.onClosed(player);
 	}
 
