@@ -31,7 +31,7 @@ public final class ConfigLoadUtil {
 	public static List<ItemsConfig> loadItemConfigs() {
 		var itemConfigs = new ArrayList<ItemsConfig>();
 
-		forEachConfigFileInStream("items/items_*.json", (file, reader) -> {
+		forEachConfigFileInStream(Commercialize.MOD_CONFIG_DIR.resolve("items"), "items_*.json", (file, reader) -> {
 			var rootObject = JsonParser.parseReader(reader).getAsJsonObject();
 
 			if (!rootObject.has("values")) {
@@ -49,7 +49,7 @@ public final class ConfigLoadUtil {
 	public static List<OffersConfig> loadOfferTemplateConfigs() {
 		var offerTemplateConfigs = new ArrayList<OffersConfig>();
 
-		forEachConfigFileInStream("offers/offers_*.json", (file, reader) -> {
+		forEachConfigFileInStream(Commercialize.MOD_CONFIG_DIR.resolve("offers"), "offers_*.json", (file, reader) -> {
 			var rootObject = JsonParser.parseReader(reader).getAsJsonObject();
 
 			if (!rootObject.has("offers")) {
@@ -69,7 +69,7 @@ public final class ConfigLoadUtil {
 	}
 
 	public static PlayersConfig loadPlayerConfigs() {
-		Path configFile = Commercialize.MOD_CONFIG_DIR.resolve("players/players.json");
+		var configFile = Commercialize.MOD_CONFIG_DIR.resolve("players").resolve("players.json");
 
 		if (!Files.exists(configFile)) {
 			Commercialize.LOGGER.warn("Players config file '{}' not found, using defaults.", configFile.getFileName());
@@ -92,8 +92,8 @@ public final class ConfigLoadUtil {
 		}
 	}
 
-	private static void forEachConfigFileInStream(String pattern, BiConsumer<Path, Reader> fileReaderConsumer) {
-		try (var stream = Files.newDirectoryStream(Commercialize.MOD_CONFIG_DIR, pattern)) {
+	private static void forEachConfigFileInStream(Path directory, String pattern, BiConsumer<Path, Reader> fileReaderConsumer) {
+		try (var stream = Files.newDirectoryStream(directory, pattern)) {
 			for (var file : stream) {
 				try (var reader = Files.newBufferedReader(file)) {
 					fileReaderConsumer.accept(file, reader);
