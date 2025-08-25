@@ -1,0 +1,20 @@
+{
+	"values": {
+		"minecraft:black_dye": 8,
+		"minecraft:blue_dye": 8,
+		"minecraft:brown_dye": 8,
+		"minecraft:cyan_dye": 12,
+		"minecraft:gray_dye": 12,
+		"minecraft:green_dye": 8,
+		"minecraft:light_blue_dye": 12,
+		"minecraft:light_gray_dye": 12,
+		"minecraft:lime_dye": 10,
+		"minecraft:magenta_dye": 10,
+		"minecraft:orange_dye": 10,
+		"minecraft:pink_dye": 12,
+		"minecraft:purple_dye": 10,
+		"minecraft:red_dye": 7,
+		"minecraft:white_dye": 8,
+		"minecraft:yellow_dye": 7
+	}
+}
