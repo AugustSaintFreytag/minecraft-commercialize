@@ -1,0 +1,22 @@
+{
+	"values": {
+		"betterend:thalassium_block": 2304,
+		"betternether:cincinnasite_block": 2304,
+		"create:brass_block": 4608,
+		"create:zinc_block": 360,
+		"create_ironworks:bronze_block": 702,
+		"create_ironworks:tin_block": 324,
+		"deeperdarker:resonarium_block": 1242,
+		"galosphere:silver_block": 792,
+		"minecraft:amethyst_block": 80,
+		"minecraft:coal_block": 72,
+		"minecraft:copper_block": 108,
+		"minecraft:diamond_block": 36864,
+		"minecraft:emerald_block": 18432,
+		"minecraft:gold_block": 9216,
+		"minecraft:iron_block": 576,
+		"minecraft:lapis_block": 432,
+		"minecraft:quartz_block": 272,
+		"minecraft:redstone_block": 342
+	}
+}
