@@ -1,0 +1,45 @@
+{
+	"offers": [
+		{
+			"item": "waystones:sharestone",
+			"markup": "1.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "waystones:portstone",
+			"markup": "1.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "waystones:warp_dust",
+			"stack": "4-32",
+			"markup": "1.8",
+			"availability": "uncommon"
+		},
+		{
+			"item": "waystones:warp_plate",
+			"markup": "1.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "waystones:warp_scroll",
+			"markup": "1.9",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "waystones:return_scroll",
+			"markup": "2.5",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "waystones:warp_stone",
+			"markup": "1.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "waystones:waystone",
+			"markup": "1.5",
+			"availability": "uncommon"
+		}
+	]
+}

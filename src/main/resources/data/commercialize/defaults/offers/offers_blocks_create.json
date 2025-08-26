@@ -1,0 +1,34 @@
+{
+	"offers": [
+		{
+			"item": "create:asurine",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "create:crimsite",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "create:limestone",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "create:ochrum",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "create:scoria",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryRare"
+		}
+	]
+}

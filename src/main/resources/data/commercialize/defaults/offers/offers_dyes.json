@@ -1,0 +1,100 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:white_dye",
+			"stack": "16-64",
+			"markup": "1.5",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:black_dye",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:blue_dye",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:brown_dye",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:cyan_dye",
+			"stack": "16-64",
+			"markup": "2.3",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:gray_dye",
+			"stack": "16-64",
+			"markup": "2.2",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:light_blue_dye",
+			"stack": "16-64",
+			"markup": "2.2",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:light_gray_dye",
+			"stack": "16-64",
+			"markup": "2.2",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:lime_dye",
+			"stack": "16-64",
+			"markup": "2.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:magenta_dye",
+			"stack": "16-64",
+			"markup": "2.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:orange_dye",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:pink_dye",
+			"stack": "16-64",
+			"markup": "2.3",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:purple_dye",
+			"stack": "16-64",
+			"markup": "2.1",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:red_dye",
+			"stack": "16-64",
+			"markup": "1.8",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:yellow_dye",
+			"stack": "16-64",
+			"markup": "1.8",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:green_dye",
+			"stack": "16-64",
+			"markup": "2.0",
+			"availability": "veryCommon"
+		}
+	]
+}
