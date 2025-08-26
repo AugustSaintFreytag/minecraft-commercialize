@@ -137,29 +137,19 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 			switch (result) {
 				case SUCCESS: {
 					this.blockInventory.clear();
-
-					var itemDescription = ItemDescriptionUtil.descriptionForItemStack(draft.stack());
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_confirm", itemDescription);
-					player.sendMessage(displayText, true);
 					world.playSound(null, position, ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 0.75f, 0.75f);
 					world.playSound(null, position, ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 0.75f, 0.75f);
 					break;
 				}
 				case OUT_OF_QUOTA: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_out_of_quota");
-					player.sendMessage(displayText, true);
 					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
 					break;
 				}
 				case INVALID: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_invalid");
-					player.sendMessage(displayText, true);
 					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
 					break;
 				}
 				default: {
-					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_failure");
-					player.sendMessage(displayText, true);
 					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
 					break;
 				}
@@ -175,6 +165,29 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		});
 
 		addClientboundMessage(S2CPostOfferActionMessage.class, message -> {
+			switch (message.result()) {
+				case SUCCESS: {
+					var itemDescription = ItemDescriptionUtil.descriptionForItemStack(message.stack());
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_confirm", itemDescription);
+					this.player().sendMessage(displayText, true);
+					break;
+				}
+				case OUT_OF_QUOTA: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_out_of_quota");
+					this.player().sendMessage(displayText, true);
+					break;
+				}
+				case INVALID: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_invalid");
+					this.player().sendMessage(displayText, true);
+					break;
+				}
+				default: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_failure");
+					this.player().sendMessage(displayText, true);
+					break;
+				}
+			}
 		});
 	}
 
