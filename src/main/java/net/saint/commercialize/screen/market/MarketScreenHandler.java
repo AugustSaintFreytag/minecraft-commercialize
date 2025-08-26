@@ -14,6 +14,7 @@ import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
+import net.saint.commercialize.util.LocalizationUtil;
 
 public class MarketScreenHandler implements MarketBlockScreenDelegateHandler {
 
@@ -61,22 +62,44 @@ public class MarketScreenHandler implements MarketBlockScreenDelegateHandler {
 
 	public void receiveOrderMessage(MarketS2COrderMessage message) {
 		switch (message.result) {
-			case INSUFFICIENT_FUNDS:
+			case INSUFFICIENT_FUNDS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
+				player.sendMessage(displayText, true);
 				break;
-			case INVIABLE_DELIVERY:
+			}
+
+			case INVIABLE_DELIVERY: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
+				player.sendMessage(displayText, true);
 				break;
-			case INVIABLE_OFFERS:
+			}
+			case INVIABLE_OFFERS: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
+				player.sendMessage(displayText, true);
 				break;
-			case INVIABLE_PAYMENT_METHOD:
+			}
+			case INVIABLE_PAYMENT_METHOD: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
+				player.sendMessage(displayText, true);
 				break;
-			case FAILURE:
+			}
+			case FAILURE: {
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
+				player.sendMessage(displayText, true);
 				break;
-			case SUCCESS:
+			}
+			case SUCCESS: {
+				var itemNames = MarketScreenUtil.textForOrderSummary(getCart());
+				var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
+				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
+
+				player.sendMessage(displayText, true);
 				state.cartOffers.clearOffers();
 
 				requestMarketData();
 				updateMarketScreen();
 				break;
+			}
 		}
 	}
 

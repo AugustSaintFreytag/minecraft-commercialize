@@ -241,48 +241,27 @@ public final class MarketBlockServerNetworking {
 
 		switch (result) {
 			case INSUFFICIENT_FUNDS: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_DELIVERY: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_OFFERS: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_PAYMENT_METHOD: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case FAILURE: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case SUCCESS: {
-				var itemNames = MarketScreenUtil.textForOrderSummary(offers);
-				var formattedTotal = CurrencyFormattingUtil.formatCurrency(offerTotal);
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
-
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, ModSounds.ORDER_CONFIRM_SOUND, SoundCategory.BLOCKS, 1f, 1f);
-
 				break;
 			}
 		}
