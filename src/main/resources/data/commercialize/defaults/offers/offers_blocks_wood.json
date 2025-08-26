@@ -1,0 +1,124 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:oak_log",
+			"stack": "16-64",
+			"markup": "3.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:oak_planks",
+			"stack": "32-64",
+			"markup": "4.0",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:birch_log",
+			"stack": "16-64",
+			"markup": "3.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:birch_planks",
+			"stack": "32-64",
+			"markup": "4.0",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:spruce_log",
+			"stack": "16-64",
+			"markup": "3.0",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:spruce_planks",
+			"stack": "32-64",
+			"markup": "4.0",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:acacia_log",
+			"stack": "16-64",
+			"markup": "3.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:acacia_planks",
+			"stack": "32-64",
+			"markup": "4.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:jungle_log",
+			"stack": "16-64",
+			"markup": "3.3",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:jungle_planks",
+			"stack": "32-64",
+			"markup": "4.3",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:dark_oak_log",
+			"stack": "16-64",
+			"markup": "3.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:dark_oak_planks",
+			"stack": "32-64",
+			"markup": "4.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:mangrove_log",
+			"stack": "16-64",
+			"markup": "3.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:mangrove_planks",
+			"stack": "32-64",
+			"markup": "4.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:cherry_log",
+			"stack": "16-64",
+			"markup": "3.8",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:cherry_planks",
+			"stack": "32-64",
+			"markup": "4.8",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:bamboo_block",
+			"stack": "16-64",
+			"markup": "2.8",
+			"availability": "veryCommon"
+		},
+		{
+			"item": "minecraft:bamboo_planks",
+			"stack": "32-64",
+			"markup": "3.2",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:crimson_log",
+			"stack": "8-32",
+			"markup": "4.0",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:crimson_planks",
+			"stack": "16-32",
+			"markup": "4.9",
+			"availability": "uncommon"
+		}
+	]
+}

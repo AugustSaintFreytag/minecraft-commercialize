@@ -13,27 +13,33 @@ The mod integrates with its sibling mods to provide the following features:
 	- Switch between payment with coins in inventory or from your *Numismatics* bank account (configurable)
 	- Pay with specific *Numismatics* bank cards bound to a player's account
 	- A custom, detailed 1x2 model, textures, and a hand-made GUI (red terminal)
+
 - 🎲 *Procedurally generated market offers* to simulate a broader player economy
 	- Offer templates define what kind of offers can be generated (item type, stack sizes, pricing)
 	- Configurable generation interval and buying/selling price difference (configurable)
+
 - 📫 Receive market orders as *physical mail* to your *Furniture Refurbished* mailbox
 	- Orders are placed into a transit queue and delivered after a time delay (configurable)
 	- If a player does not have a valid mailbox, multiple delivery attempts are made (configurable)
 	- If a player has multiple mailboxes, one can be marked as a main recipient (configurable)
 	- Delivery attempts are suspended for players that are offline (configurable)
+
 - 📤 The *Shipping Box* allows players to deposit items and sell en masse
 	- Stores items to be sold, auto-sell on an interval (configurable)
 	- Goods are exchanged for cash value by default, deposited directly into the box
 	- The box optionally accepts a *Numismatics* account card to deposit funds into a bank account
 	- A custom, detailed 1x2 model, textures, and a hand-made GUI ([blue box](https://www.youtube.com/watch?v=75V4ClJZME4))
+
 - 📌 The *Posting Box* allows players to post their own offers to the market
 	- Create orders for any item stack with a custom price and duration
 	- Post as a single stack or as individual offers in bulk (e.g. for consumables or rare goods)
 	- A custom, detailed 1x2 model, textures, and a hand-made GUI (red box)
+
 - 🧾 Extensive configuration and customization options
 	- In-game server and client configuration (via mod menu)
 	- Item value files to define an exact currency value for any item in the game (with defaults)
 	- Offer template files to define item types, rarity, pricing (with defaults)
+
 - 🔊 Custom world sound effects for block interaction (buying, selling, posting)
 	- Added sound effect when receiving mail in *Furniture Refurbished* mail box
 

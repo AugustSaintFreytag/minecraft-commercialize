@@ -1,0 +1,100 @@
+{
+	"offers": [
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:clay_ball",
+			"markup": "3.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "create_ironworks:charcoal_dust",
+			"markup": "2.0",
+			"stack": "8-32"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "createfood:salt",
+			"markup": "2.5",
+			"stack": "8-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "galosphere:pink_salt_shard",
+			"markup": "2.8",
+			"stack": "4-32"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:arrow",
+			"markup": "2.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:bone_meal",
+			"markup": "2.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:charcoal",
+			"markup": "2.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:feather",
+			"markup": "2.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:flint",
+			"markup": "2.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "common",
+			"item": "minecraft:gunpowder",
+			"markup": "3.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:paper",
+			"markup": "2.0",
+			"stack": "32-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "minecraft:phantom_membrane",
+			"markup": "2.0",
+			"stack": "1-8"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:slime_ball",
+			"markup": "3.0",
+			"stack": "1-32"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:string",
+			"markup": "2.5",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "galosphere:allurite_shard",
+			"markup": "5.0",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "galosphere:lumiere_shard",
+			"markup": "5.0",
+			"stack": "1-4"
+		}
+	]
+}

@@ -1,0 +1,100 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:white_wool",
+			"stack": "8-32",
+			"markup": "5.0",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:orange_wool",
+			"stack": "8-32",
+			"markup": "5.2",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:magenta_wool",
+			"stack": "8-32",
+			"markup": "5.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:light_blue_wool",
+			"stack": "8-32",
+			"markup": "5.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:yellow_wool",
+			"stack": "8-32",
+			"markup": "5.2",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:lime_wool",
+			"stack": "8-32",
+			"markup": "5.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:pink_wool",
+			"stack": "8-32",
+			"markup": "5.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:gray_wool",
+			"stack": "8-32",
+			"markup": "5.4",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:light_gray_wool",
+			"stack": "8-32",
+			"markup": "5.4",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:cyan_wool",
+			"stack": "8-32",
+			"markup": "5.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:purple_wool",
+			"stack": "8-32",
+			"markup": "5.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:blue_wool",
+			"stack": "8-32",
+			"markup": "5.5",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:brown_wool",
+			"stack": "8-32",
+			"markup": "5.6",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:green_wool",
+			"stack": "8-32",
+			"markup": "5.6",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:red_wool",
+			"stack": "8-32",
+			"markup": "5.6",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:black_wool",
+			"stack": "8-32",
+			"markup": "6.0",
+			"availability": "uncommon"
+		}
+	]
+}
