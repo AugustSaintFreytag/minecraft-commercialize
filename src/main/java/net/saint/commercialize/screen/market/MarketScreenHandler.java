@@ -41,6 +41,10 @@ public class MarketScreenHandler implements MarketBlockScreenDelegateHandler {
 		return state;
 	}
 
+	public void setState(MarketScreenState state) {
+		this.state = state;
+	}
+
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {

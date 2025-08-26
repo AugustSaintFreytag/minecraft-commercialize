@@ -127,7 +127,8 @@ public class MarketBlockEntity extends BlockEntity {
 		this.screenHandler = new MarketScreenHandler();
 		this.screenHandler.position = this.getPos();
 		this.screenHandler.player = player;
-
+		
+		this.screenHandler.setState(state);
 		this.screenHandler.openScreen();
 	}
 
