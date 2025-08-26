@@ -44,16 +44,15 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "posting_screen_handler");
 
-	// Properties
+	// References
 
 	public final PlayerInventory playerInventory;
 	public final SimpleInventory blockInventory;
 
 	public PostingBlockEntity owner;
-
 	public PostingScreen screen;
 
-	// State
+	// Properties
 
 	private PostingScreenState state = new PostingScreenState();
 

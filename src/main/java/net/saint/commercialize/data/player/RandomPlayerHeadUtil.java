@@ -6,7 +6,7 @@ import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.market.MarketScreenAssets;
 
-public final class PlayerHeadUtil {
+public final class RandomPlayerHeadUtil {
 
 	// Properties
 

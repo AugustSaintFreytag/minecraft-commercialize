@@ -23,6 +23,7 @@ import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.data.player.PlayerProfileManager;
+import net.saint.commercialize.data.player.PlayerTemplateManager;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
@@ -47,6 +48,7 @@ public class Commercialize implements ModInitializer {
 
 	public static ItemManager ITEM_MANAGER;
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
+	public static PlayerTemplateManager PLAYER_TEMPLATE_MANAGER;
 	public static PlayerProfileManager PLAYER_PROFILE_MANAGER;
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
 	public static MarketOfferCacheManager MARKET_OFFER_CACHE_MANAGER;
@@ -79,7 +81,7 @@ public class Commercialize implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			ITEM_MANAGER = new ItemManager();
 			OFFER_TEMPLATE_MANAGER = new OfferTemplateManager();
-			PLAYER_PROFILE_MANAGER = new PlayerProfileManager();
+			PLAYER_TEMPLATE_MANAGER = new PlayerTemplateManager();
 
 			reloadConfigs(server);
 		});
@@ -109,7 +111,6 @@ public class Commercialize implements ModInitializer {
 			var player = handler.getPlayer();
 			ItemManagerNetworking.syncItemRegistryToPlayer(player);
 		});
-
 	}
 
 	public static void reloadConfigs(MinecraftServer server) {

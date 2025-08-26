@@ -147,7 +147,7 @@ public class MarketBlock extends DoubleBlockWithEntity {
 		}
 
 		var blockEntity = (MarketBlockEntity) world.getBlockEntity(position);
-		blockEntity.openMarketScreen(world, player);
+		blockEntity.openScreen(world, player);
 
 		player.swingHand(hand);
 

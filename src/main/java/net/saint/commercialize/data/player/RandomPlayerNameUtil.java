@@ -7,7 +7,7 @@ import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.TextFormattingUtil;
 
-public final class RandomPlayerUtil {
+public final class RandomPlayerNameUtil {
 
 	private static final int NUMBER_OF_SAMPLES = 3;
 	private static final int MIN_NUMBER_OF_COMPONENTS = 1;
@@ -19,7 +19,7 @@ public final class RandomPlayerUtil {
 		// Gather components from a few sample player names
 		var allNameComponents = new ArrayList<String>();
 		for (int i = 0; i < NUMBER_OF_SAMPLES; i++) {
-			var name = Commercialize.PLAYER_PROFILE_MANAGER.randomReferencePlayerName(random);
+			var name = Commercialize.PLAYER_TEMPLATE_MANAGER.randomReferencePlayerName(random);
 			allNameComponents.addAll(componentsFromName(name));
 		}
 

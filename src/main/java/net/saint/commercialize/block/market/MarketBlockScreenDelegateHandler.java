@@ -17,11 +17,11 @@ import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.screen.market.MarketScreenDelegate;
 import net.saint.commercialize.util.LocalizationUtil;
 
-public interface MarketBlockScreenHandler extends MarketScreenDelegate {
+public interface MarketBlockScreenDelegateHandler extends MarketScreenDelegate {
 
 	// State
 
-	MarketBlockEntityState getState();
+	MarketScreenState getState();
 
 	// Player
 

@@ -2,11 +2,10 @@ package net.saint.commercialize.block.market;
 
 import static net.saint.commercialize.util.Values.returnIfPresentAsString;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -21,14 +20,11 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.init.ModBlockEntities;
-import net.saint.commercialize.network.MarketC2SOrderMessage;
-import net.saint.commercialize.network.MarketC2SQueryMessage;
-import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
-import net.saint.commercialize.screen.market.MarketScreen;
+import net.saint.commercialize.screen.market.MarketScreenHandler;
 
-public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenHandler {
+public class MarketBlockEntity extends BlockEntity {
 
 	// Configuration
 
@@ -36,13 +32,9 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Properties
 
-	private MarketBlockEntityState state = new MarketBlockEntityState();
+	private MarketScreenState state = new MarketScreenState();
 
-	protected long lastListingTick = 0;
-
-	protected int lastListingHash = 0;
-
-	private MarketScreen marketScreen;
+	private MarketScreenHandler screenHandler;
 
 	// Init
 
@@ -52,13 +44,13 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 
 	// Access
 
-	public MarketBlockEntityState getState() {
+	public MarketScreenState getState() {
 		return state;
 	}
 
-	public void setState(MarketBlockEntityState state) {
+	public void setState(MarketScreenState state) {
 		this.state = state;
-		markDirty();
+		this.markDirty();
 	}
 
 	// NBT
@@ -101,141 +93,42 @@ public class MarketBlockEntity extends BlockEntity implements MarketBlockScreenH
 	// Networking
 
 	public void receiveListMessage(MarketS2CListMessage message) {
-		state.balance = message.balance;
-		state.cardOwner = message.cardOwner;
+		if (this.screenHandler == null) {
+			Commercialize.LOGGER.warn("Could not receive and handle server to client list message, no screen handler.");
+			return;
+		}
 
-		state.marketOffers.clearOffers();
-		state.marketOffers.addOffers(message.offers);
-		state.marketOffers.setOffersAreCapped(message.isCapped);
-
-		lastListingTick = world.getTimeOfDay();
-		updateMarketScreen();
+		this.screenHandler.receiveListMessage(message);
 	}
 
 	public void receiveOrderMessage(MarketS2COrderMessage message) {
-		switch (message.result) {
-			case INSUFFICIENT_FUNDS:
-				break;
-			case INVIABLE_DELIVERY:
-				break;
-			case INVIABLE_OFFERS:
-				break;
-			case INVIABLE_PAYMENT_METHOD:
-				break;
-			case FAILURE:
-				break;
-			case SUCCESS:
-				state.cartOffers.clearOffers();
-
-				requestMarketData();
-				updateMarketScreen();
-				break;
+		if (this.screenHandler == null) {
+			Commercialize.LOGGER.warn("Could not receive and handle server to client order message, no screen handler.");
+			return;
 		}
-	}
 
-	public void sendStateSync(MarketBlockStateSyncReason reason) {
-		var message = new MarketC2SStateSyncMessage();
-		message.position = this.getPos();
-		message.reason = reason;
-		message.state = this.state;
-
-		var buffer = PacketByteBufs.create();
-		message.encodeToBuffer(buffer);
-
-		ClientPlayNetworking.send(MarketC2SStateSyncMessage.ID, buffer);
-	}
-
-	public void requestMarketData() {
-		var message = new MarketC2SQueryMessage();
-
-		message.position = this.getPos();
-		message.searchTerm = state.searchTerm;
-		message.sortMode = state.sortMode;
-		message.sortOrder = state.sortOrder;
-		message.filterMode = state.filterMode;
-		message.paymentMethod = state.paymentMethod;
-
-		var buffer = PacketByteBufs.create();
-		message.encodeToBuffer(buffer);
-
-		ClientPlayNetworking.send(MarketC2SQueryMessage.ID, buffer);
-	}
-
-	public void confirmCartOrder() {
-		var message = new MarketC2SOrderMessage();
-
-		message.position = this.getPos();
-		message.offers = state.cartOffers.getOffers().map(offer -> offer.id).toList();
-		message.paymentMethod = state.paymentMethod;
-
-		var buffer = PacketByteBufs.create();
-		message.encodeToBuffer(buffer);
-
-		ClientPlayNetworking.send(MarketC2SOrderMessage.ID, buffer);
+		this.screenHandler.receiveOrderMessage(message);
 	}
 
 	// Ticking
 
 	public static void tick(World world, BlockPos position, BlockState state, MarketBlockEntity blockEntity) {
-		if (!world.isClient()) {
+		if (!world.isClient() || blockEntity.screenHandler == null) {
 			return;
 		}
 
-		var currentTime = world.getTimeOfDay();
-		var timeSinceLastListing = currentTime - blockEntity.lastListingTick;
-
-		var isScreenActive = blockEntity.marketScreen != null;
-		var shouldRefreshForActiveScreen = isScreenActive && timeSinceLastListing > Commercialize.CONFIG.listingRefreshInterval;
-		var shouldRefreshForInactiveScreen = !isScreenActive && Commercialize.CONFIG.listingRefreshIntervalWhenInactive != -1
-				&& timeSinceLastListing > Commercialize.CONFIG.listingRefreshIntervalWhenInactive;
-
-		if (shouldRefreshForActiveScreen || shouldRefreshForInactiveScreen) {
-			blockEntity.lastListingTick = currentTime;
-			blockEntity.requestMarketData();
-		}
+		blockEntity.screenHandler.tick();
 	}
 
 	// Screen
 
-	public void openMarketScreen(World world, PlayerEntity player) {
-		var client = MinecraftClient.getInstance();
-		this.marketScreen = new MarketScreen();
-		this.marketScreen.delegate = this;
-		client.setScreen(marketScreen);
+	@Environment(EnvType.CLIENT)
+	public void openScreen(World world, PlayerEntity player) {
+		this.screenHandler = new MarketScreenHandler();
+		this.screenHandler.position = this.getPos();
+		this.screenHandler.player = player;
 
-		sendStateSync(MarketBlockStateSyncReason.INTERACTION_START);
-		requestMarketData();
-	}
-
-	public void onScreenUpdate() {
-		if (this.marketScreen == null) {
-			Commercialize.LOGGER.warn("Can not process market screen update, missing screen reference.");
-			return;
-		}
-
-		requestMarketData();
-		sendStateSync(MarketBlockStateSyncReason.UPDATE);
-	}
-
-	public void onScreenClose() {
-		sendStateSync(MarketBlockStateSyncReason.INTERACTION_END);
-	}
-
-	private void updateMarketScreen() {
-		if (this.marketScreen == null) {
-			return;
-		}
-
-		var lastListingHash = this.lastListingHash;
-		var currentListingHash = this.state.viewPropertiesHashCode();
-
-		this.marketScreen.updateDisplay();
-
-		this.lastListingHash = currentListingHash;
-
-		if (lastListingHash != currentListingHash) {
-			this.marketScreen.resetOfferScrollView();
-		}
+		this.screenHandler.openScreen();
 	}
 
 }
