@@ -300,11 +300,13 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Displays
 
 		var totalDisplayComponent = makeTotalDisplayComponent();
-		totalDisplayComponent.positioning(Positioning.absolute(58, 127));
+		totalDisplayComponent.positioning(Positioning.absolute(57, 127));
+		totalDisplayComponent.sizing(Sizing.fixed(98), Sizing.fixed(13));
 		rightSideComponent.child(totalDisplayComponent);
 
 		var balanceDisplayComponent = makeBalanceDisplayComponent();
-		balanceDisplayComponent.positioning(Positioning.absolute(58, 155));
+		balanceDisplayComponent.positioning(Positioning.absolute(57, 155));
+		balanceDisplayComponent.sizing(Sizing.fixed(98), Sizing.fixed(13));
 		rightSideComponent.child(balanceDisplayComponent);
 
 		// Tabs

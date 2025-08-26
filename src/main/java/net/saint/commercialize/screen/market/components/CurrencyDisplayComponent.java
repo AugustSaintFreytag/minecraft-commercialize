@@ -52,7 +52,7 @@ public class CurrencyDisplayComponent extends FlowLayout {
 	// Init
 
 	public CurrencyDisplayComponent(Text description, Appearance highlightStyle) {
-		super(Sizing.fixed(97), Sizing.fixed(13), FlowLayout.Algorithm.VERTICAL);
+		super(Sizing.content(), Sizing.content(), FlowLayout.Algorithm.VERTICAL);
 
 		this.text = description;
 		this.appearance = highlightStyle;
