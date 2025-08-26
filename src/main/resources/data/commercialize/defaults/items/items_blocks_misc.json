@@ -1,18 +1,18 @@
 {
 	"values": {
-		"minecraft:dirt": 1,
+		"minecraft:bricks": 46,
+		"minecraft:clay": 40,
 		"minecraft:coarse_dirt": 1,
-		"minecraft:grass_block": 1,
-		"minecraft:podzol": 16,
-		"minecraft:mycelium": 32,
+		"minecraft:dirt": 1,
+		"minecraft:gravel": 2,
 		"minecraft:moss_block": 2,
-		"minecraft:sand": 1,
-		"minecraft:red_sand": 1,
-		"minecraft:gravel": 1,
-		"minecraft:clay": 32,
-		"minecraft:snow_block": 1,
 		"minecraft:mud": 2,
+		"minecraft:mud_bricks": 4,
+		"minecraft:mycelium": 28,
 		"minecraft:packed_mud": 3,
-		"minecraft:mud_bricks": 4
+		"minecraft:podzol": 12,
+		"minecraft:red_sand": 3,
+		"minecraft:sand": 2,
+		"minecraft:snow_block": 1
 	}
 }
