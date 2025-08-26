@@ -61,7 +61,7 @@
 			"stack": "8-64"
 		},
 		{
-			"availability": "VERY_uncommon",
+			"availability": "veryRare",
 			"item": "betterend:crystalline_sulphur",
 			"markup": "2.0",
 			"stack": "4-16"

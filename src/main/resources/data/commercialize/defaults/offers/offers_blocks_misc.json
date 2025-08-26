@@ -4,22 +4,22 @@
 			"availability": "extremelyCommon",
 			"item": "minecraft:dirt",
 			"markup": "1.5",
-			"stack": "16-64"
+			"stack": "64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:coarse_dirt",
 			"markup": "1.5",
+			"stack": "32-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "minecraft:podzol",
+			"markup": "4.0",
 			"stack": "16-64"
 		},
 		{
-			"availability": "uncommon",
-			"item": "minecraft:podzol",
-			"markup": "4.0",
-			"stack": "16-48"
-		},
-		{
-			"availability": "uncommon",
+			"availability": "veryRare",
 			"item": "minecraft:mycelium",
 			"markup": "5.0",
 			"stack": "4-32"
@@ -27,8 +27,8 @@
 		{
 			"availability": "veryRare",
 			"item": "minecraft:moss_block",
-			"markup": "2.2",
-			"stack": "8-64"
+			"markup": "3.5",
+			"stack": "8-32"
 		},
 		{
 			"availability": "extremelyCommon",
