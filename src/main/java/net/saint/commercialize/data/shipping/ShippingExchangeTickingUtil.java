@@ -1,4 +1,4 @@
-package net.saint.commercialize.data.market;
+package net.saint.commercialize.data.shipping;
 
 import java.util.ArrayList;
 import java.util.List;

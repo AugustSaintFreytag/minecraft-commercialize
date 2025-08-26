@@ -17,7 +17,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.market.ShippingExchangeTickingUtil;
+import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.screen.shipping.ShippingScreenHandler;
