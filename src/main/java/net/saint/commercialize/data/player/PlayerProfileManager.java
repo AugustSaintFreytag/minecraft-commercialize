@@ -1,8 +1,6 @@
 package net.saint.commercialize.data.player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,39 +10,24 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.Commercialize;
 
 public final class PlayerProfileManager {
 
 	// References
 
-	private MinecraftClient client = MinecraftClient.getInstance();
+	private MinecraftClient client;
 
 	// State
-
-	private List<String> referencePlayerNames = new ArrayList<>();
 
 	private Map<UUID, GameProfile> playerProfileByPlayerId = new HashMap<>();
 	private Map<String, UUID> playerIdByPlayerName = new HashMap<>();
 	private Map<UUID, Identifier> textureIdByPlayerId = new HashMap<>();
 
-	// Mock Names
+	// Init
 
-	public void registerReferencePlayerNames(List<String> playerNames) {
-		referencePlayerNames = playerNames;
-	}
-
-	public void clearReferencePlayerNames() {
-		referencePlayerNames.clear();
-	}
-
-	public int numberOfReferencePlayerNames() {
-		return referencePlayerNames.size();
-	}
-
-	public String randomReferencePlayerName(Random random) {
-		return referencePlayerNames.get(random.nextInt(referencePlayerNames.size()));
+	public PlayerProfileManager(MinecraftClient client) {
+		this.client = client;
 	}
 
 	// Skins

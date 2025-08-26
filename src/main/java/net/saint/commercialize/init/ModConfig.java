@@ -42,10 +42,10 @@ public final class ModConfig {
 	public static void reloadPlayerConfigs() {
 		var playersConfig = ConfigLoadUtil.loadPlayerConfigs();
 
-		Commercialize.PLAYER_PROFILE_MANAGER.clearReferencePlayerNames();
-		Commercialize.PLAYER_PROFILE_MANAGER.registerReferencePlayerNames(playersConfig.players);
+		Commercialize.PLAYER_TEMPLATE_MANAGER.clearReferencePlayerNames();
+		Commercialize.PLAYER_TEMPLATE_MANAGER.registerReferencePlayerNames(playersConfig.players);
 
-		Commercialize.LOGGER.info("Loaded {} mock player preset(s).", Commercialize.PLAYER_PROFILE_MANAGER.numberOfReferencePlayerNames());
+		Commercialize.LOGGER.info("Loaded {} mock player preset(s).", Commercialize.PLAYER_TEMPLATE_MANAGER.numberOfReferencePlayerNames());
 	}
 
 	public static void reloadOfferTemplateConfigs() {

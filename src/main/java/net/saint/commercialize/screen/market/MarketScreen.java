@@ -25,7 +25,7 @@ import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.item.ItemNameFormattingUtil;
 import net.saint.commercialize.data.offer.Offer;
-import net.saint.commercialize.data.player.PlayerHeadUtil;
+import net.saint.commercialize.data.player.RandomPlayerHeadUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
@@ -449,7 +449,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private TextureReference profileTextureForOffer(Offer offer) {
 		if (offer.isGenerated) {
 			var sellerName = offer.sellerName;
-			var texture = PlayerHeadUtil.playerHeadTextureForName(sellerName);
+			var texture = RandomPlayerHeadUtil.playerHeadTextureForName(sellerName);
 
 			return texture;
 		}
