@@ -1,5 +1,7 @@
 {
 	"values": {
+		"betterend:blossom_berry": 92,
+		"betterend:shadow_berry_raw": 104,
 		"corndelight:corn": 16,
 		"corndelight:corn_seeds": 8,
 		"dawnoftimebuilder:grape": 8,
@@ -8,8 +10,6 @@
 		"dawnoftimebuilder:mulberry_leaves": 26,
 		"dawnoftimebuilder:mulberry_seeds": 10,
 		"deeperdarker:bloom_berries": 42,
-		"betterend:blossom_berry": 92,
-		"betterend:shadow_berry_raw": 104,
 		"farmersdelight:beetroot_crate": 90,
 		"farmersdelight:cabbage": 8,
 		"farmersdelight:cabbage_crate": 72,
@@ -62,6 +62,8 @@
 		"rusticdelight:bell_pepper_seeds_bag": 54,
 		"rusticdelight:bell_pepper_yellow": 8,
 		"rusticdelight:bell_pepper_yellow_crate": 72,
+		"rusticdelight:coffee_beans": 24,
+		"rusticdelight:coffee_beans_bag": 216,
 		"rusticdelight:cotton_boll": 18,
 		"rusticdelight:cotton_boll_crate": 162,
 		"rusticdelight:cotton_seeds": 6,
