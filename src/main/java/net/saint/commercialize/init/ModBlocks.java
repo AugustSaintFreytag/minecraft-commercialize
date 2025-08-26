@@ -3,6 +3,7 @@ package net.saint.commercialize.init;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock.ContextPredicate;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -26,7 +27,7 @@ public final class ModBlocks {
 
 	public static void initialize() {
 		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID,
-				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
+				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().luminance(1).sounds(BlockSoundGroup.METAL)));
 		BlockRenderLayerMap.INSTANCE.putBlock(MARKET_BLOCK, RenderLayer.getCutout());
 
 		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
