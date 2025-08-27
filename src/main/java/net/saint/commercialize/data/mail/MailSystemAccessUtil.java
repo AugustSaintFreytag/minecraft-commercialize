@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.mixin.DeliveryServiceAccessor;
@@ -19,14 +19,14 @@ public final class MailSystemAccessUtil {
 
 	// Delivery
 
-	public static ItemStack packageItemStacksForDelivery(List<ItemStack> itemStacks, String message, String sender) {
+	public static ItemStack packageItemStacksForDelivery(List<ItemStack> itemStacks, Text message, Text sender) {
 		var itemStackList = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
 
 		for (var index = 0; index < itemStacks.size(); index++) {
 			itemStackList.set(index, itemStacks.get(index));
 		}
 
-		var packageItemStack = PackageItem.create(itemStackList, message, sender);
+		var packageItemStack = MailPackageItem.create(itemStackList, message, sender);
 		return packageItemStack;
 	}
 

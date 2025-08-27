@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
@@ -22,7 +23,6 @@ import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
-import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
@@ -30,8 +30,8 @@ import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
-import net.saint.commercialize.screen.market.MarketScreenUtil;
 import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.TextUtil;
 
 public final class MarketBlockServerNetworking {
 
@@ -305,19 +305,21 @@ public final class MarketBlockServerNetworking {
 
 		}
 
-		var packageMessage = messageForPackagedDelivery(itemStacks);
-		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
+		var packageMessage = textForPackagedDelivery(itemStacks);
+		var packageSender = Text.translatable(LocalizationUtil.key("text", "delivery.market"));
 
 		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
 	}
 
-	private static String messageForPackagedDelivery(List<ItemStack> itemStacks) {
-		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
-		var itemStackDescription = String.join(", ", itemStackDescriptions);
-		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
-				+ LocalizationUtil.localizedString("text", "delivery.message");
+	private static Text textForPackagedDelivery(List<ItemStack> itemStacks) {
+		var itemStackTexts = itemStacks.stream().map(stack -> ItemDescriptionUtil.textForItemStack(stack)).toList();
+		var itemStackDescription = TextUtil.joinTexts(itemStackTexts);
 
-		return packageMessage;
+		var packageItemsText = Text.translatable(LocalizationUtil.key("text", "delivery.package_format"), itemStackDescription);
+		var packageSignatureText = Text.translatable(LocalizationUtil.key("text", "delivery.message"));
+		var packageText = packageItemsText.append(Text.of("\n\n")).append(packageSignatureText);
+
+		return packageText;
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {
