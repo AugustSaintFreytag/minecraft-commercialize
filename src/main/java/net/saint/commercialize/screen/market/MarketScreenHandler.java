@@ -9,6 +9,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.market.MarketBlockScreenDelegateHandler;
 import net.saint.commercialize.block.market.MarketBlockStateSyncReason;
 import net.saint.commercialize.block.market.MarketScreenState;
+import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
 import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
