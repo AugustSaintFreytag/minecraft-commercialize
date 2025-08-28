@@ -59,9 +59,10 @@ public final class PostingScreenUtil {
 		var presets = new long[] { TimePreset.ONE_HOUR, TimePreset.TWELVE_HOURS, TimePreset.ONE_DAY, TimePreset.THREE_DAYS,
 				TimePreset.FIVE_DAYS, TimePreset.ONE_WEEK };
 
+
 		for (var preset : presets) {
 			options.add(new SelectDropdownComponent.Option<Long>(preset,
-					TextFormattingUtil.capitalizedString(TimeFormattingUtil.formattedTime(preset))));
+					TextFormattingUtil.capitalizedString(TimeFormattingUtil.formattedTime(preset).getString())));
 		}
 
 		return options;
