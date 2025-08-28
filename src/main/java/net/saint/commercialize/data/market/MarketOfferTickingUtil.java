@@ -65,7 +65,10 @@ public final class MarketOfferTickingUtil {
 
 		var itemDescription = ItemDescriptionUtil.textForItemStack(offer.stack);
 		var packageSender = LocalizationUtil.localizedText("text", "delivery.market");
-		var packageMessage = LocalizationUtil.localizedText("text", "return.message", itemDescription);
+		var packageReceipt = LocalizationUtil.localizedText("text", "return.offer_format", itemDescription);
+		var packageSignature = LocalizationUtil.localizedText("text", "return.message", TimeFormattingUtil.formattedTime(offer.duration));
+
+		var packageMessage = packageReceipt.copy().append(Text.of("\n\n")).append(packageSignature);
 
 		var server = world.getServer();
 		var player = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
