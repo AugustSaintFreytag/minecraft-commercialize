@@ -14,6 +14,7 @@ public class ItemNameFormattingUtil {
 
 	private static Map<String, String> abbreviatedNameComponents = new HashMap<>() {
 		{
+			this.put("Block", "Bl.");
 			this.put("Redstone", "Redst.");
 			this.put("Glowstone", "Glowst.");
 			this.put("Ingot", "Ing.");
@@ -46,13 +47,16 @@ public class ItemNameFormattingUtil {
 		// Abbreviate until name fits in limit.
 		// If name does not fit limit after all componets are abbreviated, ellipsize.
 
+		// Special pre-pass for material blocks.
+		name = name.replace("Block of ", "");
+
 		if (name.length() <= limit) {
 			return name;
 		}
 
 		var components = new ArrayList<String>(java.util.List.of(name.split(" ")));
 		var currentName = name;
-
+		
 		while (currentName.length() > limit) {
 			var longestIndex = -1;
 			var longestLength = 0;

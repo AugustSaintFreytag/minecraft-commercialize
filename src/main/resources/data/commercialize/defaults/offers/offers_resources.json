@@ -1,0 +1,148 @@
+{
+	"offers": [
+		{
+			"availability": "uncommon",
+			"item": "minecraft:amethyst_shard",
+			"markup": "1.5",
+			"stack": "8-32"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:coal",
+			"markup": "1.3",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:copper_ingot",
+			"markup": "1.1",
+			"stack": "16-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:diamond",
+			"markup": "1.1",
+			"stack": "1-8"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:emerald",
+			"markup": "1.1",
+			"stack": "1-8"
+		},
+		{
+			"availability": "common",
+			"item": "minecraft:gold_ingot",
+			"markup": "1.1",
+			"stack": "4-32"
+		},
+		{
+			"availability": "veryCommon",
+			"item": "minecraft:iron_ingot",
+			"markup": "1.1",
+			"stack": "8-64"
+		},
+		{
+			"availability": "common",
+			"item": "minecraft:lapis_lazuli",
+			"markup": "1.2",
+			"stack": "16-48"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:quartz",
+			"markup": "1.8",
+			"stack": "8-64"
+		},
+		{
+			"availability": "common",
+			"item": "minecraft:redstone",
+			"markup": "1.2",
+			"stack": "8-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "betterend:crystalline_sulphur",
+			"markup": "2.0",
+			"stack": "4-16"
+		},
+		{
+			"availability": "veryRare",
+			"item": "betterend:raw_ember",
+			"markup": "3.0",
+			"stack": "2-16"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:thalassium_ingot",
+			"markup": "3.2",
+			"stack": "2-8"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:cincinnasite_ingot",
+			"markup": "3.2",
+			"stack": "2-8"
+		},
+		{
+			"availability": "common",
+			"item": "create:andesite_alloy",
+			"markup": "1.2",
+			"stack": "8-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "create:brass_ingot",
+			"markup": "2.0",
+			"stack": "4-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "create:rose_quartz",
+			"markup": "2.0",
+			"stack": "1-8"
+		},
+		{
+			"availability": "uncommon",
+			"item": "create:zinc_ingot",
+			"markup": "1.3",
+			"stack": "8-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "create_ironworks:bronze_ingot",
+			"markup": "1.7",
+			"stack": "8-64"
+		},
+		{
+			"availability": "common",
+			"item": "create_ironworks:tin_ingot",
+			"markup": "1.2",
+			"stack": "8-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "deeperdarker:resonarium",
+			"markup": "2.0",
+			"stack": "2-32"
+		},
+		{
+			"availability": "veryRare",
+			"item": "deeperdarker:soul_crystal",
+			"markup": "2.2",
+			"stack": "1-8"
+		},
+		{
+			"availability": "veryRare",
+			"item": "deeperdarker:soul_dust",
+			"markup": "2.0",
+			"stack": "2-8"
+		},
+		{
+			"availability": "common",
+			"item": "galosphere:silver_ingot",
+			"markup": "1.6",
+			"stack": "8-64"
+		}
+	]
+}

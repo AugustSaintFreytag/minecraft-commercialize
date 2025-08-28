@@ -168,19 +168,19 @@ public final class MarketScreenUtil {
 
 		// Posted
 		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
-		var postedFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_posted_format",
-				TextFormattingUtil.capitalizedString(rawPosted));
+		var postedFormattedText = LocalizationUtil.localizedText("text", "offer.tooltip.time_posted_format",
+				TextFormattingUtil.capitalizedString(rawPosted.getString()));
 		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
-		var postedValue = Text.literal(postedFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+		var postedValue = postedFormattedText.copy().setStyle(Style.EMPTY.withColor(Formatting.GRAY));
 		components.add(TooltipComponent.of(postedLabel.append(postedValue).asOrderedText()));
 
 		// Expiration
 		var rawExpiry = TimeFormattingUtil.formattedTime(timeExpiresTicks);
-		var expiryFormatted = LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring_format", rawExpiry);
+		var expiryFormattedText = LocalizationUtil.localizedText("text", "offer.tooltip.time_expiring_format", rawExpiry);
 		var expiryLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_expiring") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
-		var expiryValue = Text.literal(expiryFormatted).setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+		var expiryValue = expiryFormattedText.copy().setStyle(Style.EMPTY.withColor(Formatting.GRAY));
 		components.add(TooltipComponent.of(expiryLabel.append(expiryValue).asOrderedText()));
 
 		return components;

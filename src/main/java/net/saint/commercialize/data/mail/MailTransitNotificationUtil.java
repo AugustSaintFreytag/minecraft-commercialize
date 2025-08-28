@@ -31,28 +31,28 @@ public final class MailTransitNotificationUtil {
 		withOnlinePlayerParametersForItems(server, items, parameters -> {
 			// Text color: #ffaaaaff
 
-			var message = deliveryAttemptMessageForPlayerAndItems(server, items);
-			parameters.player.sendMessage(Text.of(message).copy().setStyle(Style.EMPTY.withColor(0xffaaaa).withItalic(true)));
+			var text = deliveryAttemptTextForPlayerAndItems(server, items);
+			parameters.player.sendMessage(text.copy().setStyle(Style.EMPTY.withColor(0xffaaaa).withItalic(true)));
 		});
 	}
 
 	// Delivery Attempt (Message)
 
-	private static String deliveryAttemptMessageForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
+	private static Text deliveryAttemptTextForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
 		var time = server.getOverworld().getTimeOfDay();
 		var numberOfPackages = items.size();
 		var numberOfPackagesAboutToExpire = numberOfItemsAboutToExpire(items);
 		var numberOfDeliveryAttempts = maxNumberOfPreviousDeliveryAttempts(items);
 		var timeUntilNextAttempt = Commercialize.CONFIG.mailDeliveryTime - time % Commercialize.CONFIG.mailDeliveryTime;
-		var formattedTimeUntilNextAttempt = "~" + TimeFormattingUtil.formattedTime(timeUntilNextAttempt);
+		var formattedTimeUntilNextAttempt = Text.literal("~").append(TimeFormattingUtil.formattedTime(timeUntilNextAttempt));
 
 		if (numberOfPackagesAboutToExpire > 0) {
-			return LocalizationUtil.localizedString("text", "delivery.expiration_notice_last", numberOfPackages,
+			return LocalizationUtil.localizedText("text", "delivery.expiration_notice_last", numberOfPackages,
 					formattedTimeUntilNextAttempt, numberOfPackagesAboutToExpire, numberOfPackages, numberOfDeliveryAttempts,
 					Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
 		}
 
-		return LocalizationUtil.localizedString("text", "delivery.expiration_notice", numberOfPackages, formattedTimeUntilNextAttempt,
+		return LocalizationUtil.localizedText("text", "delivery.expiration_notice", numberOfPackages, formattedTimeUntilNextAttempt,
 				numberOfDeliveryAttempts, Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
 	}
 

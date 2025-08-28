@@ -1,0 +1,10 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:terracotta",
+			"markup": "2.5",
+			"availability": "veryCommon",
+			"stack": "16-64"
+		}
+	]
+}

@@ -21,8 +21,7 @@ public final class ItemManagerNetworking {
 						Commercialize.ITEM_MANAGER.registerItemValue(entry.getKey(), entry.getValue());
 					}
 
-					Commercialize.LOGGER.info("Synchronized item registry from server with {} entries.",
-							message.valueByItem.size());
+					Commercialize.LOGGER.info("Synchronized item registry from server with {} entries.", message.valueByItem.size());
 				});
 			} catch (Exception e) {
 				Commercialize.LOGGER.error("Could not decode item registry data received from server on client.", e);
@@ -41,9 +40,15 @@ public final class ItemManagerNetworking {
 	}
 
 	public static void syncItemRegistryToAllPlayers(MinecraftServer server) {
-		for (var player : server.getPlayerManager().getPlayerList()) {
+		var playerManager = server.getPlayerManager();
+
+		if (playerManager == null) {
+			return;
+		}
+
+		for (var player : playerManager.getPlayerList()) {
 			syncItemRegistryToPlayer(player);
 		}
 	}
-	
+
 }

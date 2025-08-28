@@ -1,0 +1,146 @@
+{
+	"offers": [
+		{
+			"item": "jewelry:citrine",
+			"markup": "2.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "jewelry:jade",
+			"markup": "2.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "jewelry:ruby",
+			"markup": "2.4",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "jewelry:sapphire",
+			"markup": "2.4",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "jewelry:tanzanite",
+			"markup": "2.6",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "jewelry:topaz",
+			"markup": "2.3",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:echo_shard",
+			"markup": "2.5",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_11",
+			"markup": "2.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_13",
+			"markup": "2.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_5",
+			"markup": "2.3",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_blocks",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_cat",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_chirp",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_far",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_mall",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_mellohi",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_otherside",
+			"markup": "2.8",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_pigstep",
+			"markup": "3.0",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_relic",
+			"markup": "2.8",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_stal",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_strad",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_wait",
+			"markup": "2.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:music_disc_ward",
+			"markup": "2.1",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:nether_star",
+			"markup": "2.0",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:prismarine_shard",
+			"stack": "16-32",
+			"markup": "2.5",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:prismarine_crystals",
+			"stack": "16-32",
+			"markup": "2.5",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:shulker_shell",
+			"markup": "2.6",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:totem_of_undying",
+			"markup": "2.0",
+			"availability": "extremelyRare"
+		}
+	]
+}

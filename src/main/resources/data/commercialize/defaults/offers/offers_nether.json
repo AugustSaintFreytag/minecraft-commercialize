@@ -1,0 +1,76 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:netherrack",
+			"stack": "32-64",
+			"markup": "2.6",
+			"availability": "common"
+		},
+		{
+			"item": "minecraft:soul_sand",
+			"stack": "16-64",
+			"markup": "2.6",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:soul_soil",
+			"stack": "16-64",
+			"markup": "3.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:nether_brick",
+			"stack": "32-64",
+			"markup": "3.2",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:glowstone_dust",
+			"stack": "8-64",
+			"markup": "3.0",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:nether_wart",
+			"stack": "8-32",
+			"markup": "3.0",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:crying_obsidian",
+			"stack": "4-16",
+			"markup": "3.6",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betternether:cincinnasite_ingot",
+			"stack": "4-12",
+			"markup": "2.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:blaze_powder",
+			"stack": "4-32",
+			"markup": "2.8",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:blaze_rod",
+			"stack": "2-8",
+			"markup": "3.0",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:magma_cream",
+			"stack": "4-16",
+			"markup": "1.9",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:ghast_tear",
+			"stack": "1-4",
+			"markup": "1.8",
+			"availability": "veryRare"
+		}
+	]
+}

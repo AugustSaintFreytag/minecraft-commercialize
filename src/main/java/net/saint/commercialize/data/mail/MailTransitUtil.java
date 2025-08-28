@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
@@ -113,7 +114,7 @@ public final class MailTransitUtil {
 	// Dispatch
 
 	public static boolean packageAndDispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
-			DefaultedList<ItemStack> itemStacks, String message, String sender) {
+			DefaultedList<ItemStack> itemStacks, Text message, Text sender) {
 		var world = server.getOverworld();
 		var time = world.getTimeOfDay();
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
@@ -124,7 +125,7 @@ public final class MailTransitUtil {
 	}
 
 	public static boolean packageAndDeliverItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
-			DefaultedList<ItemStack> itemStacks, String message, String sender) {
+			DefaultedList<ItemStack> itemStacks, Text message, Text sender) {
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
 		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
 	}

@@ -17,8 +17,20 @@
 		},
 		"half=lower,facing=north": [
 			{
-				"model": "commercialize:block/market_block",
-				"weight": 100
+				"model": "commercialize:block/market_block_1",
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_2",
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_3",
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_4",
+				"weight": 50
 			},
 			{
 				"model": "commercialize:block/market_block_bliss",
@@ -31,9 +43,24 @@
 		],
 		"half=lower,facing=south": [
 			{
-				"model": "commercialize:block/market_block",
+				"model": "commercialize:block/market_block_1",
 				"y": 180,
-				"weight": 100
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_2",
+				"y": 180,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_3",
+				"y": 180,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_4",
+				"y": 180,
+				"weight": 50
 			},
 			{
 				"model": "commercialize:block/market_block_bliss",
@@ -48,9 +75,24 @@
 		],
 		"half=lower,facing=west": [
 			{
-				"model": "commercialize:block/market_block",
+				"model": "commercialize:block/market_block_1",
 				"y": 270,
-				"weight": 100
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_2",
+				"y": 270,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_3",
+				"y": 270,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_4",
+				"y": 270,
+				"weight": 50
 			},
 			{
 				"model": "commercialize:block/market_block_bliss",
@@ -65,14 +107,29 @@
 		],
 		"half=lower,facing=east": [
 			{
-				"model": "commercialize:block/market_block",
+				"model": "commercialize:block/market_block_1",
 				"y": 90,
-				"weight": 100
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_2",
+				"y": 90,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_3",
+				"y": 90,
+				"weight": 50
+			},
+			{
+				"model": "commercialize:block/market_block_4",
+				"y": 90,
+				"weight": 50
 			},
 			{
 				"model": "commercialize:block/market_block_bliss",
 				"y": 90,
-				"weight": 100
+				"weight": 1
 			},
 			{
 				"model": "commercialize:block/market_block_bsod",

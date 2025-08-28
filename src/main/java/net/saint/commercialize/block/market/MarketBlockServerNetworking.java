@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.saint.commercialize.Commercialize;
@@ -22,7 +23,6 @@ import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
-import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
@@ -30,8 +30,8 @@ import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
-import net.saint.commercialize.screen.market.MarketScreenUtil;
 import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.TextUtil;
 
 public final class MarketBlockServerNetworking {
 
@@ -241,48 +241,27 @@ public final class MarketBlockServerNetworking {
 
 		switch (result) {
 			case INSUFFICIENT_FUNDS: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_insufficient_funds");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_DELIVERY: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_delivery");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_OFFERS: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_offers");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case INVIABLE_PAYMENT_METHOD: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_inviable_payment_method");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case FAILURE: {
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_error_failure");
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-
 				break;
 			}
 			case SUCCESS: {
-				var itemNames = MarketScreenUtil.textForOrderSummary(offers);
-				var formattedTotal = CurrencyFormattingUtil.formatCurrency(offerTotal);
-				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
-
-				player.sendMessage(displayText, true);
 				world.playSound(null, position, ModSounds.ORDER_CONFIRM_SOUND, SoundCategory.BLOCKS, 1f, 1f);
-
 				break;
 			}
 		}
@@ -326,19 +305,21 @@ public final class MarketBlockServerNetworking {
 
 		}
 
-		var packageMessage = messageForPackagedDelivery(itemStacks);
-		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
+		var packageMessage = textForPackagedDelivery(itemStacks);
+		var packageSender = Text.translatable(LocalizationUtil.key("text", "delivery.market"));
 
 		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
 	}
 
-	private static String messageForPackagedDelivery(List<ItemStack> itemStacks) {
-		var itemStackDescriptions = itemStacks.stream().map(stack -> ItemDescriptionUtil.descriptionForItemStack(stack)).toList();
-		var itemStackDescription = String.join(", ", itemStackDescriptions);
-		var packageMessage = LocalizationUtil.localizedString("text", "delivery.receipt_format", itemStackDescription) + "\n\n"
-				+ LocalizationUtil.localizedString("text", "delivery.message");
+	private static Text textForPackagedDelivery(List<ItemStack> itemStacks) {
+		var itemStackTexts = itemStacks.stream().map(stack -> ItemDescriptionUtil.textForItemStack(stack)).toList();
+		var itemStackDescription = TextUtil.joinTexts(itemStackTexts);
 
-		return packageMessage;
+		var packageItemsText = Text.translatable(LocalizationUtil.key("text", "delivery.receipt_format"), itemStackDescription);
+		var packageSignatureText = Text.translatable(LocalizationUtil.key("text", "delivery.message"));
+		var packageText = packageItemsText.append(Text.of("\n\n")).append(packageSignatureText);
+
+		return packageText;
 	}
 
 	private static List<Offer> offersFromList(List<UUID> list) {

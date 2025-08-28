@@ -1,7 +1,6 @@
 {
 	"values": {
-		"minecraft:wool": 18,
-		"minecraft:white_wool": 18,
+		"minecraft:white_wool": 16,
 		"minecraft:orange_wool": 18,
 		"minecraft:magenta_wool": 18,
 		"minecraft:light_blue_wool": 18,

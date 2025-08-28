@@ -16,7 +16,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
-import net.saint.commercialize.data.player.RandomPlayerUtil;
+import net.saint.commercialize.data.player.RandomPlayerNameUtil;
 
 public final class MarketOfferGenerator {
 
@@ -87,7 +87,7 @@ public final class MarketOfferGenerator {
 
 		// Generate a pool of random player names to use for offers
 		for (int i = 0; i < 6; i++) {
-			var name = RandomPlayerUtil.randomPlayerName(random);
+			var name = RandomPlayerNameUtil.randomPlayerName(random);
 			playerPool.add(name);
 		}
 	}

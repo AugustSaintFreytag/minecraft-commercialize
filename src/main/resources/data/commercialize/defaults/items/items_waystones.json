@@ -1,0 +1,33 @@
+{
+	"values": {
+		"waystones:black_sharestone": 3072,
+		"waystones:blackstone_waystone": 3078,
+		"waystones:blue_sharestone": 3072,
+		"waystones:brown_sharestone": 3072,
+		"waystones:cyan_sharestone": 3072,
+		"waystones:deepslate_waystone": 3078,
+		"waystones:end_stone_waystone": 3116,
+		"waystones:gray_sharestone": 3072,
+		"waystones:green_sharestone": 3072,
+		"waystones:light_blue_sharestone": 3072,
+		"waystones:light_gray_sharestone": 3072,
+		"waystones:lime_sharestone": 3072,
+		"waystones:magenta_sharestone": 3072,
+		"waystones:mossy_waystone": 3078,
+		"waystones:orange_sharestone": 3072,
+		"waystones:pink_sharestone": 3072,
+		"waystones:portstone": 2916,
+		"waystones:purple_sharestone": 3072,
+		"waystones:red_sharestone": 3072,
+		"waystones:return_scroll": 84,
+		"waystones:sandy_waystone": 3078,
+		"waystones:sharestone": 3072,
+		"waystones:warp_dust": 50,
+		"waystones:warp_plate": 236,
+		"waystones:warp_scroll": 220,
+		"waystones:warp_stone": 2896,
+		"waystones:waystone": 3072,
+		"waystones:white_sharestone": 3072,
+		"waystones:yellow_sharestone": 3072
+	}
+}
