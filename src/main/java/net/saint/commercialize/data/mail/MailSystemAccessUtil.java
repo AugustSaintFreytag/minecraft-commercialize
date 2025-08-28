@@ -26,7 +26,7 @@ public final class MailSystemAccessUtil {
 			itemStackList.set(index, itemStacks.get(index));
 		}
 
-		var packageItemStack = MailPackageItem.create(itemStackList, message, sender);
+		var packageItemStack = MailPackage.create(itemStackList, message, sender);
 		return packageItemStack;
 	}
 
