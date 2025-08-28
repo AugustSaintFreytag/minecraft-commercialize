@@ -31,10 +31,10 @@ public final class ShippingScreenUtil {
 		var ticksToNextSale = shippingInterval - world.getTimeOfDay() % shippingInterval;
 		var formattedTime = TimeFormattingUtil.formattedTime(ticksToNextSale);
 
-		var saleTimeComponent = LocalizationUtil.localizedString("gui", "shipping.sale_time_format", formattedTime);
-		var saleLabelComponent = LocalizationUtil.localizedString("gui", "shipping.sale");
+		var saleTimeComponent = LocalizationUtil.localizedText("gui", "shipping.sale_time_format", formattedTime);
+		var saleLabelComponent = LocalizationUtil.localizedText("gui", "shipping.sale");
 
-		return Text.of(saleLabelComponent + " " + saleTimeComponent);
+		return saleLabelComponent.copy().append(Text.literal(" ")).append(saleTimeComponent);
 	}
 
 }

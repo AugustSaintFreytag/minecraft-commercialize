@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
+import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketOfferTickingUtil {
@@ -63,28 +65,32 @@ public final class MarketOfferTickingUtil {
 		var itemList = DefaultedList.ofSize(1, ItemStack.EMPTY);
 		itemList.set(0, offer.stack);
 
-		var itemDescription = ItemDescriptionUtil.descriptionForItemStack(offer.stack);
-		var packageSender = LocalizationUtil.localizedString("text", "delivery.market");
-		var packageMessage = LocalizationUtil.localizedString("text", "return.message", itemDescription);
+		var itemDescription = ItemDescriptionUtil.textForItemStack(offer.stack);
+		var packageSender = LocalizationUtil.localizedText("text", "delivery.market");
+		var packageReceipt = LocalizationUtil.localizedText("text", "return.offer_format", itemDescription);
+		var packageSignature = LocalizationUtil.localizedText("text", "return.message", TimeFormattingUtil.formattedTime(offer.duration));
+
+		var packageMessage = packageReceipt.copy().append(Text.of("\n\n")).append(packageSignature);
 
 		var server = world.getServer();
 		var player = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
 
 		if (player == null) {
-			Commercialize.LOGGER.error("Could not find player '%s' (%s) to return expired offer items.", offer.sellerName, offer.sellerId);
+			Commercialize.LOGGER.error("Could not find player '{}' ({}) to return expired offer items to.", offer.sellerName,
+					offer.sellerId);
 			return;
 		}
 
 		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemList, packageMessage, packageSender);
 
 		if (!didDispatch) {
-			Commercialize.LOGGER.error("Could not dispatch return expired offer items to player '%s' (%s).", offer.sellerName,
+			Commercialize.LOGGER.error("Could not dispatch return expired offer items to player '{}' ({}).", offer.sellerName,
 					offer.sellerId);
 			return;
 		}
 
-		Commercialize.LOGGER.info("Offer '%s' (%s) has expired and items were dispatched to seller '%s' (%s).", offer.id, itemDescription,
-				offer.sellerName, offer.sellerId);
+		Commercialize.LOGGER.info("Offer '{}' ({}) has expired and items were dispatched to seller '{}' ({}) via mail.", offer.id,
+				itemDescription, offer.sellerName, offer.sellerId);
 		Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer);
 	}
 

@@ -1,57 +1,39 @@
 package net.saint.commercialize.data.text;
 
+import net.minecraft.text.Text;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class TimeFormattingUtil {
 
-	public static String formattedTime(long tickCount) {
+	public static Text formattedTime(long tickCount) {
 		var totalNumberOfHours = tickCount / (double) TimePreset.ONE_HOUR;
 
 		// Fractional Hours
-
 		if (totalNumberOfHours < 0.15) {
-			return LocalizationUtil.localizedString("text", "time.short.moment");
+			return LocalizationUtil.localizedText("text", "time.short.moment");
 		}
 
 		if (totalNumberOfHours < 0.4) {
-			var formattedOutput = new StringBuilder();
-			formattedOutput.append("¼").append(" ").append(LocalizationUtil.localizedString("text", "time.short.hour"));
-
-			return formattedOutput.toString();
+			return Text.literal("¼ ").append(LocalizationUtil.localizedText("text", "time.short.hour"));
 		}
 
 		if (totalNumberOfHours < 0.7) {
-			var formattedOutput = new StringBuilder();
-			formattedOutput.append("½").append(" ").append(LocalizationUtil.localizedString("text", "time.short.hour"));
-
-			return formattedOutput.toString();
+			return Text.literal("½ ").append(LocalizationUtil.localizedText("text", "time.short.hour"));
 		}
 
 		var totalNumberOfDays = (int) (totalNumberOfHours / 24);
 		var remainingNumberOfHours = Math.max(1, (int) totalNumberOfHours % 24);
 
 		// Hours
-
 		if (totalNumberOfDays <= 1) {
-			var formattedOutput = new StringBuilder();
-
-			if (formattedOutput.length() > 0) {
-				formattedOutput.append(", ");
-			}
-
 			var hourKey = remainingNumberOfHours == 1 ? "time.short.hour" : "time.short.hours";
-			formattedOutput.append(remainingNumberOfHours).append(" ").append(LocalizationUtil.localizedString("text", hourKey));
-
-			return formattedOutput.toString();
+			return Text.literal(String.valueOf(remainingNumberOfHours)).append(Text.literal(" "))
+					.append(LocalizationUtil.localizedText("text", hourKey));
 		}
 
 		// Days
-
-		var formattedOutput = new StringBuilder();
 		var dayLocalizationKey = totalNumberOfDays == 1 ? "time.short.day" : "time.short.days";
-
-		formattedOutput.append(totalNumberOfDays).append(" ").append(LocalizationUtil.localizedString("text", dayLocalizationKey));
-
-		return formattedOutput.toString();
+		return Text.literal(String.valueOf(totalNumberOfDays)).append(Text.literal(" "))
+				.append(LocalizationUtil.localizedText("text", dayLocalizationKey));
 	}
 }
