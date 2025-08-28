@@ -315,7 +315,7 @@ public final class MarketBlockServerNetworking {
 		var itemStackTexts = itemStacks.stream().map(stack -> ItemDescriptionUtil.textForItemStack(stack)).toList();
 		var itemStackDescription = TextUtil.joinTexts(itemStackTexts);
 
-		var packageItemsText = Text.translatable(LocalizationUtil.key("text", "delivery.package_format"), itemStackDescription);
+		var packageItemsText = Text.translatable(LocalizationUtil.key("text", "delivery.receipt_format"), itemStackDescription);
 		var packageSignatureText = Text.translatable(LocalizationUtil.key("text", "delivery.message"));
 		var packageText = packageItemsText.append(Text.of("\n\n")).append(packageSignatureText);
 
