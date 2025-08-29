@@ -2,12 +2,12 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"Xrg",
-		"LrL",
+		"XrL",
 		"XeX"
 	],
 	"key": {
 		"X": {
-			"item": "create:industrial_iron_block"
+			"item": "create:iron_sheet"
 		},
 		"r": {
 			"item": "minecraft:redstone"
