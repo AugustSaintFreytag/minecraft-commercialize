@@ -115,12 +115,12 @@ public final class MarketOfferGenerator {
 		}
 
 		var stackSize = itemStack.getCount();
-		var rawValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * ((double) stackSize);
-		var jitterValue = random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor) * itemBaseValue;
+		var stackValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * ((double) stackSize);
+		var jitterFactor = random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor);
 
-		rawValue += jitterValue;
+		stackValue *= jitterFactor;
 
-		return (int) rawValue;
+		return Math.max(0, (int) Math.round(stackValue));
 	}
 
 	private static int roundToNearestAesthetic(int value) {
