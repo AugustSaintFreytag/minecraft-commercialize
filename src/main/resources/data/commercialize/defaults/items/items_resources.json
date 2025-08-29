@@ -1,9 +1,5 @@
 {
 	"values": {
-		"betterend:crystalline_sulphur": 40,
-		"betterend:raw_ember": 128,
-		"betterend:thalassium_ingot": 256,
-		"betternether:cincinnasite_ingot": 256,
 		"create:andesite_alloy": 10,
 		"create:brass_ingot": 512,
 		"create:brass_nugget": 56,
@@ -12,6 +8,7 @@
 		"create:zinc_nugget": 4,
 		"create_ironworks:bronze_ingot": 78,
 		"create_ironworks:bronze_nugget": 8,
+		"create_ironworks:charcoal_dust": 12,
 		"create_ironworks:tin_ingot": 36,
 		"create_ironworks:tin_nugget": 4,
 		"deeperdarker:resonarium": 138,

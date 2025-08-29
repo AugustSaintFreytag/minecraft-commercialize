@@ -13,6 +13,12 @@
 			"stack": "32-64"
 		},
 		{
+			"availability": "common",
+			"item": "minecraft:rooted_dirt",
+			"markup": "1.5",
+			"stack": "32-64"
+		},
+		{
 			"availability": "veryRare",
 			"item": "minecraft:podzol",
 			"markup": "4.0",
@@ -33,7 +39,7 @@
 		{
 			"availability": "extremelyCommon",
 			"item": "minecraft:sand",
-			"markup": "2.9",
+			"markup": "2.8",
 			"stack": "32-64"
 		},
 		{
@@ -52,7 +58,7 @@
 			"availability": "common",
 			"item": "minecraft:clay",
 			"markup": "3.0",
-			"stack": "16-32"
+			"stack": "8-32"
 		},
 		{
 			"availability": "common",
@@ -61,19 +67,19 @@
 			"stack": "16-64"
 		},
 		{
-			"availability": "uncommon",
+			"availability": "common",
 			"item": "minecraft:mud",
 			"markup": "2.8",
 			"stack": "16-64"
 		},
 		{
-			"availability": "uncommon",
+			"availability": "common",
 			"item": "minecraft:packed_mud",
 			"markup": "2.8",
 			"stack": "16-64"
 		},
 		{
-			"availability": "uncommon",
+			"availability": "rare",
 			"item": "minecraft:mud_bricks",
 			"markup": "2.8",
 			"stack": "16-64"

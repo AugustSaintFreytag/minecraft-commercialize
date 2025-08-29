@@ -1,0 +1,136 @@
+{
+	"offers": [
+		{
+			"availability": "common",
+			"item": "minecraft:netherrack",
+			"markup": "2.4",
+			"stack": "32-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:soul_sand",
+			"markup": "2.6",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "minecraft:soul_soil",
+			"markup": "3.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:nether_brick",
+			"markup": "3.2",
+			"stack": "32-64"
+		},
+		{
+			"availability": "rare",
+			"item": "minecraft:glowstone",
+			"markup": "3.6",
+			"stack": "8-32"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "minecraft:netherite_block",
+			"markup": "3.0",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:nether_ruby_block",
+			"markup": "3.0",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:cincinnasite_block",
+			"markup": "3.0",
+			"stack": "1-8"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:weeping_obsidian",
+			"markup": "4.0",
+			"stack": "4-32"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:obsidian",
+			"markup": "3.5",
+			"stack": "4-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "minecraft:crying_obsidian",
+			"markup": "4.0",
+			"stack": "4-32"
+		},
+		{
+			"availability": "rare",
+			"item": "betternether:blue_obsidian",
+			"markup": "4.0",
+			"stack": "4-32"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:blue_weeping_obsidian",
+			"markup": "4.0",
+			"stack": "4-16"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:blue_crying_obsidian",
+			"markup": "4.0",
+			"stack": "4-16"
+		},
+		{
+			"availability": "uncommon",
+			"item": "betternether:bone_block",
+			"markup": "2.8",
+			"stack": "8-32"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:anchor_tree_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:mushroom_fir_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:nether_sakura_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:rubeus_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:stalagnate_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:wart_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betternether:willow_log",
+			"markup": "4.0",
+			"stack": "8-64"
+		}
+	]
+}

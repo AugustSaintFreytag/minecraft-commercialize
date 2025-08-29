@@ -13,19 +13,19 @@
 			"stack": "64"
 		},
 		{
-			"availability": "common",
+			"availability": "veryCommon",
 			"item": "minecraft:andesite",
 			"markup": "1.6",
 			"stack": "64"
 		},
 		{
-			"availability": "common",
+			"availability": "veryCommon",
 			"item": "minecraft:granite",
 			"markup": "1.6",
 			"stack": "64"
 		},
 		{
-			"availability": "common",
+			"availability": "veryCommon",
 			"item": "minecraft:diorite",
 			"markup": "1.5",
 			"stack": "64"
@@ -73,28 +73,10 @@
 			"stack": "64"
 		},
 		{
-			"availability": "veryRare",
+			"availability": "extremelyRare",
 			"item": "minecraft:dripstone_block",
 			"markup": "1.2",
 			"stack": "16-64"
-		},
-		{
-			"availability": "common",
-			"item": "minecraft:obsidian",
-			"markup": "4.0",
-			"stack": "8-64"
-		},
-		{
-			"availability": "common",
-			"item": "minecraft:polished_basalt",
-			"markup": "1.8",
-			"stack": "64"
-		},
-		{
-			"availability": "common",
-			"item": "minecraft:polished_blackstone",
-			"markup": "1.9",
-			"stack": "64"
 		},
 		{
 			"availability": "veryCommon",

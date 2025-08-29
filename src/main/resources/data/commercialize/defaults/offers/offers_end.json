@@ -1,0 +1,82 @@
+{
+	"offers": [
+		{
+			"item": "minecraft:ender_pearl",
+			"stack": "1-16",
+			"markup": "2.0",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:eye_of_ender",
+			"stack": "1-8",
+			"markup": "2.3",
+			"availability": "uncommon"
+		},
+		{
+			"item": "minecraft:end_rod",
+			"stack": "2-16",
+			"markup": "2.8",
+			"availability": "veryRare"
+		},
+		{
+			"item": "minecraft:end_crystal",
+			"stack": "1-4",
+			"markup": "3.2",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "minecraft:shulker_shell",
+			"stack": "1-2",
+			"markup": "3.4",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:aurora_crystal",
+			"stack": "1-8",
+			"markup": "2.8",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:eternal_crystal",
+			"stack": "1-2",
+			"markup": "3.0",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:amber_gem",
+			"stack": "1-8",
+			"markup": "2.8",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:crystal_shards",
+			"stack": "8-32",
+			"markup": "2.4",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:ender_shard",
+			"stack": "4-16",
+			"markup": "2.6",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:terminite_ingot",
+			"stack": "1-8",
+			"markup": "3.0",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:thalassium_ingot",
+			"stack": "1-8",
+			"markup": "3.0",
+			"availability": "extremelyRare"
+		},
+		{
+			"item": "betterend:aeternium_ingot",
+			"stack": "1-4",
+			"markup": "3.0",
+			"availability": "extremelyRare"
+		}
+	]
+}

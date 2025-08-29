@@ -10,7 +10,7 @@ public enum Availability {
 
 	// Cases
 
-	EXTREMELY_RARE, VERY_RARE, UNCOMMON, COMMON, VERY_COMMON, EXTREMELY_COMMON;
+	EXTREMELY_RARE, VERY_RARE, RARE, UNCOMMON, COMMON, VERY_COMMON, EXTREMELY_COMMON;
 
 	// Properties
 
@@ -20,6 +20,7 @@ public enum Availability {
 			this.put(VERY_COMMON, 30);
 			this.put(COMMON, 25);
 			this.put(UNCOMMON, 10);
+			this.put(RARE, 8);
 			this.put(VERY_RARE, 4);
 			this.put(EXTREMELY_RARE, 1);
 		}

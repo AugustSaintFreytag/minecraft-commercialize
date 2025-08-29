@@ -1,0 +1,106 @@
+{
+	"offers": [
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:thalassium_block",
+			"markup": "4.0",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "minecraft:end_stone",
+			"markup": "3.0",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "minecraft:end_stone_bricks",
+			"markup": "3.2",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "minecraft:purpur_block",
+			"markup": "3.4",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:umbralith",
+			"markup": "3.2",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:flavolite",
+			"markup": "3.2",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:violecite",
+			"markup": "3.2",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:azure_jadestone",
+			"markup": "3.4",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:virid_jadestone",
+			"markup": "3.4",
+			"stack": "16-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:sandy_jadestone",
+			"markup": "3.4",
+			"stack": "16-64"
+		},
+		{
+			"availability": "veryRare",
+			"item": "betterend:sulphuric_rock",
+			"markup": "3.6",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:brimstone",
+			"markup": "3.6",
+			"stack": "8-64"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:smaragdant_crystal",
+			"markup": "3.6",
+			"stack": "8-32"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:mossy_obsidian",
+			"markup": "3.6",
+			"stack": "8-32"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:terminite_block",
+			"markup": "3.2",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:aeternium_block",
+			"markup": "3.4",
+			"stack": "1-4"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "betterend:amber_block",
+			"markup": "3.0",
+			"stack": "1-4"
+		}
+	]
+}
