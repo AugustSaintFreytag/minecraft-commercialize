@@ -1,7 +1,5 @@
 {
 	"values": {
-		"betterend:blossom_berry": 92,
-		"betterend:shadow_berry_raw": 104,
 		"corndelight:corn": 16,
 		"corndelight:corn_seeds": 8,
 		"dawnoftimebuilder:grape": 8,
@@ -40,7 +38,6 @@
 		"minecraft:beetroot_seeds": 4,
 		"minecraft:brown_mushroom": 10,
 		"minecraft:carrot": 8,
-		"minecraft:chorus_fruit": 28,
 		"minecraft:cocoa_beans": 10,
 		"minecraft:glow_berries": 24,
 		"minecraft:melon": 24,

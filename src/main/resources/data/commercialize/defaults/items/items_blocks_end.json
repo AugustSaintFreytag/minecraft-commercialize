@@ -1,0 +1,29 @@
+{
+	"values": {
+		"betterend:aeternium_block": 44424,
+		"betterend:amaranita_hyphae": 2,
+		"betterend:amaranita_stem": 2,
+		"betterend:amber_block": 11456,
+		"betterend:ancient_emerald_ice": 288,
+		"betterend:azure_jadestone": 12,
+		"betterend:brimstone": 10,
+		"betterend:dense_emerald_ice": 32,
+		"betterend:dense_snow": 12,
+		"betterend:dragon_bone_block": 1248,
+		"betterend:emerald_ice": 8,
+		"betterend:flavolite": 10,
+		"betterend:mossy_dragon_bone": 14,
+		"betterend:mossy_obsidian": 48,
+		"betterend:sandy_jadestone": 10,
+		"betterend:smaragdant_crystal": 56,
+		"betterend:sulphuric_rock": 12,
+		"betterend:terminite_block": 2178,
+		"betterend:thalassium_block": 2376,
+		"betterend:umbralith": 12,
+		"betterend:violecite": 10,
+		"betterend:virid_jadestone": 12,
+		"minecraft:end_stone": 8,
+		"minecraft:end_stone_bricks": 8,
+		"minecraft:purpur_block": 8
+	}
+}

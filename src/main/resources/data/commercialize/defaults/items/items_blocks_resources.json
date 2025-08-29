@@ -2,6 +2,7 @@
 	"values": {
 		"betterend:thalassium_block": 2304,
 		"betternether:cincinnasite_block": 2304,
+		"betternether:nether_ruby_block": 35064,
 		"create:brass_block": 4608,
 		"create:zinc_block": 360,
 		"create_ironworks:bronze_block": 702,
@@ -13,6 +14,7 @@
 		"minecraft:copper_block": 108,
 		"minecraft:diamond_block": 36864,
 		"minecraft:emerald_block": 18432,
+		"minecraft:netherite_block": 42012,
 		"minecraft:gold_block": 9216,
 		"minecraft:iron_block": 576,
 		"minecraft:lapis_block": 432,
