@@ -134,12 +134,7 @@
 		},
 		{
 			"item": "minecraft:shulker_shell",
-			"markup": "2.6",
-			"availability": "extremelyRare"
-		},
-		{
-			"item": "minecraft:totem_of_undying",
-			"markup": "2.0",
+			"markup": "4.0",
 			"availability": "extremelyRare"
 		}
 	]
