@@ -7,12 +7,6 @@
 			"stack": "8-64"
 		},
 		{
-			"availability": "uncommon",
-			"item": "create_ironworks:charcoal_dust",
-			"markup": "2.0",
-			"stack": "8-32"
-		},
-		{
 			"availability": "veryCommon",
 			"item": "createfood:salt",
 			"markup": "2.0",
