@@ -39,11 +39,13 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 	// State
 
-	protected List<Option<Value>> options = new ArrayList<>();
-	protected @Nullable Value selectedValue = null;
+	protected boolean hasOpenOverlay = false;
 
-	protected @Nullable Supplier<FlowLayout> openOverlay = null;
-	protected @Nullable Runnable closeOverlay = null;
+	protected List<Option<Value>> options = new ArrayList<>();
+	protected @Nullable Value selectedValue;
+
+	protected @Nullable Supplier<FlowLayout> openOverlay;
+	protected @Nullable Runnable closeOverlay;
 
 	protected final EventStream<OnChanged<Value>> onChanged = OnChanged.<Value>newStream();
 
@@ -73,7 +75,7 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 		child(selectedValueLabelComponent);
 
 		mouseDown().subscribe((mouseX, mouseY, button) -> {
-			if (button != 0) {
+			if (hasOpenOverlay || button != 0) {
 				return false;
 			}
 
@@ -143,8 +145,9 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 	// Interaction
 
 	private void openDropdown(double mouseX, double mouseY) {
-		var dropdownComponent = Components.dropdown(Sizing.fixed(popoverWidth));
+		hasOpenOverlay = true;
 
+		var dropdownComponent = Components.dropdown(Sizing.fixed(popoverWidth));
 		dropdownComponent.id("dropdown");
 		dropdownComponent.surface(Surface.TOOLTIP);
 		dropdownComponent.padding(Insets.of(0));
@@ -156,9 +159,15 @@ public class SelectDropdownComponent<Value> extends FlowLayout {
 
 		var hostComponent = openOverlay.get();
 		hostComponent.child(dropdownComponent);
+
+		hostComponent.mouseDown().subscribe((_mouseX, _mouseY, _button) -> {
+			closeDropdown();
+			return true;
+		});
 	}
 
 	private void closeDropdown() {
+		hasOpenOverlay = false;
 		closeOverlay.run();
 	}
 
