@@ -26,12 +26,6 @@
 		},
 		{
 			"availability": "veryCommon",
-			"item": "minecraft:arrow",
-			"markup": "2.0",
-			"stack": "16-64"
-		},
-		{
-			"availability": "veryCommon",
 			"item": "minecraft:bone_meal",
 			"markup": "2.0",
 			"stack": "8-64"
