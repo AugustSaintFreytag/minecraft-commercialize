@@ -7,7 +7,7 @@
 			"stack": "8-64"
 		},
 		{
-			"availability": "veryCommon",
+			"availability": "common",
 			"item": "createfood:salt",
 			"markup": "2.0",
 			"stack": "8-64"
@@ -37,7 +37,7 @@
 			"stack": "16-64"
 		},
 		{
-			"availability": "veryCommon",
+			"availability": "extremelyCommon",
 			"item": "minecraft:flint",
 			"markup": "2.0",
 			"stack": "16-64"
