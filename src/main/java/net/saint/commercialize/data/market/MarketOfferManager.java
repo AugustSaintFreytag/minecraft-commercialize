@@ -129,6 +129,7 @@ public final class MarketOfferManager extends PersistentState {
 	public void removeOffer(Offer offer) {
 		offers.removeIf(element -> offer.id.equals(element.id));
 		offersById.remove(offer.id);
+
 		markDirty();
 	}
 

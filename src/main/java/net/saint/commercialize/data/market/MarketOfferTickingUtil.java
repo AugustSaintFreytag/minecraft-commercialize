@@ -52,7 +52,7 @@ public final class MarketOfferTickingUtil {
 		});
 	}
 
-	private static void expireAndRemoveOffer(World world, Offer offer) {
+	public static void expireAndRemoveOffer(World world, Offer offer) {
 		if (!offer.isGenerated) {
 			expireAndRemovePlayerOffer(world, offer);
 		} else {

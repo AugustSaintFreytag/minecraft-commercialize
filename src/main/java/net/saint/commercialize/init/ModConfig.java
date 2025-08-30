@@ -2,7 +2,9 @@ package net.saint.commercialize.init;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.util.ConfigDefaultsUtil;
@@ -50,16 +52,25 @@ public final class ModConfig {
 
 	public static void reloadOfferTemplateConfigs() {
 		Commercialize.OFFER_TEMPLATE_MANAGER.clearTemplates();
+
 		var offerTemplates = ConfigLoadUtil.loadOfferTemplateConfigs();
+		var numberOfLoadedTemplates = new AtomicInteger(0);
+		var numberOfSkippedTemplates = new AtomicInteger(0);
 
 		offerTemplates.forEach(entry -> {
 			entry.offers.forEach((offerTemplate) -> {
+				if (!Registries.ITEM.containsId(offerTemplate.item)) {
+					numberOfSkippedTemplates.getAndIncrement();
+					return;
+				}
+
 				Commercialize.OFFER_TEMPLATE_MANAGER.registerTemplate(offerTemplate);
+				numberOfLoadedTemplates.getAndIncrement();
 			});
 		});
 
-		Commercialize.LOGGER.info("Loaded {} offer template(s) with a total of {} offer(s).", offerTemplates.size(),
-				Commercialize.OFFER_TEMPLATE_MANAGER.size());
+		Commercialize.LOGGER.info("Loaded offer templates from {} config file(s). Registered a total of {} offer(s) ({} skipped).",
+				offerTemplates.size(), numberOfLoadedTemplates.get(), numberOfSkippedTemplates.get());
 	}
 
 }

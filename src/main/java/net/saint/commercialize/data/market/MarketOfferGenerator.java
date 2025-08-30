@@ -116,7 +116,7 @@ public final class MarketOfferGenerator {
 
 		var stackSize = itemStack.getCount();
 		var stackValue = ((double) itemBaseValue) * Commercialize.CONFIG.buyingPriceFactor * ((double) stackSize);
-		var jitterFactor = random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor);
+		var jitterFactor = 1 + random.nextTriangular(0, Commercialize.CONFIG.priceJitterFactor);
 
 		stackValue *= jitterFactor;
 

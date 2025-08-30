@@ -36,16 +36,40 @@ public final class ModCommands {
 				// Offers
 
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
-					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
-					context.getSource().sendFeedback(() -> Text.literal("All market offers cleared."), true);
+					var world = context.getSource().getWorld();
+					var numberOfOffers = Commercialize.MARKET_OFFER_MANAGER.size();
+
+					Commercialize.MARKET_OFFER_MANAGER.getOffers().forEach(offer -> {
+						MarketOfferTickingUtil.expireAndRemoveOffer(world, offer);
+					});
+
+					context.getSource().sendFeedback(() -> Text.literal("Cleared " + numberOfOffers + " market offer(s)."), true);
+
+					return 1;
+				}))
+
+				.then(literal("clearGeneratedOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+					var world = context.getSource().getWorld();
+					var offers = Commercialize.MARKET_OFFER_MANAGER.getOffers().filter(offer -> offer.isGenerated).toList();
+					var numberOfOffers = offers.size();
+
+					offers.forEach(offer -> {
+						MarketOfferTickingUtil.expireAndRemoveOffer(world, offer);
+					});
+
+					context.getSource().sendFeedback(() -> Text.literal("Cleared " + numberOfOffers
+							+ " generated market offer(s), configured cap: " + Commercialize.CONFIG.maxNumberOfOffers + " offer(s)."),
+							true);
+
 					return 1;
 				}))
 
 				.then(literal("clearAndRegenerateOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
-					var server = context.getSource().getServer();
-					var world = server.getOverworld();
+					var world = context.getSource().getWorld();
 
-					Commercialize.MARKET_OFFER_MANAGER.clearOffers();
+					Commercialize.MARKET_OFFER_MANAGER.getOffers().forEach(offer -> {
+						MarketOfferTickingUtil.expireAndRemoveOffer(world, offer);
+					});
 
 					for (var i = 0; i < NUMBER_OF_GENERATIONS_PER_COMMAND; i++) {
 						MarketOfferTickingUtil.tickMarketOfferGeneration(world);
@@ -53,8 +77,8 @@ public final class ModCommands {
 
 					context.getSource()
 							.sendFeedback(
-									() -> Text.literal(
-											"All market offers cleared, generated " + NUMBER_OF_GENERATIONS_PER_COMMAND + " new offer(s)."),
+									() -> Text.literal("All market offers cleared, generated " + NUMBER_OF_GENERATIONS_PER_COMMAND
+											+ " new offer(s), configured cap: " + Commercialize.CONFIG.maxNumberOfOffers + " offer(s)."),
 									true);
 					return 1;
 				}))
@@ -62,10 +86,15 @@ public final class ModCommands {
 				.then(literal("generateOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					var server = context.getSource().getServer();
 					var world = server.getOverworld();
+
+					var numberOfOffers = Commercialize.MARKET_OFFER_MANAGER.size();
+
 					MarketOfferTickingUtil.tickMarketOfferGeneration(world);
 
-					context.getSource().sendFeedback(
-							() -> Text.literal("Generated " + Commercialize.CONFIG.offerBatchSize + " market offer(s)."), true);
+					var addedNumberOfOffers = Commercialize.MARKET_OFFER_MANAGER.size() - numberOfOffers;
+
+					context.getSource().sendFeedback(() -> Text.literal("Generated " + addedNumberOfOffers
+							+ " new market offer(s), configured cap: " + Commercialize.CONFIG.maxNumberOfOffers + " offer(s)."), true);
 					return 1;
 				}))
 
