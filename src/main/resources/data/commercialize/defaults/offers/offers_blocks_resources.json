@@ -4,55 +4,55 @@
 			"availability": "common",
 			"item": "minecraft:coal_block",
 			"markup": "1.2",
-			"stack": "8-64"
+			"stack": "4-64"
 		},
 		{
 			"availability": "uncommon",
 			"item": "minecraft:copper_block",
 			"markup": "1.2",
-			"stack": "8-64"
+			"stack": "4-64"
 		},
 		{
 			"availability": "uncommon",
 			"item": "minecraft:iron_block",
 			"markup": "1.2",
-			"stack": "8-64"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "create:zinc_block",
 			"markup": "1.8",
-			"stack": "8-64"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "create_ironworks:tin_block",
 			"markup": "1.9",
-			"stack": "8-64"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "galosphere:silver_block",
 			"markup": "2.0",
-			"stack": "8-32"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "create_ironworks:bronze_block",
 			"markup": "2.5",
-			"stack": "8-32"
+			"stack": "4-32"
 		},
 		{
 			"availability": "uncommon",
 			"item": "create:brass_block",
 			"markup": "2.5",
-			"stack": "8-32"
+			"stack": "4-32"
 		},
 		{
 			"availability": "uncommon",
 			"item": "minecraft:lapis_block",
 			"markup": "2.4",
-			"stack": "8-64"
+			"stack": "4-64"
 		},
 		{
 			"availability": "common",
@@ -64,7 +64,7 @@
 			"availability": "veryRare",
 			"item": "minecraft:quartz_block",
 			"markup": "4.0",
-			"stack": "8-64"
+			"stack": "4-64"
 		},
 		{
 			"availability": "veryRare",
@@ -76,25 +76,25 @@
 			"availability": "rare",
 			"item": "minecraft:gold_block",
 			"markup": "1.1",
-			"stack": "4-32"
+			"stack": "1-16"
 		},
 		{
 			"availability": "extremelyRare",
 			"item": "deeperdarker:resonarium_block",
 			"markup": "3.0",
-			"stack": "4-16"
+			"stack": "1-16"
 		},
 		{
 			"availability": "extremelyRare",
 			"item": "minecraft:emerald_block",
 			"markup": "1.1",
-			"stack": "2-16"
+			"stack": "1-16"
 		},
 		{
 			"availability": "extremelyRare",
 			"item": "minecraft:diamond_block",
 			"markup": "1.1",
-			"stack": "4-16"
+			"stack": "1-16"
 		}
 	]
 }
