@@ -8,6 +8,12 @@
 		},
 		{
 			"availability": "extremelyCommon",
+			"item": "minecraft:smooth_stone",
+			"markup": "1.7",
+			"stack": "64"
+		},
+		{
+			"availability": "extremelyCommon",
 			"item": "minecraft:cobblestone",
 			"markup": "1.0",
 			"stack": "64"

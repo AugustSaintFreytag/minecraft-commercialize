@@ -3,55 +3,55 @@
 		{
 			"availability": "extremelyCommon",
 			"item": "minecraft:dirt",
-			"markup": "1.5",
+			"markup": "1.2",
 			"stack": "64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:coarse_dirt",
 			"markup": "1.5",
-			"stack": "32-64"
+			"stack": "16-64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:rooted_dirt",
 			"markup": "1.5",
-			"stack": "32-64"
+			"stack": "16-64"
 		},
 		{
 			"availability": "veryRare",
 			"item": "minecraft:podzol",
 			"markup": "4.0",
-			"stack": "16-64"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "minecraft:mycelium",
 			"markup": "5.0",
-			"stack": "4-32"
+			"stack": "1-32"
 		},
 		{
 			"availability": "veryRare",
 			"item": "minecraft:moss_block",
-			"markup": "3.5",
-			"stack": "8-32"
+			"markup": "2.5",
+			"stack": "4-48"
 		},
 		{
 			"availability": "extremelyCommon",
 			"item": "minecraft:sand",
-			"markup": "2.8",
+			"markup": "1.8",
 			"stack": "32-64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:red_sand",
-			"markup": "3.1",
-			"stack": "16-64"
+			"markup": "2.2",
+			"stack": "8-64"
 		},
 		{
 			"availability": "extremelyCommon",
 			"item": "minecraft:gravel",
-			"markup": "2.8",
+			"markup": "1.5",
 			"stack": "16-64"
 		},
 		{
@@ -63,26 +63,26 @@
 		{
 			"availability": "common",
 			"item": "minecraft:snow_block",
-			"markup": "3.0",
-			"stack": "16-64"
+			"markup": "2.0",
+			"stack": "8-64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:mud",
-			"markup": "2.8",
-			"stack": "16-64"
+			"markup": "2.0",
+			"stack": "8-64"
 		},
 		{
 			"availability": "common",
 			"item": "minecraft:packed_mud",
-			"markup": "2.8",
-			"stack": "16-64"
+			"markup": "2.0",
+			"stack": "8-64"
 		},
 		{
 			"availability": "rare",
 			"item": "minecraft:mud_bricks",
-			"markup": "2.8",
-			"stack": "16-64"
+			"markup": "2.0",
+			"stack": "8-64"
 		}
 	]
 }
