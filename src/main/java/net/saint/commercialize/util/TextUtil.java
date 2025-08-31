@@ -16,4 +16,22 @@ public final class TextUtil {
 		return mutableText;
 	}
 
+	public static Text joinTexts(List<Text> texts, Text separator) {
+		if (separator == null) {
+			return joinTexts(texts);
+		}
+
+		var mutableText = Text.empty().copy();
+
+		for (int index = 0; index < texts.size(); index++) {
+			if (index > 0) {
+				mutableText.append(separator);
+			}
+
+			mutableText.append(texts.get(index));
+		}
+
+		return mutableText;
+	}
+
 }
