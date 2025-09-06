@@ -34,7 +34,7 @@
 			"availability": "common",
 			"item": "minecraft:gold_ingot",
 			"markup": "1.1",
-			"stack": "4-64"
+			"stack": "4-48"
 		},
 		{
 			"availability": "veryCommon",
@@ -61,6 +61,12 @@
 			"stack": "8-64"
 		},
 		{
+			"item": "minecraft:netherite_ingot",
+			"stack": "4-32",
+			"markup": "2.8",
+			"availability": "veryRare"
+		},
+		{
 			"availability": "common",
 			"item": "create:andesite_alloy",
 			"markup": "1.2",
@@ -75,8 +81,14 @@
 		{
 			"availability": "uncommon",
 			"item": "create:rose_quartz",
-			"markup": "4.0",
+			"markup": "3.8",
 			"stack": "1-8"
+		},
+		{
+			"availability": "extremelyRare",
+			"item": "createaddition:electrum_ingot",
+			"markup": "3.6",
+			"stack": "8-48"
 		},
 		{
 			"availability": "uncommon",
@@ -115,10 +127,10 @@
 			"stack": "2-8"
 		},
 		{
-			"availability": "common",
+			"availability": "rare",
 			"item": "galosphere:silver_ingot",
 			"markup": "2.5",
-			"stack": "8-64"
+			"stack": "8-48"
 		}
 	]
 }

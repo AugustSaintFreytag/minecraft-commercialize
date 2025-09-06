@@ -1,0 +1,26 @@
+{
+	"values": {
+		"create:andesite_alloy": 10,
+		"create:brass_sheet": 516,
+		"create:copper_sheet": 18,
+		"create:electrum_sheet": 1764,
+		"create:golden_sheet": 1028,
+		"create:iron_sheet": 68,
+		"create:powdered_obsidian": 48,
+		"create:rose_quartz": 2048,
+		"create:sturdy_sheet": 58,
+		"create_ironworks:bronze_sheet": 80,
+		"create_ironworks:steel_sheet": 166,
+		"create_ironworks:tin_sheet": 38,
+		"createaddition:brass_rod": 236,
+		"createaddition:copper_rod": 6,
+		"createaddition:electrum_rod": 864,
+		"createaddition:gold_rod": 496,
+		"createaddition:iron_rod": 30,
+		"createdeco:andesite_sheet": 10,
+		"createdeco:industrial_iron_ingot": 74,
+		"createdeco:industrial_iron_sheet": 76,
+		"createdeco:netherite_sheet": 4672,
+		"createdeco:zinc_sheet": 42
+	}
+}

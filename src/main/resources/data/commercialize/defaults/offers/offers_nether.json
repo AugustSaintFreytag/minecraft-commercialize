@@ -13,12 +13,6 @@
 			"availability": "rare"
 		},
 		{
-			"item": "minecraft:netherite_ingot",
-			"stack": "4-32",
-			"markup": "2.5",
-			"availability": "veryRare"
-		},
-		{
 			"item": "betternether:cincinnasite_ingot",
 			"stack": "4-16",
 			"markup": "2.5",
