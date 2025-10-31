@@ -1,0 +1,26 @@
+{
+	"values": {
+		"betterend:thallasium_raw": 240,
+		"create:crushed_raw_aluminum": 44,
+		"create:crushed_raw_copper": 14,
+		"create:crushed_raw_gold": 960,
+		"create:crushed_raw_iron": 60,
+		"create:crushed_raw_lead": 90,
+		"create:crushed_raw_nickel": 120,
+		"create:crushed_raw_osmium": 480,
+		"create:crushed_raw_platinum": 1440,
+		"create:crushed_raw_quicksilver": 120,
+		"create:crushed_raw_silver": 652,
+		"create:crushed_raw_tin": 34,
+		"create:crushed_raw_uranium": 1920,
+		"create:crushed_raw_zinc": 38,
+		"create:raw_zinc": 38,
+		"create_ironworks:crushed_raw_tin": 34,
+		"create_ironworks:raw_tin": 34,
+		"create_simple_ore_doubling:slag": 6,
+		"galosphere:raw_silver": 652,
+		"minecraft:raw_copper": 14,
+		"minecraft:raw_gold": 960,
+		"minecraft:raw_iron": 60
+	}
+}
