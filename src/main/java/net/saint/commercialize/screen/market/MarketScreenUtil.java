@@ -262,7 +262,7 @@ public final class MarketScreenUtil {
 		if (numberOfTruncatedItemNames == 0) {
 			return Text.literal(listedItemNames);
 		} else {
-			var moreText = LocalizationUtil.localizedString("gui", "order_item_more", numberOfTruncatedItemNames);
+			var moreText = LocalizationUtil.localizedString("gui", "order_summary_more", numberOfTruncatedItemNames);
 			return Text.literal(listedItemNames + ", " + moreText);
 		}
 
