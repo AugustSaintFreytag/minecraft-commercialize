@@ -60,12 +60,17 @@ public final class ShippingExchangeTickingUtil {
 
 		if (playerHasPaymentCard) {
 			var boundAccountId = CardItem.get(paymentCard);
+			var boundBankAccount = BankAccountAccessUtil.getBankAccountForCard(paymentCard);
 
-			if (boundAccountId == null) {
-				Commercialize.LOGGER.warn("Could not resolve account id from provided payment card.");
+			if (boundBankAccount == null) {
+				Commercialize.LOGGER.warn("Could not get bank account from provided payment card with id '{}' in shipping block.",
+						boundAccountId);
 				callback.accept(ShippingTickResult.FAILURE);
 				return;
 			}
+
+			Commercialize.LOGGER.warn("Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.",
+					boundBankAccount.getLabel(), boundAccountId);
 
 			BankAccountAccessUtil.depositAccountBalanceForCard(paymentCard, saleValue);
 			removeItemsForShippingFromInventory(world, inventory, true);
