@@ -73,15 +73,16 @@ public final class MarketOfferTickingUtil {
 		var packageMessage = packageReceipt.copy().append(Text.of("\n\n")).append(packageSignature);
 
 		var server = world.getServer();
-		var player = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
+		var playerId = offer.sellerId;
 
-		if (player == null) {
-			Commercialize.LOGGER.error("Could not find player '{}' ({}) to return expired offer items to.", offer.sellerName,
+		if (!MarketPlayerUtil.isKnownPlayerId(server, playerId)) {
+			Commercialize.LOGGER.error(
+					"Could not verify player '{}' ({}) as a known player on the server to return expired offer items to.", offer.sellerName,
 					offer.sellerId);
 			return;
 		}
 
-		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemList, packageMessage, packageSender);
+		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, playerId, itemList, packageMessage, packageSender);
 
 		if (!didDispatch) {
 			Commercialize.LOGGER.error("Could not dispatch return expired offer items to player '{}' ({}).", offer.sellerName,

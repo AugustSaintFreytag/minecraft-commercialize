@@ -50,7 +50,7 @@ public final class MailTransitUtil {
 				return true;
 			}
 
-			var player = MarketPlayerUtil.playerEntityForId(server, item.recipient);
+			var player = MarketPlayerUtil.getPlayerEntityForId(server, item.recipient);
 			var playerIsOnline = player != null;
 
 			return playerIsOnline;
@@ -61,7 +61,7 @@ public final class MailTransitUtil {
 
 		itemsOutForDelivery.forEach(item -> {
 			var playerId = item.recipient;
-			var playerName = MarketPlayerUtil.playerNameForId(server, playerId);
+			var playerName = MarketPlayerUtil.getPlayerNameForId(server, playerId);
 
 			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
 
@@ -101,7 +101,7 @@ public final class MailTransitUtil {
 	// Delivery
 
 	private static boolean deliverTransitItem(MinecraftServer server, MailTransitItem item) {
-		var player = MarketPlayerUtil.playerEntityForId(server, item.recipient);
+		var player = MarketPlayerUtil.getPlayerEntityForId(server, item.recipient);
 
 		if (player == null) {
 			Commercialize.LOGGER.warn("Could not find offline player '{}' for mail delivery.", item.recipient);
@@ -113,12 +113,12 @@ public final class MailTransitUtil {
 
 	// Dispatch
 
-	public static boolean packageAndDispatchItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
-			DefaultedList<ItemStack> itemStacks, Text message, Text sender) {
+	public static boolean packageAndDispatchItemStacksToPlayer(MinecraftServer server, UUID playerId, DefaultedList<ItemStack> itemStacks,
+			Text message, Text sender) {
 		var world = server.getOverworld();
 		var time = world.getTimeOfDay();
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
-		var item = new MailTransitItem(time, player.getUuid(), packagedOrder);
+		var item = new MailTransitItem(time, playerId, packagedOrder);
 
 		Commercialize.MAIL_TRANSIT_MANAGER.pushItem(item);
 		return true;

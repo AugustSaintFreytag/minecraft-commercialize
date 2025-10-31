@@ -3,6 +3,8 @@ package net.saint.commercialize.data.market;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.commercialize.data.mail.MailTransitItem;
@@ -10,15 +12,15 @@ import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketPlayerUtil {
 
-	public static UUID playerIdFromItems(MinecraftServer server, List<MailTransitItem> items) {
-		if (items.isEmpty()) {
-			return null;
-		}
+	// Player Validation
 
-		return items.get(0).recipient;
+	public static boolean isKnownPlayerId(MinecraftServer server, UUID playerId) {
+		return getPlayerProfileForId(server, playerId) != null;
 	}
 
-	public static String playerNameForId(MinecraftServer server, UUID playerId) {
+	// Player Name
+
+	public static String getPlayerNameForId(MinecraftServer server, UUID playerId) {
 		var playerProfile = server.getUserCache().getByUuid(playerId);
 
 		if (!playerProfile.isPresent()) {
@@ -28,12 +30,40 @@ public final class MarketPlayerUtil {
 		return playerProfile.get().getName();
 	}
 
-	public static ServerPlayerEntity playerEntityForId(MinecraftServer server, UUID playerId) {
+	// Player Id
+
+	public static ServerPlayerEntity getPlayerEntityForId(MinecraftServer server, UUID playerId) {
 		if (playerId == null) {
 			return null;
 		}
 
 		return server.getPlayerManager().getPlayer(playerId);
+	}
+
+	// Player Profile
+
+	public static GameProfile getPlayerProfileForId(MinecraftServer server, UUID playerId) {
+		if (playerId == null) {
+			return null;
+		}
+
+		var optionalProfile = server.getUserCache().getByUuid(playerId);
+
+		if (optionalProfile.isPresent()) {
+			return optionalProfile.get();
+		}
+
+		return null;
+	}
+
+	// Recipient
+
+	public static UUID getPlayerIdAsRecipientFromItems(MinecraftServer server, List<MailTransitItem> items) {
+		if (items.isEmpty()) {
+			return null;
+		}
+
+		return items.get(0).recipient;
 	}
 
 }
