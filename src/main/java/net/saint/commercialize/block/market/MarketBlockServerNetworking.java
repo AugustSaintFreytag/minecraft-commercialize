@@ -305,10 +305,11 @@ public final class MarketBlockServerNetworking {
 
 		}
 
+		var playerId = player.getUuid();
 		var packageMessage = textForPackagedDelivery(itemStacks);
 		var packageSender = Text.translatable(LocalizationUtil.key("text", "delivery.market"));
 
-		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, player, itemStacks, packageMessage, packageSender);
+		return MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, playerId, itemStacks, packageMessage, packageSender);
 	}
 
 	private static Text textForPackagedDelivery(List<ItemStack> itemStacks) {
@@ -395,7 +396,7 @@ public final class MarketBlockServerNetworking {
 				continue;
 			}
 
-			var seller = MarketPlayerUtil.playerEntityForId(server, offer.sellerId);
+			var seller = MarketPlayerUtil.getPlayerEntityForId(server, offer.sellerId);
 
 			if (seller == null) {
 				Commercialize.LOGGER.error("Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",

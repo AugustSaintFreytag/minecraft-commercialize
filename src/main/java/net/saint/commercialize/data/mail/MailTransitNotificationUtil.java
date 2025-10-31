@@ -91,9 +91,9 @@ public final class MailTransitNotificationUtil {
 
 	private static void withOnlinePlayerParametersForItems(MinecraftServer server, List<MailTransitItem> items,
 			Consumer<PlayerParameters> block) {
-		var playerId = MarketPlayerUtil.playerIdFromItems(server, items);
-		var playerName = MarketPlayerUtil.playerNameForId(server, playerId);
-		var player = MarketPlayerUtil.playerEntityForId(server, playerId);
+		var playerId = MarketPlayerUtil.getPlayerIdAsRecipientFromItems(server, items);
+		var playerName = MarketPlayerUtil.getPlayerNameForId(server, playerId);
+		var player = MarketPlayerUtil.getPlayerEntityForId(server, playerId);
 
 		if (player == null) {
 			// Player is offline, can not message.
