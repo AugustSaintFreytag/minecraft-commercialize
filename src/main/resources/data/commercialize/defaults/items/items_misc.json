@@ -1,6 +1,7 @@
 {
 	"values": {
-		"create:cinder_flour": 4,
+		"create:cinder_flour": 8,
+		"create:wheat_flour": 12,
 		"create_bic_bit:frying_oil_bottle": 56,
 		"createaddition:biomass": 18,
 		"createfood:salt": 14,
