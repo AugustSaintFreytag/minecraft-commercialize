@@ -1,5 +1,7 @@
 {
 	"values": {
+		"caligo:dripleaf_vines": 10,
+		"caligo:lush_marigold": 8,
 		"caligo:petunia": 14,
 		"dawnoftimebuilder:maple_red_sapling": 16,
 		"deeperdarker:echo_sapling": 18,
