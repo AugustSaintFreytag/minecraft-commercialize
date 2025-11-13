@@ -3,19 +3,26 @@ package net.saint.commercialize.init;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.mojang.brigadier.arguments.BoolArgumentType;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
+import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
+import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil.ShippingTickResult;
+import net.saint.commercialize.util.WorldUtil;
 
 public final class ModCommands {
 
 	// Configuration
 
 	private static final int NUMBER_OF_GENERATIONS_PER_COMMAND = 4;
+	private static final int CHUNK_RADIUS_FOR_ENTITY_INTERACTION = 4;
 
 	// Init
 
@@ -97,6 +104,42 @@ public final class ModCommands {
 							+ " new market offer(s), configured cap: " + Commercialize.CONFIG.maxNumberOfOffers + " offer(s)."), true);
 					return 1;
 				}))
+
+				.then(literal("cycleNearbyShippingBoxes").requires(source -> source.hasPermissionLevel(4))
+						.then(argument("player", EntityArgumentType.player()).executes(context -> {
+							var world = context.getSource().getWorld();
+							var player = EntityArgumentType.getPlayer(context, "player");
+							var playerPosition = player.getBlockPos();
+							var numberOfSuccessfullyTickedShippingBoxes = new AtomicInteger(0);
+							var numberOfFailedTickedShippingBoxes = new AtomicInteger(0);
+
+							WorldUtil.forEachChunkAroundPosition(world, playerPosition, CHUNK_RADIUS_FOR_ENTITY_INTERACTION, chunk -> {
+								WorldUtil.forEachBlockEntityInChunk(chunk, ShippingBlockEntity.class, blockEntity -> {
+									ShippingExchangeTickingUtil.tickShipping(world, blockEntity, result -> {
+										if (result == ShippingTickResult.SOLD) {
+											numberOfSuccessfullyTickedShippingBoxes.getAndIncrement();
+										} else if (result == ShippingTickResult.FAILURE) {
+											numberOfFailedTickedShippingBoxes.getAndIncrement();
+										}
+									});
+								});
+							});
+
+							var totalNumberOfTickedShippingBoxes = numberOfSuccessfullyTickedShippingBoxes.get()
+									+ numberOfFailedTickedShippingBoxes.get();
+
+							if (totalNumberOfTickedShippingBoxes > 0) {
+								context.getSource()
+										.sendFeedback(
+												() -> Text.literal("Ticked " + numberOfSuccessfullyTickedShippingBoxes.get()
+														+ " shipping boxes (" + numberOfFailedTickedShippingBoxes.get() + " failed)."),
+												true);
+							} else {
+								context.getSource().sendFeedback(() -> Text.literal("No shipping boxes found in vicinity."), true);
+							}
+
+							return 1;
+						})))
 
 				.then(literal("doOfferTicking").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("state", BoolArgumentType.bool())).executes(context -> {
