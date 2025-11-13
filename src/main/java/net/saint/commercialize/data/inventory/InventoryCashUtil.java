@@ -38,11 +38,21 @@ public class InventoryCashUtil {
 		return totalValue;
 	}
 
-	private static int getCurrencyValueInInventory(Inventory inventory) {
-		var totalValue = 0;
+	public static int getCurrencyValueInInventory(Inventory inventory) {
+		var itemStacks = new ArrayList<ItemStack>();
 
 		for (var slot = 0; slot < inventory.size(); slot++) {
-			var itemStack = inventory.getStack(slot);
+			itemStacks.add(inventory.getStack(slot));
+		}
+
+		return getCurrencyValueInList(itemStacks);
+	}
+
+	public static int getCurrencyValueInList(List<ItemStack> itemStacks) {
+		var totalValue = 0;
+
+		for (var slot = 0; slot < itemStacks.size(); slot++) {
+			var itemStack = itemStacks.get(slot);
 
 			if (itemStack.isEmpty()) {
 				continue;
