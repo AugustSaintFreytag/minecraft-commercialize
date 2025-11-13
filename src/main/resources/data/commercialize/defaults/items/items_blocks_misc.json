@@ -1,5 +1,6 @@
 {
 	"values": {
+		"minecraft:bone_block": 144,
 		"minecraft:bricks": 46,
 		"minecraft:clay": 40,
 		"minecraft:coarse_dirt": 1,

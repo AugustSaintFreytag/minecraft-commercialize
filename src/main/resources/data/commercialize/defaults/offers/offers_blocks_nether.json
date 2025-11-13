@@ -85,12 +85,6 @@
 			"stack": "4-16"
 		},
 		{
-			"availability": "uncommon",
-			"item": "betternether:bone_block",
-			"markup": "2.8",
-			"stack": "8-32"
-		},
-		{
 			"availability": "extremelyRare",
 			"item": "betternether:anchor_tree_log",
 			"markup": "4.0",
