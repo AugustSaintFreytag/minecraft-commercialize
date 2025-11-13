@@ -73,6 +73,12 @@
 			"stack": "16-64"
 		},
 		{
+			"availability": "common",
+			"item": "minecraft:book",
+			"markup": "2.0",
+			"stack": "8-64"
+		},
+		{
 			"availability": "extremelyRare",
 			"item": "galosphere:allurite_shard",
 			"markup": "5.0",
@@ -83,6 +89,12 @@
 			"item": "galosphere:lumiere_shard",
 			"markup": "5.0",
 			"stack": "1-4"
+		},
+		{
+			"availability": "uncommon",
+			"item": "immersive_furniture:crafting_material",
+			"markup": "2.0",
+			"stack": "2-32"
 		}
 	]
 }

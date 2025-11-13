@@ -1,5 +1,7 @@
 {
 	"values": {
+		"caligo:dripleaf_vines": 10,
+		"caligo:lush_marigold": 8,
 		"caligo:petunia": 14,
 		"dawnoftimebuilder:maple_red_sapling": 16,
 		"deeperdarker:echo_sapling": 18,
@@ -36,10 +38,12 @@
 		"minecraft:large_fern": 4,
 		"minecraft:lilac": 8,
 		"minecraft:lily_of_the_valley": 6,
-		"minecraft:lily_pad": 12,
+		"minecraft:lily_pad": 10,
 		"minecraft:mangrove_propagule": 2,
+		"minecraft:mangrove_roots": 2,
 		"minecraft:moss_block": 8,
 		"minecraft:moss_carpet": 4,
+		"minecraft:muddy_mangrove_roots": 2,
 		"minecraft:nether_sprouts": 6,
 		"minecraft:oak_sapling": 1,
 		"minecraft:orange_tulip": 4,

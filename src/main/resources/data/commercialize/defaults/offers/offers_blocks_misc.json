@@ -83,6 +83,12 @@
 			"item": "minecraft:mud_bricks",
 			"markup": "2.0",
 			"stack": "8-64"
+		},
+		{
+			"availability": "uncommon",
+			"item": "minecraft:bone_block",
+			"markup": "2.6",
+			"stack": "4-32"
 		}
 	]
 }
