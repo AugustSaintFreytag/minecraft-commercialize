@@ -69,10 +69,26 @@ public final class ShippingExchangeTickingUtil {
 				return;
 			}
 
-			Commercialize.LOGGER.warn("Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.",
+			Commercialize.LOGGER.info("Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.", saleValue,
 					boundBankAccount.getLabel(), boundAccountId);
 
+			var preDepositBalance = boundBankAccount.getBalance();
 			BankAccountAccessUtil.depositAccountBalanceForCard(paymentCard, saleValue);
+			var postDepositBalance = boundBankAccount.getBalance();
+
+			if (preDepositBalance + saleValue != postDepositBalance) {
+				Commercialize.LOGGER.error(
+						"Bank account '{}' ({}) balance did not update correctly after depositing {} ¤ from shipping block payment card. "
+								+ "Pre-deposit balance: {} ¤, post-deposit balance: {} ¤.",
+						boundBankAccount.getLabel(), boundAccountId, saleValue, preDepositBalance, postDepositBalance);
+				callback.accept(ShippingTickResult.FAILURE);
+				return;
+			}
+
+			Commercialize.LOGGER.info(
+					"Sold {} item(s) from shipping block, deposited {} ¤ to bank account '{}' ({}) from shipping block payment card.",
+					result.items.size(), saleValue, boundBankAccount.getLabel(), boundAccountId);
+
 			removeItemsForShippingFromInventory(world, inventory, true);
 
 			callback.accept(ShippingTickResult.SOLD);
@@ -84,6 +100,10 @@ public final class ShippingExchangeTickingUtil {
 		removeItemsForShippingFromInventory(world, inventory, true);
 		var remainingCurrencyItems = InventoryCashUtil.addCurrencyToInventory(inventory.main, saleValue);
 		dropItemStacksInWorld(world, blockEntity.getPos(), remainingCurrencyItems);
+
+		Commercialize.LOGGER.info(
+				"Sold {} item(s) from shipping block, paid out {} ¤ in cash ({} ¤ dropped in world due to full inventory).",
+				result.items.size(), saleValue, InventoryCashUtil.getCurrencyValueInList(remainingCurrencyItems));
 
 		callback.accept(ShippingTickResult.SOLD);
 	}
