@@ -1,11 +1,13 @@
 package net.saint.commercialize.init;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -25,17 +27,20 @@ public final class ModBlocks {
 	// Init
 
 	public static void initialize() {
-		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID,
-				new MarketBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().luminance(1)
-						.sounds(BlockSoundGroup.METAL)));
+		MARKET_BLOCK = registerBlockAndItem(MarketBlock.ID, new MarketBlock(
+				FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().luminance(1).sounds(BlockSoundGroup.METAL)));
 
 		SHIPPING_BLOCK = registerBlockAndItem(ShippingBlock.ID,
-				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque()
-						.sounds(BlockSoundGroup.METAL)));
+				new ShippingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
 
 		POSTING_BLOCK = registerBlockAndItem(PostingBlock.ID,
-				new PostingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque()
-						.sounds(BlockSoundGroup.METAL)));
+				new PostingBlock(FabricBlockSettings.create().strength(1.0f, 3600000.0f).nonOpaque().sounds(BlockSoundGroup.METAL)));
+
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> {
+			content.add(MARKET_BLOCK);
+			content.add(SHIPPING_BLOCK);
+			content.add(POSTING_BLOCK);
+		});
 	}
 
 	public static void initializeRenderLayers() {
