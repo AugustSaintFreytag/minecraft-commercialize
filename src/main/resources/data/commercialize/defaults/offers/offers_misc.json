@@ -73,6 +73,12 @@
 			"stack": "16-64"
 		},
 		{
+			"availability": "common",
+			"item": "minecraft:book",
+			"markup": "2.0",
+			"stack": "8-64"
+		},
+		{
 			"availability": "extremelyRare",
 			"item": "galosphere:allurite_shard",
 			"markup": "5.0",
