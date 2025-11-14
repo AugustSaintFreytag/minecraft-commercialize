@@ -21,7 +21,7 @@ public final class ShippingScreenUtil {
 	}
 
 	public static int totalSaleValueForItemsInInventory(ShippingBlockInventory inventory) {
-		return ItemSaleValueUtil.approximateSaleValueForItems(inventory.getItemStacks());
+		return ItemSaleValueUtil.getApproximateSaleValueForItems(inventory.getItemStacks());
 	}
 
 	// Shipping

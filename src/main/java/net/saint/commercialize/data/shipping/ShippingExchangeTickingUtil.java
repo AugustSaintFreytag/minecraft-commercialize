@@ -131,7 +131,7 @@ public final class ShippingExchangeTickingUtil {
 
 		for (var slot : ShippingBlockInventory.MAIN_SLOTS) {
 			var itemStack = inventory.getStack(slot);
-			var stackValue = ItemSaleValueUtil.valueForItemStack(itemStack);
+			var stackValue = ItemSaleValueUtil.getValueForItemStack(itemStack);
 
 			// Item has no value and can not be sold.
 			if (stackValue == 0) {

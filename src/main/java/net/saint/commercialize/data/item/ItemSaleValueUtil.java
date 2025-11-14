@@ -13,7 +13,7 @@ public final class ItemSaleValueUtil {
 	/**
 	 * Returns the total value for the provided item stack.
 	 */
-	public static int valueForItemStack(ItemStack itemStack) {
+	public static int getValueForItemStack(ItemStack itemStack) {
 		var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
 		var itemValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
 		var stackValue = itemValue * itemStack.getCount();
@@ -31,11 +31,11 @@ public final class ItemSaleValueUtil {
 	 * 
 	 * Intended for client-side presentation only.
 	 */
-	public static int approximateSaleValueForItems(List<ItemStack> itemStacks) {
+	public static int getApproximateSaleValueForItems(List<ItemStack> itemStacks) {
 		var totalValue = 0;
 
 		for (var itemStack : itemStacks) {
-			var stackValue = valueForItemStack(itemStack);
+			var stackValue = getValueForItemStack(itemStack);
 			var stackSaleValue = stackValue * Commercialize.CONFIG.sellingPriceFactor;
 
 			totalValue += stackSaleValue;
