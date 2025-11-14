@@ -5,6 +5,7 @@ import static net.saint.commercialize.util.Values.returnIfPresent;
 
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.entity.player.PlayerEntity;
@@ -73,7 +74,7 @@ public final class BankAccountAccessUtil {
 			return null;
 		}
 
-		var account = Numismatics.BANK.getAccount(boundAccountId);
+		var account = Numismatics.BANK.getOrCreateAccount(boundAccountId, Type.PLAYER);
 
 		if (account == null) {
 			Commercialize.LOGGER.warn("Could not access bank account for card bound to account id '{}'.", boundAccountId);
