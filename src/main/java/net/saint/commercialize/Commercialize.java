@@ -32,6 +32,7 @@ import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
+import net.saint.commercialize.util.database.DatabaseManager;
 
 public class Commercialize implements ModInitializer {
 
@@ -46,6 +47,7 @@ public class Commercialize implements ModInitializer {
 
 	public static CommercializeConfig CONFIG;
 
+	public static DatabaseManager DATABASE_MANAGER;
 	public static ItemManager ITEM_MANAGER;
 	public static OfferTemplateManager OFFER_TEMPLATE_MANAGER;
 	public static PlayerTemplateManager PLAYER_TEMPLATE_MANAGER;
@@ -94,6 +96,8 @@ public class Commercialize implements ModInitializer {
 			MARKET_OFFER_MANAGER.STATE_MODIFIED.register(manager -> {
 				MARKET_OFFER_CACHE_MANAGER.clear();
 			});
+
+			DATABASE_MANAGER = new DatabaseManager(server);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -110,6 +114,10 @@ public class Commercialize implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			var player = handler.getPlayer();
 			ItemManagerNetworking.syncItemRegistryToPlayer(player);
+		});
+
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			DATABASE_MANAGER.tearDown();
 		});
 	}
 
