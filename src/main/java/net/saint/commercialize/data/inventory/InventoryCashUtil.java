@@ -39,25 +39,14 @@ public class InventoryCashUtil {
 	}
 
 	public static int getCurrencyValueInInventory(Inventory inventory) {
-		var itemStacks = new ArrayList<ItemStack>();
-
-		for (var slot = 0; slot < inventory.size(); slot++) {
-			itemStacks.add(inventory.getStack(slot));
-		}
-
+		var itemStacks = InventoryItemUtil.itemStackListFromInventory(inventory);
 		return getCurrencyValueInList(itemStacks);
 	}
 
 	public static int getCurrencyValueInList(List<ItemStack> itemStacks) {
 		var totalValue = 0;
 
-		for (var slot = 0; slot < itemStacks.size(); slot++) {
-			var itemStack = itemStacks.get(slot);
-
-			if (itemStack.isEmpty()) {
-				continue;
-			}
-
+		for (var itemStack : itemStacks) {
 			var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
 			var currencyValue = Currency.CURRENCY_VALUES.getOrDefault(itemIdentifier, 0);
 
