@@ -4,7 +4,7 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
-import net.saint.commercialize.data.item.ItemSalePriceUtil;
+import net.saint.commercialize.data.item.ItemSaleValueUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -21,7 +21,7 @@ public final class ShippingScreenUtil {
 	}
 
 	public static int totalSaleValueForItemsInInventory(ShippingBlockInventory inventory) {
-		return ItemSalePriceUtil.totalSaleValueForItems(inventory.getItemStacks());
+		return ItemSaleValueUtil.approximateSaleValueForItems(inventory.getItemStacks());
 	}
 
 	// Shipping
