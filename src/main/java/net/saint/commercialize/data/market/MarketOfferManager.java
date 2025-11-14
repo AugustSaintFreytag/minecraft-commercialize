@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
@@ -22,7 +21,7 @@ public final class MarketOfferManager extends PersistentState {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market_offer_manager");
+	public static final String NAME = Commercialize.MOD_ID + "_market";
 
 	// Properties
 
@@ -40,7 +39,7 @@ public final class MarketOfferManager extends PersistentState {
 
 	public static MarketOfferManager loadFromServer(MinecraftServer server) {
 		var persistentStateManager = server.getOverworld().getPersistentStateManager();
-		var state = persistentStateManager.getOrCreate(MarketOfferManager::fromNbt, MarketOfferManager::new, ID.toString());
+		var state = persistentStateManager.getOrCreate(MarketOfferManager::fromNbt, MarketOfferManager::new, NAME);
 
 		return state;
 	}
