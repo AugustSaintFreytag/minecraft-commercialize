@@ -12,6 +12,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.ShippingBlockEntity;
+import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil.ShippingTickResult;
@@ -154,19 +155,29 @@ public final class ModCommands {
 				// Mail
 
 				.then(literal("clearGlobalMailQueue").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+					var server = context.getSource().getServer();
+					var numberOfMailInTransit = Commercialize.MAIL_TRANSIT_MANAGER.getItems().count();
+					MailTransitUtil.forceDeliverAllMailTransitItems(server);
+					var numberOfMailDelivered = numberOfMailInTransit - Commercialize.MAIL_TRANSIT_MANAGER.getItems().count();
+
 					Commercialize.MAIL_TRANSIT_MANAGER.clearItems();
-					context.getSource().sendFeedback(() -> Text.literal("Mail transit queue cleared for all players."), true);
+					context.getSource()
+							.sendFeedback(() -> Text.literal(
+									"Mail transit queue cleared for all players (" + numberOfMailDelivered + " item(s) force-delivered)."),
+									true);
 					return 1;
 				}))
 
 				.then(literal("clearMailQueue").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player()).executes(context -> {
+							var server = context.getSource().getServer();
 							var player = EntityArgumentType.getPlayer(context, "player");
 							var pendingTransitItems = Commercialize.MAIL_TRANSIT_MANAGER.getItems().filter(transitItem -> {
 								return transitItem.recipient == player.getUuid();
 							});
 
 							pendingTransitItems.forEach(transitItem -> {
+								MailTransitUtil.deliverMailTransitItem(server, transitItem);
 								Commercialize.MAIL_TRANSIT_MANAGER.removeItem(transitItem);
 							});
 
