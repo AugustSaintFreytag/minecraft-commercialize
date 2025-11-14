@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.saint.commercialize.Commercialize;
 
@@ -17,7 +16,7 @@ public final class MailTransitManager extends PersistentState {
 
 	// Configuration
 
-	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "mail_transit_manager");
+	public static final String NAME = Commercialize.MOD_ID + "_mail";
 
 	// Properties
 
@@ -27,7 +26,7 @@ public final class MailTransitManager extends PersistentState {
 
 	public static MailTransitManager loadFromServer(MinecraftServer server) {
 		var persistentStateManager = server.getOverworld().getPersistentStateManager();
-		var state = persistentStateManager.getOrCreate(MailTransitManager::fromNbt, MailTransitManager::new, ID.toString());
+		var state = persistentStateManager.getOrCreate(MailTransitManager::fromNbt, MailTransitManager::new, NAME);
 
 		return state;
 	}
