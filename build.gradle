@@ -51,6 +51,10 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	// JDBC
+
+	implementation("org.xerial:sqlite-jdbc:${jdbc_version}")
+
 	// Create: Numismatics
 	
 	// Disabled transitive: modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
