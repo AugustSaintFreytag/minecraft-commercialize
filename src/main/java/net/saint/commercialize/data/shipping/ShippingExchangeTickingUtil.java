@@ -6,9 +6,7 @@ import java.util.function.Consumer;
 
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
@@ -16,12 +14,14 @@ import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
+import net.saint.commercialize.data.item.ItemListUtil;
+import net.saint.commercialize.data.item.ItemSaleValueUtil;
 
 public final class ShippingExchangeTickingUtil {
 
 	// Library
 
-	public record ShippingRemovalResult(List<ItemStack> items, int totalValue) {
+	public record ShippingAssortment(List<ItemStack> items, List<Integer> slots, int value) {
 	}
 
 	public enum ShippingTickResult {
@@ -44,15 +44,14 @@ public final class ShippingExchangeTickingUtil {
 		// Pay out owed value to player in cash or account balance depending on card.
 
 		var inventory = blockEntity.inventory;
-		var result = removeItemsForShippingFromInventory(world, inventory, false);
-		var itemValue = result.totalValue;
+		var assortment = prepareItemsForShippingFromInventory(world, inventory);
 
-		if (itemValue == 0) {
+		if (assortment.value == 0) {
 			callback.accept(ShippingTickResult.NO_ITEMS);
 			return;
 		}
 
-		var saleValue = (int) (itemValue * Commercialize.CONFIG.sellingPriceFactor * randomSellingPriceJitterFactor(world));
+		var saleValue = (int) (assortment.value * Commercialize.CONFIG.sellingPriceFactor * randomSellingPriceJitterFactor(world));
 		var paymentCard = blockEntity.inventory.getCardStack();
 		var playerHasPaymentCard = !paymentCard.isEmpty();
 
@@ -69,8 +68,9 @@ public final class ShippingExchangeTickingUtil {
 				return;
 			}
 
+			var bankAccountOwnerName = BankAccountAccessUtil.getOwnerNameForBankAccount(world.getServer(), boundBankAccount);
 			Commercialize.LOGGER.info("Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.", saleValue,
-					boundBankAccount.getLabel(), boundAccountId);
+					bankAccountOwnerName, boundAccountId);
 
 			var preDepositBalance = boundBankAccount.getBalance();
 			BankAccountAccessUtil.depositAccountBalanceForCard(paymentCard, saleValue);
@@ -80,16 +80,16 @@ public final class ShippingExchangeTickingUtil {
 				Commercialize.LOGGER.error(
 						"Bank account '{}' ({}) balance did not update correctly after depositing {} ¤ from shipping block payment card. "
 								+ "Pre-deposit balance: {} ¤, post-deposit balance: {} ¤.",
-						boundBankAccount.getLabel(), boundAccountId, saleValue, preDepositBalance, postDepositBalance);
+						bankAccountOwnerName, boundAccountId, saleValue, preDepositBalance, postDepositBalance);
 				callback.accept(ShippingTickResult.FAILURE);
 				return;
 			}
 
+			removeItemsForShippingFromInventory(inventory, assortment);
+
 			Commercialize.LOGGER.info(
 					"Sold {} item(s) from shipping block, deposited {} ¤ to bank account '{}' ({}) from shipping block payment card.",
-					result.items.size(), saleValue, boundBankAccount.getLabel(), boundAccountId);
-
-			removeItemsForShippingFromInventory(world, inventory, true);
+					assortment.items.size(), saleValue, bankAccountOwnerName, boundAccountId);
 
 			callback.accept(ShippingTickResult.SOLD);
 			return;
@@ -97,63 +97,60 @@ public final class ShippingExchangeTickingUtil {
 
 		// Deposit in Cash
 
-		removeItemsForShippingFromInventory(world, inventory, true);
+		removeItemsForShippingFromInventory(inventory, assortment);
+
 		var remainingCurrencyItems = InventoryCashUtil.addCurrencyToInventory(inventory.main, saleValue);
 		dropItemStacksInWorld(world, blockEntity.getPos(), remainingCurrencyItems);
 
-		Commercialize.LOGGER.info(
-				"Sold {} item(s) from shipping block, paid out {} ¤ in cash ({} ¤ dropped in world due to full inventory).",
-				result.items.size(), saleValue, InventoryCashUtil.getCurrencyValueInList(remainingCurrencyItems));
+		if (remainingCurrencyItems.size() > 0) {
+			Commercialize.LOGGER.info(
+					"Sold {} item(s) from shipping block, paid out {} ¤ in cash ({} ¤ dropped in world due to full inventory).",
+					assortment.items.size(), saleValue, InventoryCashUtil.getCurrencyValueInList(remainingCurrencyItems));
+		} else {
+			Commercialize.LOGGER.info("Sold {} item(s) from shipping block, paid out {} ¤ in cash.", assortment.items.size(), saleValue);
+		}
 
 		callback.accept(ShippingTickResult.SOLD);
 	}
 
 	private static void dropItemStacksInWorld(World world, BlockPos position, List<ItemStack> itemStacks) {
-		var itemList = itemListFromItemStacks(itemStacks);
+		var itemList = ItemListUtil.defauledItemStackListFromList(itemStacks);
 		ItemScatterer.spawn(world, position, itemList);
-	}
-
-	private static DefaultedList<ItemStack> itemListFromItemStacks(List<ItemStack> itemStacks) {
-		var items = DefaultedList.ofSize(itemStacks.size(), ItemStack.EMPTY);
-
-		for (int i = 0; i < itemStacks.size(); i++) {
-			items.set(i, itemStacks.get(i));
-		}
-
-		return items;
 	}
 
 	private static double randomSellingPriceJitterFactor(World world) {
 		return 1 + world.getRandom().nextTriangular(0, 0.05);
 	}
 
-	public static ShippingRemovalResult removeItemsForShippingFromInventory(World world, ShippingBlockInventory inventory,
-			boolean shouldRemove) {
-		var pendingItems = new ArrayList<ItemStack>();
+	// Shipping Assortment
+
+	public static ShippingAssortment prepareItemsForShippingFromInventory(World world, ShippingBlockInventory inventory) {
+		var slots = new ArrayList<Integer>();
+		var itemStacks = new ArrayList<ItemStack>();
 		var totalValue = 0;
 
 		for (var slot : ShippingBlockInventory.MAIN_SLOTS) {
 			var itemStack = inventory.getStack(slot);
-			var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
-			var itemValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
+			var stackValue = ItemSaleValueUtil.getValueForItemStack(itemStack);
 
 			// Item has no value and can not be sold.
-			if (itemValue == 0) {
+			if (stackValue == 0) {
 				continue;
 			}
 
-			// Item has value and will be sold.
-			pendingItems.add(itemStack);
-			totalValue += itemValue;
-
-			// Item stack can be removed from inventory.
-			if (shouldRemove) {
-				inventory.removeStack(slot);
-				inventory.markDirty();
-			}
+			slots.add(slot);
+			itemStacks.add(itemStack);
+			totalValue += stackValue;
 		}
 
-		return new ShippingRemovalResult(pendingItems, totalValue);
+		return new ShippingAssortment(itemStacks, slots, totalValue);
+	}
+
+	public static void removeItemsForShippingFromInventory(ShippingBlockInventory inventory, ShippingAssortment assortment) {
+		for (var slot : assortment.slots) {
+			inventory.removeStack(slot);
+			inventory.markDirty();
+		}
 	}
 
 }

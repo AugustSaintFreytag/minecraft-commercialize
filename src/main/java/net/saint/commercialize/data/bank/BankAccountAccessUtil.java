@@ -5,11 +5,14 @@ import static net.saint.commercialize.util.Values.returnIfPresent;
 
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 
 public final class BankAccountAccessUtil {
 
@@ -59,6 +62,10 @@ public final class BankAccountAccessUtil {
 		return CardItem.getPlayerName(itemStack);
 	}
 
+	public static String getOwnerNameForBankAccount(MinecraftServer server, BankAccount account) {
+		return PlayerProfileAccessUtil.getPlayerNameById(server, account.id);
+	}
+
 	public static BankAccount getBankAccountForCard(ItemStack itemStack) {
 		var boundAccountId = CardItem.get(itemStack);
 
@@ -67,7 +74,7 @@ public final class BankAccountAccessUtil {
 			return null;
 		}
 
-		var account = Numismatics.BANK.getAccount(boundAccountId);
+		var account = Numismatics.BANK.getOrCreateAccount(boundAccountId, Type.PLAYER);
 
 		if (account == null) {
 			Commercialize.LOGGER.warn("Could not access bank account for card bound to account id '{}'.", boundAccountId);
@@ -86,7 +93,7 @@ public final class BankAccountAccessUtil {
 		var account = Numismatics.BANK.getAccount(player);
 
 		if (account == null) {
-			Commercialize.LOGGER.warn("Could not access bank account for player '{}'.", player.getId());
+			Commercialize.LOGGER.warn("Could not access bank account for player '{}' ({}).", player.getName().getString(), player.getId());
 			return null;
 		}
 
