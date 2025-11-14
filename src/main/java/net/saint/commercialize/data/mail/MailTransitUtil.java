@@ -65,7 +65,7 @@ public final class MailTransitUtil {
 
 			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
 
-			if (!deliverTransitItem(server, item)) {
+			if (!deliverMailTransitItem(server, item)) {
 				item.timeLastDeliveryAttempted = time;
 				item.numberOfDeliveryAttempts++;
 
@@ -98,9 +98,26 @@ public final class MailTransitUtil {
 		}
 	}
 
+	public static void forceDeliverAllMailTransitItems(MinecraftServer server) {
+		Commercialize.MAIL_TRANSIT_MANAGER.getItems().forEach(item -> {
+			var playerName = MarketPlayerUtil.getPlayerNameForId(server, item.recipient);
+			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
+			var didDeliverItem = deliverMailTransitItem(server, item);
+
+			if (!didDeliverItem) {
+				Commercialize.LOGGER.warn("Could not force-deliver mail item with '{}' to mailbox of player '{}'.", itemStackDescriptions,
+						playerName);
+				return;
+			}
+
+			Commercialize.LOGGER.info("Force-delivered mail item with '{}' to mailbox of player '{}'.", itemStackDescriptions, playerName);
+			Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
+		});
+	}
+
 	// Delivery
 
-	private static boolean deliverTransitItem(MinecraftServer server, MailTransitItem item) {
+	public static boolean deliverMailTransitItem(MinecraftServer server, MailTransitItem item) {
 		var player = MarketPlayerUtil.getPlayerEntityForId(server, item.recipient);
 
 		if (player == null) {
