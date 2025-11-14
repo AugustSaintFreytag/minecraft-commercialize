@@ -136,15 +136,16 @@ public final class ShippingExchangeTickingUtil {
 			var itemStack = inventory.getStack(slot);
 			var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
 			var itemValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
+			var stackValue = itemValue * itemStack.getCount();
 
 			// Item has no value and can not be sold.
-			if (itemValue == 0) {
+			if (stackValue == 0) {
 				continue;
 			}
 
 			// Item has value and will be sold.
 			pendingItems.add(itemStack);
-			totalValue += itemValue;
+			totalValue += stackValue;
 
 			// Item stack can be removed from inventory.
 			if (shouldRemove) {
