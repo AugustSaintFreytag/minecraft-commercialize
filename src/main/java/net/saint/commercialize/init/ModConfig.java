@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.util.ConfigDefaultsUtil;
-import net.saint.commercialize.util.ConfigLoadUtil;
+import net.saint.commercialize.util.config.ConfigDefaultsUtil;
+import net.saint.commercialize.util.config.ConfigLoadUtil;
 
 public final class ModConfig {
 

@@ -13,7 +13,7 @@ import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.common.SelectDropdownComponent;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class PostingScreenUtil {
 

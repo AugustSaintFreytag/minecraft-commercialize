@@ -20,7 +20,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.screen.posting.PostingScreenHandler;
 import net.saint.commercialize.screen.posting.PostingScreenState;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class PostingBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
 

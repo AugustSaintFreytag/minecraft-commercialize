@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.util.localization;
 
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;

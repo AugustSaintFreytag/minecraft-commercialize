@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.util.models;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,29 +33,29 @@ public final class VoxelShapeUtil {
 		shape.forEachBox((x1, y1, z1, x2, y2, z2) -> {
 			double nx1, nz1, nx2, nz2;
 			switch (direction) {
-			case EAST:
-				nx1 = 1 - z2;
-				nz1 = x1;
-				nx2 = 1 - z1;
-				nz2 = x2;
-				break;
-			case SOUTH:
-				nx1 = 1 - x2;
-				nz1 = 1 - z2;
-				nx2 = 1 - x1;
-				nz2 = 1 - z1;
-				break;
-			case WEST:
-				nx1 = z1;
-				nz1 = 1 - x2;
-				nx2 = z2;
-				nz2 = 1 - x1;
-				break;
-			default:
-				nx1 = x1;
-				nz1 = z1;
-				nx2 = x2;
-				nz2 = z2;
+				case EAST:
+					nx1 = 1 - z2;
+					nz1 = x1;
+					nx2 = 1 - z1;
+					nz2 = x2;
+					break;
+				case SOUTH:
+					nx1 = 1 - x2;
+					nz1 = 1 - z2;
+					nx2 = 1 - x1;
+					nz2 = 1 - z1;
+					break;
+				case WEST:
+					nx1 = z1;
+					nz1 = 1 - x2;
+					nx2 = z2;
+					nz2 = 1 - x1;
+					break;
+				default:
+					nx1 = x1;
+					nz1 = z1;
+					nx2 = x2;
+					nz2 = z2;
 			}
 
 			result.set(VoxelShapes.union(result.get(), VoxelShapes.cuboid(nx1, y1, nz1, nx2, y2, nz2)));

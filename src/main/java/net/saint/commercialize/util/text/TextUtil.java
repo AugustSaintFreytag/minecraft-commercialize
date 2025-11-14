@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.util.text;
 
 import java.util.List;
 

@@ -38,7 +38,7 @@ import net.saint.commercialize.screen.market.components.CartListComponent;
 import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.screen.market.components.OfferListCapComponent;
 import net.saint.commercialize.screen.market.components.OfferListComponent;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 

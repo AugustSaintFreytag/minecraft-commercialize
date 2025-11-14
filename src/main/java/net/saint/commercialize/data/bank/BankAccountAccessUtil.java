@@ -1,7 +1,7 @@
 package net.saint.commercialize.data.bank;
 
-import static net.saint.commercialize.util.Values.ifPresent;
-import static net.saint.commercialize.util.Values.returnIfPresent;
+import static net.saint.commercialize.util.values.Values.ifPresent;
+import static net.saint.commercialize.util.values.Values.returnIfPresent;
 
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;

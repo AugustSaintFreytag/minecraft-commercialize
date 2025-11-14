@@ -1,6 +1,6 @@
 package net.saint.commercialize.data.offer;
 
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public enum OfferSortOrder {
 	ASCENDING, DESCENDING;
@@ -14,8 +14,8 @@ public enum OfferSortOrder {
 
 	public String description() {
 		return switch (this) {
-		case ASCENDING -> LocalizationUtil.localizedString("gui", "market.sort_order.ascending");
-		case DESCENDING -> LocalizationUtil.localizedString("gui", "market.sort_order.descending");
+			case ASCENDING -> LocalizationUtil.localizedString("gui", "market.sort_order.ascending");
+			case DESCENDING -> LocalizationUtil.localizedString("gui", "market.sort_order.descending");
 		};
 	}
 }

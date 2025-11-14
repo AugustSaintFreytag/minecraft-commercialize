@@ -1,7 +1,7 @@
 package net.saint.commercialize.block.market;
 
-import static net.saint.commercialize.util.Values.assertedValueInSequence;
-import static net.saint.commercialize.util.Values.nextValueInSequence;
+import static net.saint.commercialize.util.values.Values.assertedValueInSequence;
+import static net.saint.commercialize.util.values.Values.nextValueInSequence;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import net.saint.commercialize.data.offer.OfferSortMode;
 import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.screen.market.MarketScreenDelegate;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public interface MarketBlockScreenDelegateHandler extends MarketScreenDelegate {
 

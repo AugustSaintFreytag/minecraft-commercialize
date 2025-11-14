@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.util.world;
 
 import java.util.function.Consumer;
 

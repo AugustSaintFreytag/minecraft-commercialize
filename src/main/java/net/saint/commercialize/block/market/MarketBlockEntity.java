@@ -1,6 +1,6 @@
 package net.saint.commercialize.block.market;
 
-import static net.saint.commercialize.util.Values.returnIfPresentAsString;
+import static net.saint.commercialize.util.values.Values.returnIfPresentAsString;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

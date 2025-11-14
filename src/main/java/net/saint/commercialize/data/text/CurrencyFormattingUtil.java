@@ -1,6 +1,6 @@
 package net.saint.commercialize.data.text;
 
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class CurrencyFormattingUtil {
 

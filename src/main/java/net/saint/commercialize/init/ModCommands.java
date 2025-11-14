@@ -16,7 +16,7 @@ import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil.ShippingTickResult;
-import net.saint.commercialize.util.WorldUtil;
+import net.saint.commercialize.util.world.WorldUtil;
 
 public final class ModCommands {
 

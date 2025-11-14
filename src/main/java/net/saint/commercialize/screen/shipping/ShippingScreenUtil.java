@@ -7,7 +7,7 @@ import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.item.ItemSaleValueUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class ShippingScreenUtil {
 

@@ -15,7 +15,7 @@ import net.saint.commercialize.network.MarketC2SQueryMessage;
 import net.saint.commercialize.network.MarketC2SStateSyncMessage;
 import net.saint.commercialize.network.MarketS2CListMessage;
 import net.saint.commercialize.network.MarketS2COrderMessage;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class MarketScreenHandler implements MarketBlockScreenDelegateHandler {
 

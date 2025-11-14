@@ -1,6 +1,6 @@
 package net.saint.commercialize.data.offer;
 
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public enum OfferSortMode {
 
@@ -15,10 +15,10 @@ public enum OfferSortMode {
 
 	public String description() {
 		return switch (this) {
-		case ITEM_NAME -> LocalizationUtil.localizedString("gui", "market.sort_mode.item_name");
-		case TIME_POSTED -> LocalizationUtil.localizedString("gui", "market.sort_mode.time_posted");
-		case PRICE -> LocalizationUtil.localizedString("gui", "market.sort_mode.price");
-		case PLAYER_NAME -> LocalizationUtil.localizedString("gui", "market.sort_mode.player_name");
+			case ITEM_NAME -> LocalizationUtil.localizedString("gui", "market.sort_mode.item_name");
+			case TIME_POSTED -> LocalizationUtil.localizedString("gui", "market.sort_mode.time_posted");
+			case PRICE -> LocalizationUtil.localizedString("gui", "market.sort_mode.price");
+			case PLAYER_NAME -> LocalizationUtil.localizedString("gui", "market.sort_mode.player_name");
 		};
 	}
 

@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.text.TextFormattingUtil;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class LetterItem extends Item {
 

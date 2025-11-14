@@ -12,7 +12,7 @@ import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class MarketOfferTickingUtil {
 

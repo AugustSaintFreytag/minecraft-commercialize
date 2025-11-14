@@ -21,7 +21,7 @@ import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.icons.ScreenAssets;
 import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class MarketScreenUtil {
 

@@ -25,7 +25,7 @@ import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScreenHandler> {
 

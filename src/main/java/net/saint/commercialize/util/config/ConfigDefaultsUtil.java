@@ -1,4 +1,4 @@
-package net.saint.commercialize.util;
+package net.saint.commercialize.util.config;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -7,7 +7,7 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.screen.market.MarketScreenAssets;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class OfferListCapComponent extends FlowLayout {
 

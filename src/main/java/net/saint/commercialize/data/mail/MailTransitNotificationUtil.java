@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public final class MailTransitNotificationUtil {
 

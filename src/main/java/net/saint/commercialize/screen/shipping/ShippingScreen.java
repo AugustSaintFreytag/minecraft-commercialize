@@ -19,7 +19,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.gui.Components;
 import net.saint.commercialize.gui.Containers;
 import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScreenHandler> {
 

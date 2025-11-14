@@ -1,7 +1,7 @@
 package net.saint.commercialize.block.shipping;
 
-import static net.saint.commercialize.util.Values.ifPresent;
-import static net.saint.commercialize.util.Values.returnIfPresent;
+import static net.saint.commercialize.util.values.Values.ifPresent;
+import static net.saint.commercialize.util.values.Values.returnIfPresent;
 
 import java.util.List;
 import java.util.stream.Collectors;

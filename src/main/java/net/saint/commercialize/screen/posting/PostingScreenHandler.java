@@ -31,7 +31,7 @@ import net.saint.commercialize.screen.posting.PostingScreenActionNetworking.S2CP
 import net.saint.commercialize.screen.posting.PostingScreenStateNetworking.C2SStateRequestMessage;
 import net.saint.commercialize.screen.posting.PostingScreenStateNetworking.C2SStateSyncMessage;
 import net.saint.commercialize.screen.posting.PostingScreenStateNetworking.S2CStateSyncMessage;
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public class PostingScreenHandler extends ScreenHandler implements PostingScreenDelegateHandler {
 

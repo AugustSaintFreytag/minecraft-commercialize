@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.DoubleBlockWithEntity;
 import net.saint.commercialize.init.ModBlockEntities;
-import net.saint.commercialize.util.VoxelShapeUtil;
+import net.saint.commercialize.util.models.VoxelShapeUtil;
 
 public class MarketBlock extends DoubleBlockWithEntity {
 

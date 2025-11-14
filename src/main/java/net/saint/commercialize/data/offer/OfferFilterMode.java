@@ -1,6 +1,6 @@
 package net.saint.commercialize.data.offer;
 
-import net.saint.commercialize.util.LocalizationUtil;
+import net.saint.commercialize.util.localization.LocalizationUtil;
 
 public enum OfferFilterMode {
 	ALL, AFFORDABLE;
@@ -14,8 +14,8 @@ public enum OfferFilterMode {
 
 	public String description() {
 		return switch (this) {
-		case ALL -> LocalizationUtil.localizedString("gui", "market.filter_mode.all");
-		case AFFORDABLE -> LocalizationUtil.localizedString("gui", "market.filter_mode.affordable");
+			case ALL -> LocalizationUtil.localizedString("gui", "market.filter_mode.all");
+			case AFFORDABLE -> LocalizationUtil.localizedString("gui", "market.filter_mode.affordable");
 		};
 	}
 }
