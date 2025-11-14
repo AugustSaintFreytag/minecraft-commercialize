@@ -1,7 +1,12 @@
 package net.saint.commercialize.data.inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.collection.DefaultedList;
 
 public final class InventoryItemUtil {
 
@@ -9,7 +14,7 @@ public final class InventoryItemUtil {
 
 	private static final int ITEM_STACK_ANIMATION_TIME = 5;
 
-	// Logic
+	// Stack Movement
 
 	public static ItemStack addStack(Inventory inventory, ItemStack stack) {
 		if (stack.isEmpty()) {
@@ -45,6 +50,8 @@ public final class InventoryItemUtil {
 		stack.setBobbingAnimationTime(ITEM_STACK_ANIMATION_TIME);
 		inventory.markDirty();
 	}
+
+	// Slot Movement
 
 	private static void addToNewSlot(Inventory inventory, ItemStack stack) {
 		for (int i = 0; i < inventory.size(); ++i) {
@@ -88,6 +95,49 @@ public final class InventoryItemUtil {
 			source.setBobbingAnimationTime(ITEM_STACK_ANIMATION_TIME);
 
 			inventory.markDirty();
+		}
+	}
+
+	// Transformation
+
+	public static List<ItemStack> itemStackListFromInventory(Inventory inventory) {
+		var itemStacks = new ArrayList<ItemStack>();
+
+		for (int i = 0; i < inventory.size(); i++) {
+			var itemStack = inventory.getStack(i);
+
+			if (itemStack.isEmpty()) {
+				continue;
+			}
+
+			itemStacks.add(itemStack);
+		}
+
+		return itemStacks;
+	}
+
+	public static DefaultedList<ItemStack> defaultedItemStackListFromInventory(Inventory inventory) {
+		var itemStacks = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
+
+		for (int i = 0; i < inventory.size(); i++) {
+			var itemStack = inventory.getStack(i);
+			itemStacks.set(i, itemStack);
+		}
+
+		return itemStacks;
+	}
+
+	// Iteration
+
+	public static void forEachItemStackInInventory(Inventory inventory, BiConsumer<ItemStack, Integer> consumer) {
+		for (int i = 0; i < inventory.size(); i++) {
+			var itemStack = inventory.getStack(i);
+
+			if (itemStack.isEmpty()) {
+				continue;
+			}
+
+			consumer.accept(itemStack, i);
 		}
 	}
 
