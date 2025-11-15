@@ -65,6 +65,16 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("The maximum number of offers an individual player can post per in-game day. Limits reset at sunrise. (Default: 16)")
 	public int maxNumberOfPlayerOffersPerDay = 16;
 
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Allow generated and player-created offers to be purchased by simulated players. (Default: false)")
+	public boolean generateOfferSales = false;
+
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The chance that a generated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)")
+	public double offerSaleGenerationChance = 0.025;
+
 	// Payment
 
 	@ConfigEntry.Category("payment")
