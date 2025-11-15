@@ -19,6 +19,7 @@ import net.saint.commercialize.data.item.ItemManagerNetworking;
 import net.saint.commercialize.data.mail.MailTransitManager;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketAnalyticsManager;
+import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferCacheManager;
 import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
@@ -108,6 +109,7 @@ public class Commercialize implements ModInitializer {
 
 			MarketOfferTickingUtil.tickMarketOffersIfNecessary(world);
 			MailTransitUtil.tickMailTransitIfNecessary(world);
+			MarketAnalyticsUtil.tickMarketReportCompilationIfNecessary(world);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
