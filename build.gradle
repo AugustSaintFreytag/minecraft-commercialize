@@ -51,17 +51,16 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	// JDBC
-
+	// Database
 	implementation("org.xerial:sqlite-jdbc:${jdbc_version}")
+	implementation("org.jdbi:jdbi3-core:${jdbi_version}")
+	implementation("org.jdbi:jdbi3-sqlite:${jdbi_version}")
 
 	// Create: Numismatics
-	
 	// Disabled transitive: modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
 	modCompileOnly("maven.modrinth:numismatics:${project.numismatics_version}")
 
 	// Furniture Refurbished
-	
 	// Disabled transitive: modCompileOnly("curse.maven:framework-549225:${project.framework_version}")
 	modCompileOnly("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}")
 }
