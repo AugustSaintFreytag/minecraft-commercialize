@@ -21,9 +21,9 @@ import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
-import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.payment.PaymentMethod;
+import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.init.ModSounds;
 import net.saint.commercialize.network.MarketC2SOrderMessage;
@@ -370,7 +370,7 @@ public final class MarketBlockServerNetworking {
 			case INVENTORY:
 				return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 			case ACCOUNT:
-				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player.getUuid());
 			case SPECIFIED_ACCOUNT:
 				var heldItemStack = player.getMainHandStack();
 				return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
@@ -398,7 +398,7 @@ public final class MarketBlockServerNetworking {
 				InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
 				break;
 			case ACCOUNT:
-				BankAccountAccessUtil.deductAccountBalanceForPlayer(player, amount);
+				BankAccountAccessUtil.deductAccountBalanceForPlayer(player.getUuid(), amount);
 				break;
 			case SPECIFIED_ACCOUNT:
 				var heldItemStack = player.getMainHandStack();
@@ -416,9 +416,9 @@ public final class MarketBlockServerNetworking {
 				continue;
 			}
 
-			var seller = MarketPlayerUtil.getPlayerEntityForId(server, offer.sellerId);
+			var sellerProfile = PlayerProfileAccessUtil.getPlayerProfileById(server, offer.sellerId);
 
-			if (seller == null) {
+			if (sellerProfile == null) {
 				Commercialize.LOGGER.error(
 						"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
 						offer.sellerName, offer.sellerId, offer.price, offer.id
@@ -426,7 +426,7 @@ public final class MarketBlockServerNetworking {
 				continue;
 			}
 
-			BankAccountAccessUtil.depositAccountBalanceForPlayer(seller, offer.price);
+			BankAccountAccessUtil.depositAccountBalanceForPlayer(offer.sellerId, offer.price);
 			Commercialize.LOGGER.info(
 					"Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
 					offer.price, offer.id
