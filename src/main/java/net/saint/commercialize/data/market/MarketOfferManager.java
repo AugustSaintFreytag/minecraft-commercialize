@@ -23,7 +23,12 @@ public final class MarketOfferManager extends PersistentState {
 
 	public static final String NAME = Commercialize.MOD_ID + "_market";
 
-	// Properties
+	// Events
+
+	@FunctionalInterface
+	public interface StateModified {
+		void onStateModified(MarketOfferManager manager);
+	}
 
 	public final Event<StateModified> STATE_MODIFIED = EventFactory.createArrayBacked(StateModified.class, listeners -> manager -> {
 		for (var listener : listeners) {
@@ -72,7 +77,7 @@ public final class MarketOfferManager extends PersistentState {
 		return collection;
 	}
 
-	// Modification
+	// Invalidation
 
 	@Override
 	public void markDirty() {
@@ -159,13 +164,6 @@ public final class MarketOfferManager extends PersistentState {
 	public void setOffersAreCapped(boolean capped) {
 		this.offersAreCapped = capped;
 		markDirty();
-	}
-
-	// Events
-
-	@FunctionalInterface
-	public interface StateModified {
-		void onStateModified(MarketOfferManager manager);
 	}
 
 }

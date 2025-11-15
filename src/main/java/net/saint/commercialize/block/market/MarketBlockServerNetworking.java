@@ -19,6 +19,7 @@ import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.mail.MailSystemAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferListingUtil;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
 import net.saint.commercialize.data.offer.Offer;
@@ -55,8 +56,10 @@ public final class MarketBlockServerNetworking {
 					onReceiveMarketDataRequest(server, player, responseSender, message);
 				});
 			} catch (Exception e) {
-				Commercialize.LOGGER.error("Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(), e);
+				Commercialize.LOGGER.error(
+						"Could not decode and forward market data request from player '{}'.",
+						player.getName().getString(), e
+				);
 				return;
 			}
 		});
@@ -69,8 +72,10 @@ public final class MarketBlockServerNetworking {
 					onReceiveMarketOrderRequest(server, player, responseSender, message);
 				});
 			} catch (Exception e) {
-				Commercialize.LOGGER.error("Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(), e);
+				Commercialize.LOGGER.error(
+						"Could not decode and forward market data request from player '{}'.",
+						player.getName().getString(), e
+				);
 				return;
 			}
 		});
@@ -85,8 +90,10 @@ public final class MarketBlockServerNetworking {
 		var blockEntity = world.getBlockEntity(position);
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
-			Commercialize.LOGGER.error("Could not resolve market block entity at position {}, invalid type '{}'.", position,
-					blockEntity.getClass().getName());
+			Commercialize.LOGGER.error(
+					"Could not resolve market block entity at position {}, invalid type '{}'.", position,
+					blockEntity.getClass().getName()
+			);
 			return;
 		}
 
@@ -183,7 +190,8 @@ public final class MarketBlockServerNetworking {
 		if (Commercialize.CONFIG.requireCardForMarketPayment && message.paymentMethod == PaymentMethod.ACCOUNT) {
 			Commercialize.LOGGER.warn(
 					"Player '{}' tried to order offers with payment method 'ACCOUNT' while configuration forbids direct-from-account payment.",
-					player.getName().getString());
+					player.getName().getString()
+			);
 			handleMarketOrderResponse(player, message.position, offers, 0, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 
@@ -196,10 +204,13 @@ public final class MarketBlockServerNetworking {
 			if (!cardOwner.equals(player.getName().getString())) {
 				Commercialize.LOGGER.warn(
 						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
-						player.getName().getString(), cardOwner);
+						player.getName().getString(), cardOwner
+				);
 				handleMarketOrderResponse(player, message.position, offers, 0, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
-				sendMarketOrderResponse(responseSender, message.position, message.offers,
-						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
+				sendMarketOrderResponse(
+						responseSender, message.position, message.offers,
+						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD
+				);
 
 				return;
 			}
@@ -209,8 +220,10 @@ public final class MarketBlockServerNetworking {
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
 
 		if (offerTotal > balance) {
-			Commercialize.LOGGER.warn("Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
-					player.getName().getString(), offerTotal, balance);
+			Commercialize.LOGGER.warn(
+					"Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
+					player.getName().getString(), offerTotal, balance
+			);
 			handleMarketOrderResponse(player, message.position, offers, offerTotal, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 
@@ -229,10 +242,17 @@ public final class MarketBlockServerNetworking {
 
 		deductAmountFromPlayerBalance(player, message.paymentMethod, offerTotal);
 		payOutOfferAmountsToSellers(server, offers);
+		writeOffersToAnalytics(offers, player);
 		removeOffers(offers);
 
 		handleMarketOrderResponse(player, message.position, offers, offerTotal, MarketS2COrderMessage.Result.SUCCESS);
 		sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.SUCCESS);
+	}
+
+	private static void writeOffersToAnalytics(List<Offer> offers, ServerPlayerEntity buyer) {
+		for (var offer : offers) {
+			MarketAnalyticsUtil.writeMarketOrderToAnalytics(offer, buyer.getGameProfile());
+		}
 	}
 
 	private static void handleMarketOrderResponse(ServerPlayerEntity player, BlockPos position, List<Offer> offers, int offerTotal,
@@ -399,14 +419,18 @@ public final class MarketBlockServerNetworking {
 			var seller = MarketPlayerUtil.getPlayerEntityForId(server, offer.sellerId);
 
 			if (seller == null) {
-				Commercialize.LOGGER.error("Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
-						offer.sellerName, offer.sellerId, offer.price, offer.id);
+				Commercialize.LOGGER.error(
+						"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
+						offer.sellerName, offer.sellerId, offer.price, offer.id
+				);
 				continue;
 			}
 
 			BankAccountAccessUtil.depositAccountBalanceForPlayer(seller, offer.price);
-			Commercialize.LOGGER.info("Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
-					offer.price, offer.id);
+			Commercialize.LOGGER.info(
+					"Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
+					offer.price, offer.id
+			);
 		}
 	}
 

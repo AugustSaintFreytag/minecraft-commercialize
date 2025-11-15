@@ -18,6 +18,8 @@ import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.item.ItemManagerNetworking;
 import net.saint.commercialize.data.mail.MailTransitManager;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketAnalyticsManager;
+import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferCacheManager;
 import net.saint.commercialize.data.market.MarketOfferManager;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
@@ -53,6 +55,7 @@ public class Commercialize implements ModInitializer {
 	public static MarketOfferManager MARKET_OFFER_MANAGER;
 	public static MarketOfferCacheManager MARKET_OFFER_CACHE_MANAGER;
 	public static MailTransitManager MAIL_TRANSIT_MANAGER;
+	public static MarketAnalyticsManager MARKET_ANALYTICS_MANAGER;
 
 	// Paths
 
@@ -87,9 +90,10 @@ public class Commercialize implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
+			MARKET_ANALYTICS_MANAGER = MarketAnalyticsManager.loadFromServer(server);
 			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
 			MARKET_OFFER_CACHE_MANAGER = new MarketOfferCacheManager();
+			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
 
 			MARKET_OFFER_MANAGER.STATE_MODIFIED.register(manager -> {
 				MARKET_OFFER_CACHE_MANAGER.clear();
@@ -105,6 +109,7 @@ public class Commercialize implements ModInitializer {
 
 			MarketOfferTickingUtil.tickMarketOffersIfNecessary(world);
 			MailTransitUtil.tickMailTransitIfNecessary(world);
+			MarketAnalyticsUtil.tickMarketReportCompilationIfNecessary(world);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

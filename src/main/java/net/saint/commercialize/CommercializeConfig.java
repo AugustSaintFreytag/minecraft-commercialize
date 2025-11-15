@@ -136,4 +136,21 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("Do not deliver mail to players that are offline. Packages may be stuck in queue indefinitely if player has pending deliveries but never comes online again. (Default: true)")
 	public boolean suspendDeliveryAttemptsForOfflinePlayers = true;
 
+	// Reports
+
+	@ConfigEntry.Category("reports")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Send players regular reports on the purchases made and money spent on the market. (Default: false)")
+	public boolean sendPlayerMarketBuyReports = false;
+
+	@ConfigEntry.Category("reports")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Send players regular reports on the sales made and money earned on the market. (Default: true)")
+	public boolean sendPlayerMarketSaleReports = true;
+
+	@ConfigEntry.Category("reports")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The interval in ticks to compile and send market reports to players. (Default: 72,000 ticks = 3 days)")
+	public long reportInterval = 72_000;
+
 }

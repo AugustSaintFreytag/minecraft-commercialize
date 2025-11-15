@@ -25,8 +25,8 @@ public interface PackageItemMixinLogic {
 
 	public static final Identifier PACKAGE_ITEM_ID = new Identifier(HOST_MOD_ID, "package");
 
-	public static final String MESSAGE_NBT_KEY = "messageText";
-	public static final String SENDER_NBT_KEY = "senderText";
+	public static final String MESSAGE_NBT_KEY = "MessageText";
+	public static final String SENDER_NBT_KEY = "SenderText";
 
 	// Access
 
