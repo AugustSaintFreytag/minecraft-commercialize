@@ -12,7 +12,10 @@ public class DatabaseManager {
 
 	// Configuration
 
-	private static final String DATABASE_FILE_NAME = "commercialize.db";
+	/**
+	 * The filename used for the database file stored in the world save's `data/` directory.
+	 */
+	private static final String DATABASE_FILE_NAME = Commercialize.MOD_ID + ".db";
 
 	// State
 
