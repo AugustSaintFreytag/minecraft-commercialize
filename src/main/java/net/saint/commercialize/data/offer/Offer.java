@@ -20,11 +20,13 @@ public class Offer {
 	public UUID sellerId;
 	public String sellerName;
 
-	public long timestamp;
 	public long duration;
 
 	public ItemStack stack;
 	public int price;
+
+	public long postedTick;
+	public long postedTime;
 
 	// Decoding
 
@@ -35,11 +37,12 @@ public class Offer {
 		offer.isActive = buffer.readBoolean();
 		offer.isGenerated = buffer.readBoolean();
 		offer.sellerId = buffer.readUuid();
-		offer.sellerName = buffer.readString(32767);
-		offer.timestamp = buffer.readLong();
+		offer.sellerName = buffer.readString(16);
 		offer.duration = buffer.readLong();
 		offer.stack = buffer.readItemStack();
 		offer.price = buffer.readInt();
+		offer.postedTick = buffer.readLong();
+		offer.postedTime = buffer.readLong();
 
 		return offer;
 	}
@@ -52,10 +55,11 @@ public class Offer {
 		offer.isGenerated = nbt.getBoolean("isGenerated");
 		offer.sellerId = nbt.getUuid("sellerId");
 		offer.sellerName = nbt.getString("sellerName");
-		offer.timestamp = nbt.getLong("timestamp");
 		offer.duration = nbt.getLong("duration");
 		offer.stack = ItemStack.fromNbt(nbt.getCompound("stack"));
 		offer.price = nbt.getInt("price");
+		offer.postedTick = nbt.getLong("postedTick");
+		offer.postedTime = nbt.getLong("postedTime");
 
 		return offer;
 	}
@@ -68,10 +72,11 @@ public class Offer {
 		buffer.writeBoolean(isGenerated);
 		buffer.writeUuid(sellerId);
 		buffer.writeString(sellerName);
-		buffer.writeLong(timestamp);
 		buffer.writeLong(duration);
 		buffer.writeItemStack(stack);
 		buffer.writeInt(price);
+		buffer.writeLong(postedTick);
+		buffer.writeLong(postedTime);
 	}
 
 	public NbtCompound writeNbt(NbtCompound nbt) {
@@ -80,10 +85,11 @@ public class Offer {
 		nbt.putBoolean("isGenerated", isGenerated);
 		nbt.putUuid("sellerId", sellerId);
 		nbt.putString("sellerName", sellerName);
-		nbt.putLong("timestamp", timestamp);
 		nbt.putLong("duration", duration);
 		nbt.put("stack", stack.writeNbt(new NbtCompound()));
 		nbt.putInt("price", price);
+		nbt.putLong("postedTick", postedTick);
+		nbt.putLong("postedTime", postedTime);
 
 		return nbt;
 	}

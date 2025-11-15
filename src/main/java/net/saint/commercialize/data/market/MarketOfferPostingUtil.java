@@ -13,6 +13,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.screen.posting.OfferPostStrategy;
+import net.saint.commercialize.util.system.TimeUtil;
 
 public final class MarketOfferPostingUtil {
 
@@ -92,11 +93,12 @@ public final class MarketOfferPostingUtil {
 		offer.sellerId = player.getUuid();
 		offer.sellerName = player.getName().getString();
 
-		offer.timestamp = world.getTimeOfDay();
 		offer.duration = draft.duration();
-
 		offer.stack = draft.stack();
 		offer.price = draft.price();
+
+		offer.postedTick = world.getTimeOfDay();
+		offer.postedTime = TimeUtil.getCurrentTime();
 
 		return offer;
 	}

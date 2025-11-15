@@ -17,6 +17,7 @@ import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
 import net.saint.commercialize.data.player.RandomPlayerNameUtil;
+import net.saint.commercialize.util.system.TimeUtil;
 
 public final class MarketOfferGenerator {
 
@@ -39,7 +40,8 @@ public final class MarketOfferGenerator {
 
 		if (offerTemplateOptional.isEmpty()) {
 			Commercialize.LOGGER.warn(
-					"Could not generate offer, no offer template returned from random selection. Potentially no offer templates available in registry.");
+					"Could not generate offer, no offer template returned from random selection. Potentially no offer templates available in registry."
+			);
 			return Optional.empty();
 		}
 
@@ -50,8 +52,10 @@ public final class MarketOfferGenerator {
 		var price = getSellingPriceForOffer(random, offerTemplate, itemStack);
 
 		if (price == 0) {
-			Commercialize.LOGGER.warn("Could not generate offer for item '{}' with zero price, returning null.",
-					itemStack.getItem().getName().getString());
+			Commercialize.LOGGER.warn(
+					"Could not generate offer for item '{}' with zero price, returning null.",
+					itemStack.getItem().getName().getString()
+			);
 			return Optional.empty();
 		}
 
@@ -63,10 +67,11 @@ public final class MarketOfferGenerator {
 		offer.isGenerated = true;
 		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
-		offer.timestamp = world.getTimeOfDay();
 		offer.duration = Commercialize.CONFIG.offerDuration;
 		offer.stack = itemStack;
 		offer.price = price;
+		offer.postedTick = world.getTimeOfDay();
+		offer.postedTime = TimeUtil.getCurrentTime();
 
 		return Optional.of(offer);
 	}
