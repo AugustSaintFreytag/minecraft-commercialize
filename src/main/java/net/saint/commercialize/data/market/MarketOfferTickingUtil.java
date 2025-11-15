@@ -8,13 +8,22 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
+import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketOfferTickingUtil {
+
+	private enum SaleResult {
+		SUCCESS,
+		FAILURE_NO_SELLER,
+		FAILURE_NO_ACCOUNT,
+		FAILURE_UNKNOWN
+	}
 
 	// Logic
 
@@ -22,6 +31,7 @@ public final class MarketOfferTickingUtil {
 		var time = world.getTimeOfDay();
 
 		if (time % Commercialize.CONFIG.offerCheckInterval == 0) {
+			tickMarketOfferSaleGeneration(world);
 			tickMarketOfferGeneration(world);
 		}
 
@@ -35,13 +45,39 @@ public final class MarketOfferTickingUtil {
 			return;
 		}
 
-		var numberOfOffersToGenerate = Math.max(0, Math.min(Commercialize.CONFIG.offerBatchSize,
-				Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()));
+		var numberOfOffersToGenerate = Math.max(
+				0, Math.min(
+						Commercialize.CONFIG.offerBatchSize,
+						Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()
+				)
+		);
 
 		for (int i = 0; i < numberOfOffersToGenerate; i++) {
 			var generatedOffer = MarketOfferGenerator.generateOffer(world);
 			generatedOffer.ifPresent(offer -> Commercialize.MARKET_OFFER_MANAGER.addOffer(offer));
 		}
+	}
+
+	public static void tickMarketOfferSaleGeneration(World world) {
+		var soldOffers = new ArrayList<Offer>();
+
+		Commercialize.MARKET_OFFER_MANAGER.getOffers().forEach(offer -> {
+			if (offer == null || !offer.isActive) {
+				return;
+			}
+
+			if (world.getRandom().nextDouble() <= Commercialize.CONFIG.offerSaleGenerationChance) {
+				var saleResult = generateOfferSale(world, offer);
+
+				if (saleResult == SaleResult.SUCCESS) {
+					soldOffers.add(offer);
+				}
+			}
+		});
+
+		soldOffers.forEach(offer -> {
+			Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer.id);
+		});
 	}
 
 	public static void tickMarketOfferExpiration(World world) {
@@ -51,6 +87,50 @@ public final class MarketOfferTickingUtil {
 			expireAndRemoveOffer(world, offer);
 		});
 	}
+
+	// Sale
+
+	private static SaleResult generateOfferSale(World world, Offer offer) {
+		var server = world.getServer();
+
+		if (offer.isGenerated) {
+			Commercialize.LOGGER.info(
+					"Generated offer '{}' of {} has been purchased by a simulated player.", offer.id,
+					ItemDescriptionUtil.descriptionForItemStack(offer.stack)
+			);
+			return SaleResult.SUCCESS;
+		}
+
+		var sellerProfile = PlayerProfileAccessUtil.getPlayerProfileById(server, offer.sellerId);
+
+		if (sellerProfile == null) {
+			Commercialize.LOGGER.error(
+					"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after simulated sale of offer '{}'.",
+					offer.sellerName, offer.sellerId, offer.price, offer.id
+			);
+			return SaleResult.FAILURE_NO_SELLER;
+		}
+
+		if (BankAccountAccessUtil.getBankAccountForPlayerById(sellerProfile.getId()) == null) {
+			Commercialize.LOGGER.error(
+					"Could not access bank account for player '{}' ({}) to pay out owed offer amount of {} ¤ for simulated sale of offer '{}'. The offer will not be sold.",
+					offer.sellerName, offer.sellerId, offer.price, offer.id
+			);
+			return SaleResult.FAILURE_NO_ACCOUNT;
+		}
+
+		BankAccountAccessUtil.depositAccountBalanceForPlayer(sellerProfile.getId(), offer.price);
+		MarketAnalyticsUtil.writeMarketOrderToAnalytics(offer, null);
+
+		Commercialize.LOGGER.info(
+				"Offer '{}' of {} has been purchased by a simulated player. Deposited {} ¤ to account of seller '{}' ({}).", offer.id,
+				ItemDescriptionUtil.descriptionForItemStack(offer.stack), offer.price, offer.sellerName, offer.sellerId
+		);
+
+		return SaleResult.SUCCESS;
+	}
+
+	// Expiration
 
 	public static void expireAndRemoveOffer(World world, Offer offer) {
 		if (!offer.isGenerated) {
@@ -78,20 +158,25 @@ public final class MarketOfferTickingUtil {
 		if (!MarketPlayerUtil.isKnownPlayerId(server, playerId)) {
 			Commercialize.LOGGER.error(
 					"Could not verify player '{}' ({}) as a known player on the server to return expired offer items to.", offer.sellerName,
-					offer.sellerId);
+					offer.sellerId
+			);
 			return;
 		}
 
 		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, playerId, itemList, packageMessage, packageSender);
 
 		if (!didDispatch) {
-			Commercialize.LOGGER.error("Could not dispatch return expired offer items to player '{}' ({}).", offer.sellerName,
-					offer.sellerId);
+			Commercialize.LOGGER.error(
+					"Could not dispatch return expired offer items to player '{}' ({}).", offer.sellerName,
+					offer.sellerId
+			);
 			return;
 		}
 
-		Commercialize.LOGGER.info("Offer '{}' ({}) has expired and items were dispatched to seller '{}' ({}) via mail.", offer.id,
-				itemDescription, offer.sellerName, offer.sellerId);
+		Commercialize.LOGGER.info(
+				"Offer '{}' ({}) has expired and items were dispatched to seller '{}' ({}) via mail.", offer.id,
+				itemDescription, offer.sellerName, offer.sellerId
+		);
 		Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer);
 	}
 
