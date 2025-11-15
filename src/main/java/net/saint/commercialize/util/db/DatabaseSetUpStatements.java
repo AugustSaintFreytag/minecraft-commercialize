@@ -1,4 +1,4 @@
-package net.saint.commercialize.util.database;
+package net.saint.commercialize.util.db;
 
 public final class DatabaseSetUpStatements {
 
@@ -16,7 +16,7 @@ public final class DatabaseSetUpStatements {
 					"price" INTEGER NOT NULL,
 					"duration" INTEGER NOT NULL,
 					"time_posted_tick" INTEGER NOT NULL,
-					"time_posted_date" TEXT NOT NULL
+					"time_posted_time" INTEGER NOT NULL
 				)
 			""";
 
@@ -26,24 +26,24 @@ public final class DatabaseSetUpStatements {
 				CREATE INDEX IF NOT EXISTS "index_offers_active_by_seller_name" ON "offers" ("is_active", "stack_name", "seller_name");
 			""";
 
-	// Mail Transit Table
+	// Transit Table
 
-	public static final String CREATE_MAIL_TRANSIT_TABLE_STATEMENT = """
-				CREATE TABLE IF NOT EXISTS "mail_transit" (
+	public static final String CREATE_TRANSIT_TABLE_STATEMENT = """
+				CREATE TABLE IF NOT EXISTS "transit" (
 					"id" TEXT PRIMARY KEY,
 					"recipient_id" TEXT NOT NULL,
 					"recipient_name" TEXT NOT NULL,
 					"stack" TEXT NOT NULL,
 					"time_dispatched_tick" INTEGER NOT NULL,
-					"time_dispatched_date" TEXT NOT NULL,
+					"time_dispatched_time" INTEGER NOT NULL,
 					"time_last_delivery_attempted_tick" INTEGER,
-					"time_last_delivery_attempted_date" TEXT,
+					"time_last_delivery_attempted_time" INTEGER,
 					"number_of_delivery_attempts" INTEGER NOT NULL
 				);
 			""";
 
-	public static final String CREATE_MAIL_TRANSIT_INDICES_STATEMENT = """
-				CREATE INDEX IF NOT EXISTS "index_mail_transit_by_recipient" ON "mail_transit" ("recipient_id", "time_dispatched_tick", "time_last_delivery_attempted_tick");
+	public static final String CREATE_TRANSIT_INDICES_STATEMENT = """
+				CREATE INDEX IF NOT EXISTS "index_transit_by_recipient" ON "transit" ("recipient_id", "time_dispatched_tick", "time_last_delivery_attempted_tick");
 			""";
 
 	// Transactions Table
@@ -61,15 +61,15 @@ public final class DatabaseSetUpStatements {
 					"offer_is_generated" BOOLEAN NOT NULL,
 					"sale_is_generated" BOOLEAN NOT NULL,
 					"time_posted_tick" INTEGER NOT NULL,
-					"time_posted_date" TEXT NOT NULL,
-					"time_purchased_tick" INTEGER NOT NULL,
-					"time_purchased_date" TEXT NOT NULL
+					"time_posted_time" INTEGER NOT NULL,
+					"time_sold_tick" INTEGER NOT NULL,
+					"time_sold_time" INTEGER NOT NULL
 				);
 			""";
 
 	public static final String CREATE_TRANSACTIONS_INDICES_STATEMENT = """
-				CREATE INDEX IF NOT EXISTS "index_transactions_by_buyer" ON "transactions" ("buyer_id", "time_purchased_tick");
-				CREATE INDEX IF NOT EXISTS "index_transactions_by_seller" ON "transactions" ("seller_id", "time_purchased_tick");
+				CREATE INDEX IF NOT EXISTS "index_transactions_by_buyer" ON "transactions" ("buyer_id", "time_sold_tick");
+				CREATE INDEX IF NOT EXISTS "index_transactions_by_seller" ON "transactions" ("seller_id", "time_sold_tick");
 			""";
 
 }

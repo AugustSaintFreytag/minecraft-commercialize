@@ -1,4 +1,4 @@
-package net.saint.commercialize.util.database;
+package net.saint.commercialize.util.db;
 
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -13,7 +13,7 @@ public class DatabaseManager {
 	// Configuration
 
 	/**
-	 * The filename used for the database file stored in the world save's `data/` directory.
+	 * The filename used for the database file stored in the world save's `data` directory.
 	 */
 	private static final String DATABASE_FILE_NAME = Commercialize.MOD_ID + ".db";
 
@@ -43,12 +43,12 @@ public class DatabaseManager {
 
 		// Tables
 		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_TABLE_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_MAIL_TRANSIT_TABLE_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_TRANSIT_TABLE_STATEMENT);
 		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_TABLE_STATEMENT);
 
 		// Indices
 		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_INDICES_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_MAIL_TRANSIT_INDICES_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_TRANSIT_INDICES_STATEMENT);
 		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_INDICES_STATEMENT);
 
 		// Terminate
