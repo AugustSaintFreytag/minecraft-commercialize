@@ -32,7 +32,7 @@ import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
-import net.saint.commercialize.util.database.DatabaseManager;
+import net.saint.commercialize.util.db.DatabaseManager;
 
 public class Commercialize implements ModInitializer {
 
