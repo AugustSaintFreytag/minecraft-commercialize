@@ -1,6 +1,8 @@
 package net.saint.commercialize.data.market;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -88,6 +90,10 @@ public final class MarketAnalyticsManager extends PersistentState {
 	}
 
 	// Access
+
+	public List<MarketPlayerReport> getAllReports() {
+		return new ArrayList<>(reportsByPlayerId.values());
+	}
 
 	public MarketPlayerReport getReportForPlayerId(UUID playerId) {
 		return reportsByPlayerId.get(playerId);
