@@ -41,11 +41,18 @@ public class DatabaseManager {
 	private void setUpTables() throws Exception {
 		var statement = this.connection.createStatement();
 
-		statement.execute(DatabaseStatements.CREATE_OFFERS_TABLE_STATEMENT);
-		statement.execute(DatabaseStatements.CREATE_MAIL_TRANSIT_TABLE_STATEMENT);
-		statement.execute(DatabaseStatements.CREATE_TRANSACTIONS_TABLE_STATEMENT);
-		statement.close();
+		// Tables
+		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_TABLE_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_MAIL_TRANSIT_TABLE_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_TABLE_STATEMENT);
 
+		// Indices
+		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_INDICES_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_MAIL_TRANSIT_INDICES_STATEMENT);
+		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_INDICES_STATEMENT);
+
+		// Terminate
+		statement.close();
 		this.connection.commit();
 	}
 
@@ -53,7 +60,7 @@ public class DatabaseManager {
 
 	public void tearDown() {
 		try {
-			this.close();
+			this.disconnect();
 		} catch (Exception error) {
 			Commercialize.LOGGER.error("Failed to close database connection at path: '" + this.databasePath + "'.", error);
 		}
@@ -78,7 +85,7 @@ public class DatabaseManager {
 		this.connection = connection;
 	}
 
-	private void close() throws Exception {
+	private void disconnect() throws Exception {
 		this.connection.close();
 		this.connection = null;
 	}
