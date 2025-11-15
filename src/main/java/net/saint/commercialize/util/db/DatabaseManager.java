@@ -1,8 +1,14 @@
 package net.saint.commercialize.util.db;
 
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
@@ -17,9 +23,18 @@ public class DatabaseManager {
 	 */
 	private static final String DATABASE_FILE_NAME = Commercialize.MOD_ID + ".db";
 
+	// Executor
+
+	private static final ExecutorService DATABASE_EXECUTOR = Executors.newSingleThreadExecutor(runnable -> {
+		var thread = new Thread(runnable, Commercialize.MOD_ID + "-database-thread");
+		thread.setDaemon(true);
+
+		return thread;
+	});
+
 	// State
 
-	private Connection connection;
+	private final Jdbi jdbi;
 
 	private Path databasePath;
 
@@ -28,8 +43,10 @@ public class DatabaseManager {
 	public DatabaseManager(MinecraftServer server) {
 		this.databasePath = getDatabasePath(server);
 
+		var url = "jdbc:sqlite:" + this.databasePath;
+		this.jdbi = Jdbi.create(url);
+
 		try {
-			this.connect();
 			this.setUpTables();
 		} catch (Exception error) {
 			Commercialize.LOGGER.error("Failed to load and initialize database at path: '" + this.databasePath + "'.", error);
@@ -39,31 +56,45 @@ public class DatabaseManager {
 	// Set-Up
 
 	private void setUpTables() throws Exception {
-		var statement = this.connection.createStatement();
+		this.executeAsync(handle -> {
+			// Tables
+			handle.execute(DatabaseSetUpStatements.CREATE_OFFERS_TABLE_STATEMENT);
+			handle.execute(DatabaseSetUpStatements.CREATE_TRANSIT_TABLE_STATEMENT);
+			handle.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_TABLE_STATEMENT);
 
-		// Tables
-		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_TABLE_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_TRANSIT_TABLE_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_TABLE_STATEMENT);
+			// Indices
+			handle.execute(DatabaseSetUpStatements.CREATE_OFFERS_INDICES_STATEMENT);
+			handle.execute(DatabaseSetUpStatements.CREATE_TRANSIT_INDICES_STATEMENT);
+			handle.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_INDICES_STATEMENT);
 
-		// Indices
-		statement.execute(DatabaseSetUpStatements.CREATE_OFFERS_INDICES_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_TRANSIT_INDICES_STATEMENT);
-		statement.execute(DatabaseSetUpStatements.CREATE_TRANSACTIONS_INDICES_STATEMENT);
-
-		// Terminate
-		statement.close();
-		this.connection.commit();
+			// Commit
+			handle.commit();
+		}).exceptionally(error -> {
+			Commercialize.LOGGER.error("Failed to set up database tables and indices.", error);
+			return null;
+		});
 	}
 
 	// Tear-Down
 
 	public void tearDown() {
-		try {
-			this.disconnect();
-		} catch (Exception error) {
-			Commercialize.LOGGER.error("Failed to close database connection at path: '" + this.databasePath + "'.", error);
-		}
+		// …
+	}
+
+	// Execution
+
+	public <T> CompletableFuture<T> queryAsync(Function<Handle, T> task) {
+		return CompletableFuture.supplyAsync(
+				() -> jdbi.withHandle(handle -> task.apply(handle)),
+				DATABASE_EXECUTOR
+		);
+	}
+
+	public CompletableFuture<Void> executeAsync(Consumer<Handle> task) {
+		return CompletableFuture.runAsync(
+				() -> jdbi.useHandle(handle -> task.accept(handle)),
+				DATABASE_EXECUTOR
+		);
 	}
 
 	// Path
@@ -73,20 +104,5 @@ public class DatabaseManager {
 		var dataDirectory = worldDirectory.resolve("data");
 
 		return dataDirectory.resolve(DATABASE_FILE_NAME);
-	}
-
-	// Connection
-
-	private void connect() throws Exception {
-		var url = "jdbc:sqlite:" + this.databasePath.toString();
-		var connection = DriverManager.getConnection(url);
-		connection.setAutoCommit(false);
-
-		this.connection = connection;
-	}
-
-	private void disconnect() throws Exception {
-		this.connection.close();
-		this.connection = null;
 	}
 }
