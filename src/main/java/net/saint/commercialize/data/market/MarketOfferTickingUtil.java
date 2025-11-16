@@ -103,10 +103,6 @@ public final class MarketOfferTickingUtil {
 		var server = world.getServer();
 
 		if (offer.isGenerated) {
-			Commercialize.LOGGER.info(
-					"Generated offer '{}' of {} has been purchased by a simulated player.", offer.id,
-					ItemDescriptionUtil.descriptionForItemStack(offer.stack)
-			);
 			return SaleResult.SUCCESS;
 		}
 
