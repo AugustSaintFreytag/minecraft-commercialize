@@ -2,9 +2,12 @@ package net.saint.commercialize.data.offer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import net.saint.commercialize.data.common.Availability;
 
@@ -14,10 +17,12 @@ public final class OfferTemplateManager {
 
 	private List<OfferTemplate> templates = new ArrayList<>();
 
+	private Map<Identifier, List<OfferTemplate>> templatesByItemId = new HashMap<>();
+
 	private int[] weightSums;
 	private int weightSum;
 
-	private boolean needsIndexRebuild = false;
+	private boolean isDirty = false;
 
 	// Access
 
@@ -25,8 +30,16 @@ public final class OfferTemplateManager {
 		return templates.size();
 	}
 
+	public List<OfferTemplate> getTemplatesForItem(Identifier identifier) {
+		if (isDirty) {
+			rebuildIndex();
+		}
+
+		return templatesByItemId.getOrDefault(identifier, List.of());
+	}
+
 	public Optional<OfferTemplate> getRandomTemplate(Random random) {
-		if (needsIndexRebuild) {
+		if (isDirty) {
 			rebuildIndex();
 		}
 
@@ -48,19 +61,26 @@ public final class OfferTemplateManager {
 
 	public void registerTemplate(OfferTemplate template) {
 		templates.add(template);
-		needsIndexRebuild = true;
+		markDirty();
 	}
 
 	public void clearTemplates() {
 		templates.clear();
-		needsIndexRebuild = true;
+		markDirty();
 	}
 
-	public void rebuildIndex() {
+	// Index
+
+	private void markDirty() {
+		isDirty = true;
+	}
+
+	private void rebuildIndex() {
 		var numberOfTemplates = templates.size();
 
 		weightSums = new int[numberOfTemplates];
 		weightSum = 0;
+		var indexedTemplates = new HashMap<Identifier, List<OfferTemplate>>();
 
 		for (var i = 0; i < numberOfTemplates; i++) {
 			var template = templates.get(i);
@@ -68,9 +88,15 @@ public final class OfferTemplateManager {
 
 			weightSum += weight;
 			weightSums[i] = weightSum;
+
+			indexedTemplates.computeIfAbsent(template.item, identifier -> new ArrayList<>()).add(template);
 		}
 
-		needsIndexRebuild = false;
+		var finalizedIndex = new HashMap<Identifier, List<OfferTemplate>>(indexedTemplates.size());
+		indexedTemplates.forEach((identifier, list) -> finalizedIndex.put(identifier, List.copyOf(list)));
+		templatesByItemId = finalizedIndex;
+
+		isDirty = false;
 	}
 
 }
