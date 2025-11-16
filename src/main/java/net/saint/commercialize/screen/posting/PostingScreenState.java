@@ -12,7 +12,7 @@ public class PostingScreenState {
 
 	public int price = 0;
 
-	public long duration = TimePreset.THREE_DAYS;
+	public long duration = TimePreset.threeDays();
 
 	public OfferPostStrategy postStrategy = OfferPostStrategy.AS_STACK;
 

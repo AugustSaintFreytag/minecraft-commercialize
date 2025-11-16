@@ -133,7 +133,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 		durationDropdown.positioning(Positioning.absolute(74, 83));
 		durationDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		durationDropdown.popoverWidth(75);
-		durationDropdown.value(TimePreset.THREE_DAYS);
+		durationDropdown.value(TimePreset.threeDays());
 
 		durationDropdown.onChanged().subscribe(value -> {
 			this.delegate.updateOfferDuration(value);

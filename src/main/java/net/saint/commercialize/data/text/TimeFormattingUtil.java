@@ -6,7 +6,7 @@ import net.saint.commercialize.util.LocalizationUtil;
 public final class TimeFormattingUtil {
 
 	public static Text formattedTime(long tickCount) {
-		var totalNumberOfHours = tickCount / (double) TimePreset.ONE_HOUR;
+		var totalNumberOfHours = tickCount / (double) TimePreset.oneHour();
 
 		// Fractional Hours
 		if (totalNumberOfHours < 0.15) {
@@ -21,7 +21,7 @@ public final class TimeFormattingUtil {
 			return Text.literal("½ ").append(LocalizationUtil.localizedText("text", "time.short.hour"));
 		}
 
-		var totalNumberOfDays = (int) (totalNumberOfHours / 24);
+		var totalNumberOfDays = (int) (tickCount / (double) TimePreset.oneDay());
 		var remainingNumberOfHours = Math.max(1, (int) totalNumberOfHours % 24);
 
 		// Hours

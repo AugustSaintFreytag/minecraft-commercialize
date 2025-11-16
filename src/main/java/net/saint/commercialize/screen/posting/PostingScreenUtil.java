@@ -56,8 +56,8 @@ public final class PostingScreenUtil {
 
 	public static List<SelectDropdownComponent.Option<Long>> offerDurationDropdownOptions() {
 		var options = new ArrayList<SelectDropdownComponent.Option<Long>>();
-		var presets = new long[] { TimePreset.ONE_HOUR, TimePreset.TWELVE_HOURS, TimePreset.ONE_DAY, TimePreset.THREE_DAYS,
-				TimePreset.FIVE_DAYS, TimePreset.ONE_WEEK, TimePreset.TWO_WEEKS };
+		var presets = new long[] { TimePreset.oneHour(), TimePreset.twelveHours(), TimePreset.oneDay(), TimePreset.threeDays(),
+				TimePreset.fiveDays(), TimePreset.oneWeek(), TimePreset.twoWeeks() };
 
 		for (var preset : presets) {
 			options.add(new SelectDropdownComponent.Option<Long>(preset,

@@ -132,7 +132,7 @@ public final class MarketOfferPostingUtil {
 
 	private static boolean validateOfferDraft(OfferDraft draft) {
 		try {
-			return draft.duration() > 0 && draft.duration() < TimePreset.TWO_WEEKS && draft.price() > 0
+			return draft.duration() > 0 && draft.duration() < TimePreset.twoWeeks() && draft.price() > 0
 					&& draft.price() < Integer.MAX_VALUE;
 		} catch (Exception exception) {
 			return false;
