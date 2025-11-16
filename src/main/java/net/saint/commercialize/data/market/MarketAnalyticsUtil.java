@@ -114,13 +114,16 @@ public final class MarketAnalyticsUtil {
 	// Report Writing
 
 	public static void writeMarketOrderToAnalytics(Offer offer, GameProfile buyerProfile) {
+		if (buyerProfile != null) {
+			var buyerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(buyerProfile);
 
-		var buyerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(buyerProfile);
-		buyerReport.numberOfOrders += 1;
-		buyerReport.amountSpentOnOrders += offer.price;
+			buyerReport.numberOfOrders += 1;
+			buyerReport.amountSpentOnOrders += offer.price;
+		}
 
 		var sellerProfile = new GameProfile(offer.sellerId, offer.sellerName);
 		var sellerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(sellerProfile);
+
 		sellerReport.numberOfSales += 1;
 		sellerReport.amountEarnedFromSales += offer.price;
 

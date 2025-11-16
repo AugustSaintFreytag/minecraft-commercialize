@@ -8,6 +8,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.commercialize.data.mail.MailTransitItem;
+import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketPlayerUtil {
@@ -21,13 +22,13 @@ public final class MarketPlayerUtil {
 	// Player Name
 
 	public static String getPlayerNameForId(MinecraftServer server, UUID playerId) {
-		var playerProfile = server.getUserCache().getByUuid(playerId);
+		var playerProfile = PlayerProfileAccessUtil.getPlayerProfileById(server, playerId);
 
-		if (!playerProfile.isPresent()) {
+		if (playerProfile == null) {
 			return LocalizationUtil.localizedString("text", "player_unknown");
 		}
 
-		return playerProfile.get().getName();
+		return playerProfile.getName();
 	}
 
 	// Player Id
@@ -47,13 +48,7 @@ public final class MarketPlayerUtil {
 			return null;
 		}
 
-		var optionalProfile = server.getUserCache().getByUuid(playerId);
-
-		if (optionalProfile.isPresent()) {
-			return optionalProfile.get();
-		}
-
-		return null;
+		return PlayerProfileAccessUtil.getPlayerProfileById(server, playerId);
 	}
 
 	// Recipient

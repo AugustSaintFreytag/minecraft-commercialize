@@ -66,7 +66,7 @@ public final class MarketOfferFilteringUtil {
 			case INVENTORY:
 				return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
 			case ACCOUNT:
-				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player);
+				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player.getUuid());
 			default:
 				return 0;
 		}

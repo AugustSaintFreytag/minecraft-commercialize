@@ -3,12 +3,13 @@ package net.saint.commercialize.data.bank;
 import static net.saint.commercialize.util.Values.ifPresent;
 import static net.saint.commercialize.util.Values.returnIfPresent;
 
+import java.util.UUID;
+
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.saint.commercialize.Commercialize;
@@ -18,8 +19,8 @@ public final class BankAccountAccessUtil {
 
 	// Read
 
-	public static int getBankAccountBalanceForPlayer(PlayerEntity player) {
-		return returnIfPresent(getBankAccountForPlayer(player), account -> {
+	public static int getBankAccountBalanceForPlayer(UUID playerId) {
+		return returnIfPresent(getBankAccountForPlayerById(playerId), account -> {
 			return account.getBalance();
 		}, 0);
 	}
@@ -32,14 +33,14 @@ public final class BankAccountAccessUtil {
 
 	// Write
 
-	public static void deductAccountBalanceForPlayer(PlayerEntity player, int amount) {
-		ifPresent(getBankAccountForPlayer(player), account -> {
+	public static void deductAccountBalanceForPlayer(UUID playerId, int amount) {
+		ifPresent(getBankAccountForPlayerById(playerId), account -> {
 			account.deduct(amount);
 		});
 	}
 
-	public static void depositAccountBalanceForPlayer(PlayerEntity player, int amount) {
-		ifPresent(getBankAccountForPlayer(player), account -> {
+	public static void depositAccountBalanceForPlayer(UUID playerId, int amount) {
+		ifPresent(getBankAccountForPlayerById(playerId), account -> {
 			account.deposit(amount);
 		});
 	}
@@ -84,16 +85,11 @@ public final class BankAccountAccessUtil {
 		return account;
 	}
 
-	public static BankAccount getBankAccountForPlayer(PlayerEntity player) {
-		if (player.getWorld().isClient()) {
-			Commercialize.LOGGER.error("Can not access bank account on client-side.");
-			return null;
-		}
-
-		var account = Numismatics.BANK.getAccount(player);
+	public static BankAccount getBankAccountForPlayerById(UUID playerId) {
+		var account = Numismatics.BANK.getOrCreateAccount(playerId, Type.PLAYER);
 
 		if (account == null) {
-			Commercialize.LOGGER.warn("Could not access bank account for player '{}' ({}).", player.getName().getString(), player.getId());
+			Commercialize.LOGGER.warn("Could not access bank account for player '{}'.", playerId);
 			return null;
 		}
 
