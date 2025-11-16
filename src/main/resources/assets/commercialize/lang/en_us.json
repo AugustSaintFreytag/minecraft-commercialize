@@ -76,6 +76,8 @@
 	"text.autoconfig.commercialize.option.generateOfferSales.@Tooltip": "Allow generated and player-created offers to be purchased by simulated players. (Default: false)",
 	"text.autoconfig.commercialize.option.offerSaleGenerationChance": "Offer Sale Generation Chance",
 	"text.autoconfig.commercialize.option.offerSaleGenerationChance.@Tooltip": "The chance that a generated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)",
+	"text.autoconfig.commercialize.option.offerSaleGenerationMaxPriceFactor": "Offer Sale Generation Maximum Price Factor",
+	"text.autoconfig.commercialize.option.offerSaleGenerationMaxPriceFactor.@Tooltip": "The highest acceptable price factor for a generated offer sale compared to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.5)",
 	"text.autoconfig.commercialize.option.maxNumberOfListedItems": "Maximum Number of Listed Items",
 	"text.autoconfig.commercialize.option.maxNumberOfListedItems.@Tooltip": "The maximum number of offers sent to be listed on a market screen before getting truncated. (Default: 100)",
 	"text.autoconfig.commercialize.option.listingRefreshInterval": "Listing Refresh Interval",
