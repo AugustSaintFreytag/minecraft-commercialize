@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
+import net.saint.commercialize.data.item.ItemSaleValueUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
@@ -66,12 +68,19 @@ public final class MarketOfferTickingUtil {
 				return;
 			}
 
-			if (world.getRandom().nextDouble() <= Commercialize.CONFIG.offerSaleGenerationChance) {
-				var saleResult = generateOfferSale(world, offer);
+			if (world.getRandom().nextDouble() > Commercialize.CONFIG.offerSaleGenerationChance) {
+				return;
+			}
 
-				if (saleResult == SaleResult.SUCCESS) {
-					soldOffers.add(offer);
-				}
+			var saleChance = calculateOfferSaleChance(offer);
+			if (world.getRandom().nextFloat() > saleChance) {
+				return;
+			}
+
+			var saleResult = generateOfferSale(world, offer);
+
+			if (saleResult == SaleResult.SUCCESS) {
+				soldOffers.add(offer);
 			}
 		});
 
@@ -128,6 +137,44 @@ public final class MarketOfferTickingUtil {
 		);
 
 		return SaleResult.SUCCESS;
+	}
+
+	private static double calculateOfferSaleChance(Offer offer) {
+		var intrinsicOfferValue = ItemSaleValueUtil.getValueForItemStack(offer.stack);
+
+		if (intrinsicOfferValue == 0) {
+			// Items that can not be estimated can not be sold to virtual players.
+			return 0.0;
+		}
+
+		var offerTemplatePriceFactor = getOfferTemplatePriceFactorForStack(offer.stack);
+		var marketOfferValue = intrinsicOfferValue * offerTemplatePriceFactor;
+		var offerValueDivergence = offer.price / marketOfferValue;
+
+		if (offerValueDivergence < 1.0) {
+			return 1.0;
+		}
+
+		// Divergence moves from 1.0 up to 1.5 and sale should start at 100% and become less likely.
+		var clampedDivergence = Math.min(offerValueDivergence, Commercialize.CONFIG.offerSaleGenerationMaxPriceFactor);
+		var saleChance = 1.0 - (clampedDivergence - 1.0) / 0.5;
+
+		return saleChance;
+	}
+
+	private static double getOfferTemplatePriceFactorForStack(ItemStack stack) {
+		var itemIdentifier = Registries.ITEM.getId(stack.getItem());
+		var offerTemplates = Commercialize.OFFER_TEMPLATE_MANAGER.getTemplatesForItem(itemIdentifier);
+
+		if (offerTemplates.isEmpty()) {
+			return 1.0;
+		}
+
+		var offerTemplateAverageMarkup = offerTemplates.stream()
+				.map(template -> (double) template.markup)
+				.reduce(0.0, Double::sum) / (double) offerTemplates.size();
+
+		return offerTemplateAverageMarkup;
 	}
 
 	// Expiration
