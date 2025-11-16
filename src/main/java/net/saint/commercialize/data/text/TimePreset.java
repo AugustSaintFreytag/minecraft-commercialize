@@ -1,18 +1,74 @@
 package net.saint.commercialize.data.text;
 
+import net.saint.commercialize.Commercialize;
+
 public final class TimePreset {
 
-	private static final int NUMBER_OF_TICKS_PER_DAY = 24_000;
+	private static long oneHourTicks;
+	private static long twoHoursTicks;
+	private static long sixHoursTicks;
+	private static long twelveHoursTicks;
+	private static long oneDayTicks;
+	private static long threeDaysTicks;
+	private static long fiveDaysTicks;
+	private static long oneWeekTicks;
+	private static long twoWeeksTicks;
 
-	public static final long ONE_HOUR = NUMBER_OF_TICKS_PER_DAY / 24;
-	public static final long TWO_HOURS = ONE_HOUR * 2;
-	public static final long SIX_HOURS = ONE_HOUR * 6;
-	public static final long TWELVE_HOURS = ONE_HOUR * 12;
+	static {
+		reload();
+	}
 
-	public static final long ONE_DAY = NUMBER_OF_TICKS_PER_DAY;
-	public static final long THREE_DAYS = NUMBER_OF_TICKS_PER_DAY * 3;
-	public static final long FIVE_DAYS = NUMBER_OF_TICKS_PER_DAY * 5;
-	public static final long ONE_WEEK = NUMBER_OF_TICKS_PER_DAY * 7;
-	public static final long TWO_WEEKS = NUMBER_OF_TICKS_PER_DAY * 14;
+	private TimePreset() {
+	}
+
+	public static void reload() {
+		var ticksPerDay = Commercialize.CONFIG.ticksPerDay;
+
+		oneHourTicks = ticksPerDay / 24;
+		twoHoursTicks = oneHourTicks * 2;
+		sixHoursTicks = oneHourTicks * 6;
+		twelveHoursTicks = oneHourTicks * 12;
+		oneDayTicks = ticksPerDay;
+		threeDaysTicks = ticksPerDay * 3;
+		fiveDaysTicks = ticksPerDay * 5;
+		oneWeekTicks = ticksPerDay * 7;
+		twoWeeksTicks = ticksPerDay * 14;
+	}
+
+	public static long oneHour() {
+		return oneHourTicks;
+	}
+
+	public static long twoHours() {
+		return twoHoursTicks;
+	}
+
+	public static long sixHours() {
+		return sixHoursTicks;
+	}
+
+	public static long twelveHours() {
+		return twelveHoursTicks;
+	}
+
+	public static long oneDay() {
+		return oneDayTicks;
+	}
+
+	public static long threeDays() {
+		return threeDaysTicks;
+	}
+
+	public static long fiveDays() {
+		return fiveDaysTicks;
+	}
+
+	public static long oneWeek() {
+		return oneWeekTicks;
+	}
+
+	public static long twoWeeks() {
+		return twoWeeksTicks;
+	}
 
 }

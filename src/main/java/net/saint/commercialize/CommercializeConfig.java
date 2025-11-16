@@ -80,6 +80,11 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("The highest acceptable price factor for a generated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.75)")
 	public double offerSaleGenerationMaxPriceFactor = 1.75;
 
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The number of ticks in a full in-game day. Used for duration formatting and enforcing limits. (Default: 24,000)")
+	public long ticksPerDay = 24_000;
+
 	// Payment
 
 	@ConfigEntry.Category("payment")
