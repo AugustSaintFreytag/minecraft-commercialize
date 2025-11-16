@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ActionResult;
 import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.item.ItemManagerNetworking;
@@ -26,6 +27,7 @@ import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.data.player.PlayerProfileManager;
 import net.saint.commercialize.data.player.PlayerTemplateManager;
+import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
@@ -70,7 +72,14 @@ public class Commercialize implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AutoConfig.register(CommercializeConfig.class, JanksonConfigSerializer::new);
-		CONFIG = AutoConfig.getConfigHolder(CommercializeConfig.class).getConfig();
+		var configHolder = AutoConfig.getConfigHolder(CommercializeConfig.class);
+
+		CONFIG = configHolder.getConfig();
+
+		configHolder.registerSaveListener((data, config) -> {
+			TimePreset.reload();
+			return ActionResult.PASS;
+		});
 
 		ModItems.initialize();
 		ModBlocks.initialize();
@@ -90,9 +99,9 @@ public class Commercialize implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			MARKET_ANALYTICS_MANAGER = MarketAnalyticsManager.loadFromServer(server);
-			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
 			MARKET_OFFER_CACHE_MANAGER = new MarketOfferCacheManager();
+			MARKET_OFFER_MANAGER = MarketOfferManager.loadFromServer(server);
+			MARKET_ANALYTICS_MANAGER = MarketAnalyticsManager.loadFromServer(server);
 			MAIL_TRANSIT_MANAGER = MailTransitManager.loadFromServer(server);
 
 			MARKET_OFFER_MANAGER.STATE_MODIFIED.register(manager -> {
