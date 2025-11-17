@@ -9,11 +9,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketOfferPostingUtil.OfferDraft;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.NumericFormattingUtil;
 import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.item.LetterItem;
+import net.saint.commercialize.screen.posting.OfferPostStrategy;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketAnalyticsUtil {
@@ -126,6 +128,18 @@ public final class MarketAnalyticsUtil {
 
 		sellerReport.numberOfSales += 1;
 		sellerReport.amountEarnedFromSales += offer.price;
+
+		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
+	}
+
+	// Postings
+
+	public static void writeMarketPostingToAnalytics(GameProfile profile, OfferDraft draft) {
+		var report = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(profile);
+		var numberOfPosts = draft.strategy() == OfferPostStrategy.AS_ITEMS ? draft.stack().getCount() : 1;
+
+		report.numberOfPostings += numberOfPosts;
+		report.amountSpentOnFees += draft.fees();
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}

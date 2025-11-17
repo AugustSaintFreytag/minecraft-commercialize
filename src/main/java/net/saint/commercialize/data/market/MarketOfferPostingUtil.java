@@ -48,7 +48,9 @@ public final class MarketOfferPostingUtil {
 		var offers = makeOffersFromDraft(player, draft);
 
 		Commercialize.MARKET_OFFER_MANAGER.addOffers(offers);
-		updatePostQuotaForPlayer(player, offers.size());
+
+		updatePostingQuotaForPlayer(player, offers.size());
+		writePostingToAnalytics(player, draft);
 
 		Commercialize.LOGGER.info("Player '{}' posted {} offer(s) to market.", player.getName().getString(), offers.size());
 
