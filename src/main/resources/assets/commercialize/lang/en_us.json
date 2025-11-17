@@ -29,7 +29,7 @@
 	"text.commercialize.return.message": "Your posting was not sold on the public market and has expired after %s. You are hereby receiving a return delivery of your posted item, free of charge. Have a nice day!",
 	"text.commercialize.report.buy.name": "Market Order Report",
 	"text.commercialize.report.buy.message": "Your regular report for orders made on the market network.",
-	"text.commercialize.report.buy.format": "You are receiving your regular market order report. \n\nAccount holder: §l%s§r\nOrders made: §l%s§r\nTotal spent: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
+	"text.commercialize.report.buy.format": "You are receiving your regular market order report. \n\n§7Account holder:§r %s§r\n§7Orders made:§r %s§r\n§lTotal spent: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
 	"text.commercialize.report.sale.name": "Market Sales Report",
 	"text.commercialize.report.sale.message": "Your regular report for sales made on the market network.",
 	"text.commercialize.report.sale.format": "You are receiving your regular market sales report. \n\n§7Account holder:§r %s§r\n§7Offers sold:§r %s§r\n§7Offers posted:§r %s§r\n§7Fees paid:§r %s§r\n§7Gross earnings:§r %s§r\n§lNet earnings: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
