@@ -13,6 +13,7 @@ import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.common.SelectDropdownComponent;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class PostingScreenUtil {
@@ -60,8 +61,12 @@ public final class PostingScreenUtil {
 				TimePreset.fiveDays(), TimePreset.oneWeek(), TimePreset.twoWeeks() };
 
 		for (var preset : presets) {
-			options.add(new SelectDropdownComponent.Option<Long>(preset,
-					TextFormattingUtil.capitalizedString(TimeFormattingUtil.formattedTime(preset).getString())));
+			options.add(
+					new SelectDropdownComponent.Option<Long>(
+							preset,
+							TextFormattingUtil.capitalizedString(TimeFormattingUtil.formattedTime(preset).getString())
+					)
+			);
 		}
 
 		return options;
@@ -70,13 +75,43 @@ public final class PostingScreenUtil {
 	public static List<SelectDropdownComponent.Option<OfferPostStrategy>> offerPostAsDropdownOptions() {
 		var options = new ArrayList<SelectDropdownComponent.Option<OfferPostStrategy>>();
 
-		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_STACK,
-				LocalizationUtil.localizedString("gui", "posting.post_as.stack")));
+		options.add(
+				new SelectDropdownComponent.Option<OfferPostStrategy>(
+						OfferPostStrategy.AS_STACK,
+						LocalizationUtil.localizedString("gui", "posting.post_as.stack")
+				)
+		);
 
-		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_ITEMS,
-				LocalizationUtil.localizedString("gui", "posting.post_as.items")));
+		options.add(
+				new SelectDropdownComponent.Option<OfferPostStrategy>(
+						OfferPostStrategy.AS_ITEMS,
+						LocalizationUtil.localizedString("gui", "posting.post_as.items")
+				)
+		);
 
 		return options;
+	}
+
+	// Fees
+
+	public static Text descriptionForPostingFees(int fees) {
+		if (fees <= 0) {
+			return LocalizationUtil.localizedText("text", "no_value");
+		}
+
+		return Text.of(CurrencyFormattingUtil.formatCurrency(fees));
+	}
+
+	public static CurrencyDisplayComponent.Appearance appearanceForPostingFees(int fees, boolean canAfford) {
+		if (fees == 0) {
+			return CurrencyDisplayComponent.Appearance.NEUTRAL;
+		}
+
+		if (canAfford) {
+			return CurrencyDisplayComponent.Appearance.POSITIVE;
+		} else {
+			return CurrencyDisplayComponent.Appearance.NEGATIVE;
+		}
 	}
 
 }

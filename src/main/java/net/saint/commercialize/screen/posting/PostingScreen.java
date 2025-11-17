@@ -25,6 +25,7 @@ import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TabButtonComponent;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.screen.icons.ScreenAssets;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScreenHandler> {
@@ -77,10 +78,10 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 	@Override
 	protected void build(FlowLayout rootComponent) {
-		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(215));
+		var wrapperComponent = Containers.verticalFlow(Sizing.fixed(215), Sizing.fixed(245));
 
 		var backgroundComponent = Components.texture(PostingScreenAssets.PANEL);
-		backgroundComponent.sizing(Sizing.fixed(215), Sizing.fixed(215));
+		backgroundComponent.sizing(Sizing.fixed(215), Sizing.fixed(245));
 		backgroundComponent.positioning(Positioning.absolute(0, 0));
 		wrapperComponent.child(backgroundComponent);
 
@@ -109,6 +110,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var priceTextBox = Components.currencyTextBox(Sizing.fixed(101));
 		priceTextBox.id("price_input");
+		priceTextBox.tooltip(LocalizationUtil.localizedText("gui", "posting.price.tooltip"));
 		priceTextBox.positioning(Positioning.absolute(74, 64));
 		priceTextBox.sizing(Sizing.fixed(101), Sizing.fixed(14));
 		priceTextBox.setEditableColor(0xfcfcfc);
@@ -116,6 +118,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		priceTextBox.onValueChanged().subscribe(value -> {
 			this.delegate.updateOfferPrice(value);
+			this.updateDisplay();
 		});
 
 		wrapperComponent.child(priceTextBox);
@@ -130,6 +133,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var durationDropdown = Components.selectDropdown(PostingScreenUtil.offerDurationDropdownOptions());
 		durationDropdown.id("offer_time_dropdown");
+		durationDropdown.tooltip(LocalizationUtil.localizedText("gui", "posting.duration.tooltip"));
 		durationDropdown.positioning(Positioning.absolute(74, 83));
 		durationDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		durationDropdown.popoverWidth(75);
@@ -137,6 +141,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		durationDropdown.onChanged().subscribe(value -> {
 			this.delegate.updateOfferDuration(value);
+			this.updateDisplay();
 		});
 
 		durationDropdown.onOpenOverlay(() -> {
@@ -159,6 +164,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var postAsDropdown = Components.selectDropdown(PostingScreenUtil.offerPostAsDropdownOptions());
 		postAsDropdown.id("offer_post_as_dropdown");
+		postAsDropdown.tooltip(LocalizationUtil.localizedText("gui", "posting.post_as.tooltip"));
 		postAsDropdown.positioning(Positioning.absolute(74, 101));
 		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		postAsDropdown.popoverWidth(95);
@@ -166,6 +172,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		postAsDropdown.onChanged().subscribe(value -> {
 			this.delegate.updatePostStrategy(value);
+			this.updateDisplay();
 		});
 
 		postAsDropdown.onOpenOverlay(() -> {
@@ -178,28 +185,53 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		wrapperComponent.child(postAsDropdown);
 
+		// Fees Row
+
+		var feesRow = Components.label(LocalizationUtil.localizedText("gui", "posting.fees"));
+		feesRow.positioning(Positioning.absolute(13, 132));
+		feesRow.sizing(Sizing.fixed(58), Sizing.fixed(8));
+		feesRow.color(Color.ofRgb(0x3F3F3F));
+		wrapperComponent.child(feesRow);
+
+		var feesTextBox = Components.currencyDisplay(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
+		feesTextBox.id("fees_display");
+		feesTextBox.tooltip(LocalizationUtil.localizedText("gui", "posting.fees.tooltip"));
+		feesTextBox.positioning(Positioning.absolute(74, 130));
+		feesTextBox.sizing(Sizing.fixed(102), Sizing.fixed(13));
+
+		wrapperComponent.child(feesTextBox);
+
 		// Tab Buttons
 
-		var postOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.post_offer"),
-				ScreenAssets.CONFIRM_ORDER_ICON, button -> {
+		var postOfferTabButton = new TabButtonComponent(
+				LocalizationUtil.localizedText("gui", "posting.post_offer"),
+				ScreenAssets.CONFIRM_ORDER_ICON,
+				button -> {
 					delegate.confirmOfferPost();
-				});
+				}
+		);
 		postOfferTabButton.positioning(Positioning.absolute(191, 39));
 		postOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.post_offer.tooltip"));
 		wrapperComponent.child(postOfferTabButton);
 
-		var resetPriceTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.reset_price"),
-				ScreenAssets.RESET_PRICE_ICON, button -> {
+		var resetPriceTabButton = new TabButtonComponent(
+				LocalizationUtil.localizedText("gui", "posting.reset_price"),
+				ScreenAssets.RESET_PRICE_ICON,
+				button -> {
 					delegate.resetOfferPrice();
-				});
+				}
+		);
 		resetPriceTabButton.positioning(Positioning.absolute(191, 68));
 		resetPriceTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.reset_price.tooltip"));
 		wrapperComponent.child(resetPriceTabButton);
 
-		var clearOfferTabButton = new TabButtonComponent(LocalizationUtil.localizedText("gui", "posting.clear_offer"),
-				ScreenAssets.EMPTY_CART_ICON, button -> {
+		var clearOfferTabButton = new TabButtonComponent(
+				LocalizationUtil.localizedText("gui", "posting.clear_offer"),
+				ScreenAssets.EMPTY_CART_ICON,
+				button -> {
 					delegate.clearOfferPost();
-				});
+				}
+		);
 		clearOfferTabButton.positioning(Positioning.absolute(191, 97));
 		clearOfferTabButton.tooltip(LocalizationUtil.localizedText("gui", "posting.clear_offer.tooltip"));
 		wrapperComponent.child(clearOfferTabButton);
@@ -232,14 +264,25 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 		priceInput.value(itemOfferPrice);
 
 		var itemOfferDuration = delegate.getOfferDuration();
-		var durationDropdown = (SelectDropdownComponent<Long>) rootComponent.childById(SelectDropdownComponent.class,
-				"offer_time_dropdown");
+		var durationDropdown = (SelectDropdownComponent<Long>) rootComponent.childById(
+				SelectDropdownComponent.class,
+				"offer_time_dropdown"
+		);
 		durationDropdown.value(itemOfferDuration);
 
 		var itemPostStrategy = delegate.getPostStrategy();
-		var postStrategyDropdown = (SelectDropdownComponent<OfferPostStrategy>) rootComponent.childById(SelectDropdownComponent.class,
-				"offer_post_as_dropdown");
+		var postStrategyDropdown = (SelectDropdownComponent<OfferPostStrategy>) rootComponent.childById(
+				SelectDropdownComponent.class,
+				"offer_post_as_dropdown"
+		);
 		postStrategyDropdown.value(itemPostStrategy);
+
+		var postingFeesDisplay = rootComponent.childById(CurrencyDisplayComponent.class, "fees_display");
+		var postingFees = delegate.getPostingFees();
+		var canAffordPostingFees = delegate.canAffordPostingFees();
+
+		postingFeesDisplay.text(PostingScreenUtil.descriptionForPostingFees(postingFees));
+		postingFeesDisplay.appearance(PostingScreenUtil.appearanceForPostingFees(postingFees, canAffordPostingFees));
 	}
 
 	// Overlay

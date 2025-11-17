@@ -27,7 +27,7 @@ public class CurrencyTextBoxComponent extends TextBoxComponent {
 		this.focusLost().subscribe(() -> {
 			try {
 				var newInputValue = this.getText().replaceAll("[.,' ]", "");
-				var newValue = Integer.parseInt(newInputValue);
+				var newValue = Math.max(0, Integer.parseInt(newInputValue));
 
 				this.value(newValue);
 			} catch (NumberFormatException e) {

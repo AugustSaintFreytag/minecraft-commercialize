@@ -88,8 +88,10 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 		valueLabel.color(Color.ofRgb(0x3F3F3F));
 		wrapperComponent.child(valueLabel);
 
-		var valueDisplay = new CurrencyDisplayComponent(LocalizationUtil.localizedText("text", "no_value"),
-				CurrencyDisplayComponent.Appearance.NEUTRAL);
+		var valueDisplay = Components.currencyDisplay(
+				LocalizationUtil.localizedText("text", "no_value"),
+				CurrencyDisplayComponent.Appearance.NEUTRAL
+		);
 		valueDisplay.id("value_display");
 		valueDisplay.tooltip(LocalizationUtil.localizedText("gui", "shipping.value.tooltip"));
 		valueDisplay.positioning(Positioning.absolute(87, 44));
@@ -98,6 +100,7 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 
 		var saleDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		saleDisplay.id("sale_display");
+		saleDisplay.tooltip(LocalizationUtil.localizedText("gui", "shipping.sale.tooltip"));
 		saleDisplay.horizontalTextAlignment(HorizontalAlignment.CENTER);
 		saleDisplay.positioning(Positioning.absolute(32, 71));
 		saleDisplay.sizing(Sizing.fixed(149), Sizing.fixed(8));

@@ -36,11 +36,11 @@ public final class PostingScreenStateNetworking {
 		return state;
 	}
 
-	public static S2CStateSyncMessage clientboundMessageFromState(PostingScreenState state) {
+	public static S2CStateSyncMessage clientboundStateSyncMessageFromState(PostingScreenState state) {
 		return new S2CStateSyncMessage(state.stack, state.price, state.duration, state.postStrategy);
 	}
 
-	public static C2SStateSyncMessage serverboundMessageFromState(PostingScreenState state) {
+	public static C2SStateSyncMessage serverboundStateSyncMessageFromState(PostingScreenState state) {
 		return new C2SStateSyncMessage(state.stack, state.price, state.duration, state.postStrategy);
 	}
 

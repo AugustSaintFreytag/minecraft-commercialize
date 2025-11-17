@@ -1,5 +1,6 @@
 package net.saint.commercialize.screen.shipping;
 
+import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import io.wispforest.owo.client.screens.ScreenUtils;
 import io.wispforest.owo.client.screens.SlotGenerator;
@@ -114,6 +115,15 @@ public class ShippingScreenHandler extends ScreenHandler {
 
 	@Override
 	public ItemStack quickMove(PlayerEntity player, int slot) {
+		var itemStack = this.slots.get(slot).getStack();
+
+		if (itemStack.getItem() instanceof CardItem && this.blockInventory.card.isEmpty()) {
+			if (this.insertItem(itemStack, 9, 10, false)) {
+				this.getSlot(slot).setStack(ItemStack.EMPTY);
+				return ItemStack.EMPTY;
+			}
+		}
+
 		return ScreenUtils.handleSlotTransfer(this, slot, this.blockInventory.size());
 
 	}

@@ -39,6 +39,7 @@ import net.saint.commercialize.gui.common.SelectDropdownComponent;
 import net.saint.commercialize.gui.common.TextBoxComponent;
 import net.saint.commercialize.gui.common.TextureComponent;
 import net.saint.commercialize.library.TextureReference;
+import net.saint.commercialize.screen.market.components.CurrencyDisplayComponent;
 
 public final class Components {
 
@@ -88,6 +89,10 @@ public final class Components {
 
 	public static CurrencyTextBoxComponent currencyTextBox(Sizing sizing) {
 		return new CurrencyTextBoxComponent(sizing);
+	}
+
+	public static CurrencyDisplayComponent currencyDisplay(Text description, CurrencyDisplayComponent.Appearance highlightStyle) {
+		return new CurrencyDisplayComponent(description, highlightStyle);
 	}
 
 	public static ButtonComponent button(Text message, Consumer<ButtonComponent> onPress) {

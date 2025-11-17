@@ -12,6 +12,6 @@ public final class PostingScreenAssets {
 
 	// Panel
 
-	public static final TextureReference PANEL = new TextureReference(TEXTURE, 0, 0, 215, 215);
+	public static final TextureReference PANEL = new TextureReference(TEXTURE, 0, 0, 215, 245);
 
 }

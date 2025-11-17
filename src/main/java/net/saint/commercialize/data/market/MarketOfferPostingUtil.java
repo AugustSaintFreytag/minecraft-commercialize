@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.screen.posting.OfferPostStrategy;
@@ -19,7 +20,7 @@ public final class MarketOfferPostingUtil {
 	// Library
 
 	public static enum OfferPostingResult {
-		SUCCESS, OUT_OF_QUOTA, INVALID, FAILURE
+		SUCCESS, OUT_OF_QUOTA, INSUFFICIENT_FUNDS, INVALID, FAILURE
 	}
 
 	public static record OfferDraft(ItemStack stack, int price, long duration, OfferPostStrategy strategy) {
@@ -38,6 +39,10 @@ public final class MarketOfferPostingUtil {
 
 		if (!validateOfferDraft(draft)) {
 			return OfferPostingResult.INVALID;
+		}
+
+		if (!payOfferPostingFees(player, draft)) {
+			return OfferPostingResult.INSUFFICIENT_FUNDS;
 		}
 
 		var offers = makeOffersFromDraft(player, draft);
@@ -99,6 +104,20 @@ public final class MarketOfferPostingUtil {
 		offer.price = draft.price();
 
 		return offer;
+	}
+
+	// Fees
+
+	private static boolean payOfferPostingFees(ServerPlayerEntity player, OfferDraft draft) {
+		var fees = MarketPostingFeeUtils.calculatePostingFees(draft.stack(), draft.price(), draft.duration(), draft.strategy());
+		var balance = BankAccountAccessUtil.getBankAccountBalanceForPlayer(player.getUuid());
+
+		if (balance < fees) {
+			return false;
+		}
+
+		BankAccountAccessUtil.deductAccountBalanceForPlayer(player.getUuid(), fees);
+		return true;
 	}
 
 	// Validation

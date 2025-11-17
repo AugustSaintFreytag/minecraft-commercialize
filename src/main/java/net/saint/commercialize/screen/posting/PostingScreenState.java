@@ -16,6 +16,10 @@ public class PostingScreenState {
 
 	public OfferPostStrategy postStrategy = OfferPostStrategy.AS_STACK;
 
+	// Properties (Transient)
+
+	public int balance = 0;
+
 	// NBT
 
 	public NbtCompound toNbtCompound() {
