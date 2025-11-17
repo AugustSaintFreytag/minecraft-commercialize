@@ -12,23 +12,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("Randomly generate offers on the market automatically with procedural items, prices, player names and profiles. (Default: true)")
-	public boolean generateOffers = true;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The maximum number of generated offers that can be active on the market at any time. (Default: 100)")
-	public int maxNumberOfOffers = 100;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The number of offers that are generated in a single batch. (Default: 4)")
-	public int offerBatchSize = 4;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
 	@Comment("The interval in ticks at which the market checks for expired offers to be removed. (Default: 100 ticks)")
-	public int offerCheckInterval = 100;
+	public int offerTickInterval = 100;
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
@@ -52,38 +37,55 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The factor by which a determined market price can vary when generated. Applies to generated offers. (Default: 0.1)")
-	public double priceJitterFactor = 0.1;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The default duration of market offers in ticks. (Default: 96,000 ticks = 4 days)")
-	public int offerDuration = 96_000;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
 	@Comment("The maximum number of offers an individual player can post per in-game day. Limits reset at sunrise. (Default: 16)")
 	public int maxNumberOfPlayerOffersPerDay = 16;
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("The number of ticks in a full in-game day. Used for duration formatting and enforcing limits. (Default: 24,000)")
+	public long ticksPerDay = 24_000;
+
+	// Simulation
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Procedurally generate offers on the market. Simulated players post offers based on templates with custom player names and profiles. (Default: true)")
+	public boolean generateOffers = true;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The maximum number of generated offers that can be active on the market at any time. (Default: 100)")
+	public int maxNumberOfOffers = 100;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The number of offers that are generated in a single batch. Lower values saturate the market more slowly. (Default: 4)")
+	public int offerBatchSize = 4;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The factor by which a determined offer price can vary when generated. Applies to generated offers. (Default: 0.1)")
+	public double priceJitterFactor = 0.1;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The default duration of generated market offers in ticks. (Default: 96,000 ticks = 4 days)")
+	public int offerDuration = 96_000;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("Allow generated and player-created offers to be purchased by simulated players. (Default: false)")
 	public boolean generateOfferSales = false;
 
-	@ConfigEntry.Category("market")
+	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The chance that a generated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)")
+	@Comment("The chance that a simulated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)")
 	public double offerSaleGenerationChance = 0.025;
 
-	@ConfigEntry.Category("market")
+	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The highest acceptable price factor for a generated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.75)")
+	@Comment("The highest acceptable price factor for a simulated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.75)")
 	public double offerSaleGenerationMaxPriceFactor = 1.75;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The number of ticks in a full in-game day. Used for duration formatting and enforcing limits. (Default: 24,000)")
-	public long ticksPerDay = 24_000;
 
 	// Payment
 
@@ -96,23 +98,6 @@ public final class CommercializeConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	@Comment("Allow a player to pay using another player's account if they have a card bound to their account. (Default: true)")
 	public boolean allowForeignCardsForMarketPayment = true;
-
-	// GUI
-
-	@ConfigEntry.Category("gui")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The maximum number of offers sent to be listed on a market screen before getting truncated. (Default: 100)")
-	public int maxNumberOfListedItems = 100;
-
-	@ConfigEntry.Category("gui")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The time in ticks after which the market screen automatically refreshes its listing. (Default: 600, 30 seconds)")
-	public int listingRefreshInterval = 600;
-
-	@ConfigEntry.Category("gui")
-	@ConfigEntry.Gui.Tooltip
-	@Comment("The time in ticks after which the market screen automatically refreshes its listing when inactive (no open screen). Will effectively prefetch to have listing ready before player interacts with block. Set to -1 to disable. (Default: 6000, 5 minutes)")
-	public int listingRefreshIntervalWhenInactive = 6000;
 
 	// Delivery
 
@@ -172,5 +157,22 @@ public final class CommercializeConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	@Comment("The interval in ticks to compile and send market reports to players. (Default: 72,000 ticks = 3 days)")
 	public long reportInterval = 72_000;
+
+	// GUI
+
+	@ConfigEntry.Category("gui")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The maximum number of offers sent to be listed on a market screen before getting truncated. (Default: 100)")
+	public int maxNumberOfListedItems = 100;
+
+	@ConfigEntry.Category("gui")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The time in ticks after which the market screen automatically refreshes its listing. (Default: 600, 30 seconds)")
+	public int listingRefreshInterval = 600;
+
+	@ConfigEntry.Category("gui")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The time in ticks after which the market screen automatically refreshes its listing when inactive (no open screen). Will effectively prefetch to have listing ready before player interacts with block. Set to -1 to disable. (Default: 6000, 5 minutes)")
+	public int listingRefreshIntervalWhenInactive = 6000;
 
 }
