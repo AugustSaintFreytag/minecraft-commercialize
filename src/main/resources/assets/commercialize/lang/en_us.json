@@ -179,6 +179,7 @@
 	"gui.commercialize.posting.posting_confirm": "Posted %s to the market.",
 	"gui.commercialize.posting.posting_error_invalid": "Proposed offer is invalid and can not be posted.",
 	"gui.commercialize.posting.posting_error_out_of_quota": "Exceeded daily quota (%s/%s posts) for posting.",
+	"gui.commercialize.posting.posting_error_insufficient_funds": "Insufficient funds to pay posting fees.",
 	"gui.commercialize.posting.posting_error_failure": "Could not post offer to the market.",
 	"subtitles.commercialize.mailbox_delivery": "Mailbox delivery received",
 	"subtitles.commercialize.market_open": "Market block opened",

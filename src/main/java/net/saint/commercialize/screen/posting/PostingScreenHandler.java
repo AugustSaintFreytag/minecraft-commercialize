@@ -144,6 +144,10 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
 					break;
 				}
+				case INSUFFICIENT_FUNDS: {
+					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+					break;
+				}
 				case INVALID: {
 					world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
 					break;
@@ -178,6 +182,11 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 				}
 				case OUT_OF_QUOTA: {
 					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_out_of_quota");
+					this.player().sendMessage(displayText, true);
+					break;
+				}
+				case INSUFFICIENT_FUNDS: {
+					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_error_insufficient_funds");
 					this.player().sendMessage(displayText, true);
 					break;
 				}
