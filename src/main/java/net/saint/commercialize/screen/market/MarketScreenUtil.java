@@ -140,15 +140,19 @@ public final class MarketScreenUtil {
 		// Price
 		var priceLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.price") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
-		var priceValue = Text.literal(CurrencyFormattingUtil.formatCurrency(offer.price))
+		var priceValue = Text.literal(CurrencyFormattingUtil.currencyString(offer.price))
 				.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xe2ca80)));
 		var priceLine = priceLabel.append(priceValue);
 
 		if (offer.stack.getCount() > 1) {
 			// If the item stack has more than one item, show the per-item price breakdown
 			var perItemLabel = Text
-					.literal(" " + LocalizationUtil.localizedString("text", "offer.tooltip.price_breakdown",
-							CurrencyFormattingUtil.formatCurrency(offer.price / offer.stack.getCount())))
+					.literal(
+							" " + LocalizationUtil.localizedString(
+									"text", "offer.tooltip.price_breakdown",
+									CurrencyFormattingUtil.currencyString(offer.price / offer.stack.getCount())
+							)
+					)
 					.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x989280)));
 			priceLine = priceLine.append(perItemLabel);
 		}
@@ -168,8 +172,10 @@ public final class MarketScreenUtil {
 
 		// Posted
 		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
-		var postedFormattedText = LocalizationUtil.localizedText("text", "offer.tooltip.time_posted_format",
-				TextFormattingUtil.capitalizedString(rawPosted.getString()));
+		var postedFormattedText = LocalizationUtil.localizedText(
+				"text", "offer.tooltip.time_posted_format",
+				TextFormattingUtil.capitalizedString(rawPosted.getString())
+		);
 		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 		var postedValue = postedFormattedText.copy().setStyle(Style.EMPTY.withColor(Formatting.GRAY));
@@ -217,7 +223,7 @@ public final class MarketScreenUtil {
 	// Total
 
 	public static Text textForCartTotal(int value) {
-		return Text.literal(CurrencyFormattingUtil.formatCurrency(value));
+		return Text.literal(CurrencyFormattingUtil.currencyString(value));
 	}
 
 	public static CurrencyDisplayComponent.Appearance appearanceForCartTotal(int total, int balance) {
@@ -235,7 +241,7 @@ public final class MarketScreenUtil {
 	// Balance
 
 	public static Text textForBalance(int value) {
-		return Text.literal(CurrencyFormattingUtil.formatCurrency(value));
+		return Text.literal(CurrencyFormattingUtil.currencyString(value));
 	}
 
 	// Order

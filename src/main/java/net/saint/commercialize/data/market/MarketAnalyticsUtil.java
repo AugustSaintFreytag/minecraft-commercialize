@@ -60,7 +60,7 @@ public final class MarketAnalyticsUtil {
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.buy.name");
 		var letterReportText = LocalizationUtil.localizedText(
 				"text", "report.buy.format", report.playerName, itemCountText,
-				Text.of(CurrencyFormattingUtil.formatCurrency(report.amountSpentOnOrders))
+				Text.of(CurrencyFormattingUtil.currencyString(report.amountSpentOnOrders))
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);

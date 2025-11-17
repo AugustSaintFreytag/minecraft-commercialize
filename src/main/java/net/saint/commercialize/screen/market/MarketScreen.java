@@ -437,7 +437,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 12);
-		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
+		var priceDescription = Text.of(CurrencyFormattingUtil.currencyString(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
@@ -482,7 +482,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
 		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 9);
-		var priceDescription = Text.of(CurrencyFormattingUtil.formatCurrency(offer.price));
+		var priceDescription = Text.of(CurrencyFormattingUtil.currencyString(offer.price));
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {
