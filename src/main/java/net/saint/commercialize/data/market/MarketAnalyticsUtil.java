@@ -84,11 +84,16 @@ public final class MarketAnalyticsUtil {
 
 		var senderText = LocalizationUtil.localizedText("text", "delivery.market");
 		var itemCountText = localizedItemCountText(report.numberOfSales);
+		var postingCountText = localizedItemCountText(report.numberOfPostings);
+		var feesPaidText = CurrencyFormattingUtil.currencyText(report.amountSpentOnFees);
+		var grossEarningsText = CurrencyFormattingUtil.currencyText(report.amountEarnedFromSales);
+		var netEarningsAmount = report.amountEarnedFromSales - report.amountSpentOnFees;
+		var netEarningsText = CurrencyFormattingUtil.currencyText(netEarningsAmount);
 
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.sale.name");
 		var letterReportText = LocalizationUtil.localizedText(
-				"text", "report.sale.format", report.playerName, itemCountText,
-				Text.of(CurrencyFormattingUtil.formatCurrency(report.amountEarnedFromSales))
+				"text", "report.sale.format", report.playerName, itemCountText, postingCountText, feesPaidText,
+				grossEarningsText, netEarningsText
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
@@ -113,7 +118,7 @@ public final class MarketAnalyticsUtil {
 		return letterStack;
 	}
 
-	// Report Writing
+	// Orders
 
 	public static void writeMarketOrderToAnalytics(Offer offer, GameProfile buyerProfile) {
 		if (buyerProfile != null) {
