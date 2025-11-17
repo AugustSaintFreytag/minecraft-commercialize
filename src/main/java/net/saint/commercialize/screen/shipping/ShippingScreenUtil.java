@@ -17,7 +17,7 @@ public final class ShippingScreenUtil {
 		var totalSaleValue = totalSaleValueForItemsInInventory(inventory);
 		var prefix = totalSaleValue > 0 ? "~ " : "";
 
-		return Text.literal(prefix + CurrencyFormattingUtil.formatCurrency(totalSaleValue));
+		return Text.literal(prefix + CurrencyFormattingUtil.currencyString(totalSaleValue));
 	}
 
 	public static int totalSaleValueForItemsInInventory(ShippingBlockInventory inventory) {

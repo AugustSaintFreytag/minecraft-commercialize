@@ -91,7 +91,7 @@ public class MarketScreenHandler implements MarketBlockScreenDelegateHandler {
 			}
 			case SUCCESS: {
 				var itemNames = MarketScreenUtil.textForOrderSummary(getCart());
-				var formattedTotal = CurrencyFormattingUtil.formatCurrency(getCartTotal());
+				var formattedTotal = CurrencyFormattingUtil.currencyString(getCartTotal());
 				var displayText = LocalizationUtil.localizedText("gui", "market.order_confirm_instant", itemNames, formattedTotal);
 
 				player.sendMessage(displayText, true);

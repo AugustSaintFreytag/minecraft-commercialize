@@ -33,7 +33,7 @@ public final class PostingScreenUtil {
 			return LocalizationUtil.localizedText("text", "no_value");
 		}
 
-		return Text.of(CurrencyFormattingUtil.formatCurrency(offerPrice));
+		return Text.of(CurrencyFormattingUtil.currencyString(offerPrice));
 	}
 
 	// Price
@@ -99,7 +99,7 @@ public final class PostingScreenUtil {
 			return LocalizationUtil.localizedText("text", "no_value");
 		}
 
-		return Text.of(CurrencyFormattingUtil.formatCurrency(fees));
+		return Text.of(CurrencyFormattingUtil.currencyString(fees));
 	}
 
 	public static CurrencyDisplayComponent.Appearance appearanceForPostingFees(int fees, boolean canAfford) {

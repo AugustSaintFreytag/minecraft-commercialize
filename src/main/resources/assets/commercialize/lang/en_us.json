@@ -32,7 +32,7 @@
 	"text.commercialize.report.buy.format": "You are receiving your regular market order report. \n\nAccount holder: §l%s§r\nOrders made: §l%s§r\nTotal spent: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
 	"text.commercialize.report.sale.name": "Market Sales Report",
 	"text.commercialize.report.sale.message": "Your regular report for sales made on the market network.",
-	"text.commercialize.report.sale.format": "You are receiving your regular market sales report. \n\nAccount holder: §l%s§r\nItems sold: §l%s§r\nTotal earned: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
+	"text.commercialize.report.sale.format": "You are receiving your regular market sales report. \n\n§7Account holder:§r %s§r\n§7Offers sold:§r %s§r\n§7Offers posted:§r %s§r\n§7Fees paid:§r %s§r\n§7Gross earnings:§r %s§r\n§lNet earnings: §6§l%s§r\n\nThank you for using the automated market network. \nHave a nice day!",
 	"text.commercialize.unit.item": "Item",
 	"text.commercialize.unit.items": "Items",
 	"text.commercialize.time.short.hour": "hour",

@@ -9,11 +9,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketOfferPostingUtil.OfferDraft;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.NumericFormattingUtil;
 import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.item.LetterItem;
+import net.saint.commercialize.screen.posting.OfferPostStrategy;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketAnalyticsUtil {
@@ -60,7 +62,7 @@ public final class MarketAnalyticsUtil {
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.buy.name");
 		var letterReportText = LocalizationUtil.localizedText(
 				"text", "report.buy.format", report.playerName, itemCountText,
-				Text.of(CurrencyFormattingUtil.formatCurrency(report.amountSpentOnOrders))
+				Text.of(CurrencyFormattingUtil.currencyString(report.amountSpentOnOrders))
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
@@ -82,11 +84,16 @@ public final class MarketAnalyticsUtil {
 
 		var senderText = LocalizationUtil.localizedText("text", "delivery.market");
 		var itemCountText = localizedItemCountText(report.numberOfSales);
+		var postingCountText = localizedItemCountText(report.numberOfPostings);
+		var feesPaidText = CurrencyFormattingUtil.currencyText(report.amountSpentOnFees);
+		var grossEarningsText = CurrencyFormattingUtil.currencyText(report.amountEarnedFromSales);
+		var netEarningsAmount = report.amountEarnedFromSales - report.amountSpentOnFees;
+		var netEarningsText = CurrencyFormattingUtil.currencyText(netEarningsAmount);
 
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.sale.name");
 		var letterReportText = LocalizationUtil.localizedText(
-				"text", "report.sale.format", report.playerName, itemCountText,
-				Text.of(CurrencyFormattingUtil.formatCurrency(report.amountEarnedFromSales))
+				"text", "report.sale.format", report.playerName, itemCountText, postingCountText, feesPaidText,
+				grossEarningsText, netEarningsText
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
@@ -111,7 +118,7 @@ public final class MarketAnalyticsUtil {
 		return letterStack;
 	}
 
-	// Report Writing
+	// Orders
 
 	public static void writeMarketOrderToAnalytics(Offer offer, GameProfile buyerProfile) {
 		if (buyerProfile != null) {
@@ -126,6 +133,18 @@ public final class MarketAnalyticsUtil {
 
 		sellerReport.numberOfSales += 1;
 		sellerReport.amountEarnedFromSales += offer.price;
+
+		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
+	}
+
+	// Postings
+
+	public static void writeMarketPostingToAnalytics(GameProfile profile, OfferDraft draft) {
+		var report = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(profile);
+		var numberOfPosts = draft.strategy() == OfferPostStrategy.AS_ITEMS ? draft.stack().getCount() : 1;
+
+		report.numberOfPostings += numberOfPosts;
+		report.amountSpentOnFees += draft.fees();
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}

@@ -68,7 +68,7 @@ public class CurrencyTextBoxComponent extends TextBoxComponent {
 	// Lifecycle
 
 	protected void updateDisplayText() {
-		this.text(CurrencyFormattingUtil.formatCurrency(this.value));
+		this.text(CurrencyFormattingUtil.currencyString(this.value));
 	}
 
 	// Library

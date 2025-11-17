@@ -22,6 +22,7 @@ import net.saint.commercialize.block.posting.PostingBlockEntity;
 import net.saint.commercialize.block.posting.PostingScreenDelegateHandler;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.market.MarketOfferPostingUtil;
+import net.saint.commercialize.data.market.MarketPostingFeeUtils;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.gui.slot.CustomSlot;
 import net.saint.commercialize.init.ModScreenHandlers;
@@ -334,8 +335,10 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		var price = this.state.price;
 		var duration = this.state.duration;
 		var postStrategy = this.state.postStrategy;
+		var fees = MarketPostingFeeUtils.calculatePostingFees(itemStack, price, duration, postStrategy);
 
-		var draft = new MarketOfferPostingUtil.OfferDraft(itemStack, price, duration, postStrategy);
+		var draft = new MarketOfferPostingUtil.OfferDraft(itemStack, price, duration, postStrategy, fees);
+
 		this.sendMessage(new C2SPostOfferActionMessage(draft));
 	}
 

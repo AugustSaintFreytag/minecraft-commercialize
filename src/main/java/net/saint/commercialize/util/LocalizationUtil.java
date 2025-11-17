@@ -10,14 +10,14 @@ public final class LocalizationUtil {
 		return String.format("%s.%s.%s", category, Commercialize.MOD_ID, path);
 	}
 
-	public static Text localizedText(String category, String path, Object... args) {
-		var key = key(category, path);
-		return Text.translatable(key, args);
-	}
-
 	public static String localizedString(String category, String path, Object... args) {
 		var key = key(category, path);
 		return I18n.translate(key, args);
+	}
+
+	public static Text localizedText(String category, String path, Object... args) {
+		var key = key(category, path);
+		return Text.translatable(key, args);
 	}
 
 }
