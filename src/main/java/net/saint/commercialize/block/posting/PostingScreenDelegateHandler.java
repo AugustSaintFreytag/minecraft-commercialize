@@ -1,6 +1,7 @@
 package net.saint.commercialize.block.posting;
 
 import net.minecraft.item.ItemStack;
+import net.saint.commercialize.data.market.MarketPostingFeeUtils;
 import net.saint.commercialize.screen.posting.OfferPostStrategy;
 import net.saint.commercialize.screen.posting.PostingScreenDelegate;
 import net.saint.commercialize.screen.posting.PostingScreenState;
@@ -47,7 +48,18 @@ public interface PostingScreenDelegateHandler extends PostingScreenDelegate {
 
 	default void updatePostStrategy(OfferPostStrategy strategy) {
 		getState().postStrategy = strategy;
+		onEssentialsUpdate();
 		onScreenUpdate();
+	}
+
+	// Fees
+
+	default int getPostingFees() {
+		return MarketPostingFeeUtils.calculatePostingFees(getItemStack(), getOfferPrice(), getOfferDuration(), getPostStrategy());
+	}
+
+	default boolean canAffordPostingFees() {
+		return getState().balance >= getPostingFees();
 	}
 
 }

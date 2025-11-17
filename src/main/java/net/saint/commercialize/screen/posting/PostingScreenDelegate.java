@@ -10,6 +10,8 @@ public interface PostingScreenDelegate {
 
 	void onScreenUpdate();
 
+	void onEssentialsUpdate();
+
 	// Actions
 
 	void confirmOfferPost();
@@ -39,5 +41,11 @@ public interface PostingScreenDelegate {
 	OfferPostStrategy getPostStrategy();
 
 	void updatePostStrategy(OfferPostStrategy strategy);
+
+	// Fees
+
+	int getPostingFees();
+
+	boolean canAffordPostingFees();
 
 }

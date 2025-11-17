@@ -169,6 +169,7 @@
 	"gui.commercialize.posting.post_as": "Post as:",
 	"gui.commercialize.posting.post_as.stack": "Whole Stack",
 	"gui.commercialize.posting.post_as.items": "Individual Items",
+	"gui.commercialize.posting.fees": "Fees:",
 	"gui.commercialize.posting.post_offer": "Post Offer",
 	"gui.commercialize.posting.post_offer.tooltip": "Dispatch item stack and post offer on market.",
 	"gui.commercialize.posting.reset_price": "Reset Price",
