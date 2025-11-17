@@ -37,6 +37,16 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("The factor used to calculate posting fees for market offers, based off the set offer price. (Default: 0.035)")
+	public double postingFeePriceFactor = 0.035;
+
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The factor used to calculate posting fees for market offers, based off the set offer duration. (Default: 0.025)")
+	public double postingFeeTimeFactor = 0.025;
+
+	@ConfigEntry.Category("market")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("The maximum number of offers an individual player can post per in-game day. Limits reset at sunrise. (Default: 16)")
 	public int maxNumberOfPlayerOffersPerDay = 16;
 
