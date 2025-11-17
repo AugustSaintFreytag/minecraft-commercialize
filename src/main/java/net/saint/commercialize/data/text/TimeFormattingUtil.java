@@ -25,7 +25,7 @@ public final class TimeFormattingUtil {
 		var remainingNumberOfHours = Math.max(1, (int) totalNumberOfHours % 24);
 
 		// Hours
-		if (totalNumberOfDays <= 1) {
+		if (totalNumberOfDays < 1) {
 			var hourKey = remainingNumberOfHours == 1 ? "time.short.hour" : "time.short.hours";
 			return Text.literal(String.valueOf(remainingNumberOfHours)).append(Text.literal(" "))
 					.append(LocalizationUtil.localizedText("text", hourKey));
