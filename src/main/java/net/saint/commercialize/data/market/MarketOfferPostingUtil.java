@@ -23,7 +23,7 @@ public final class MarketOfferPostingUtil {
 		SUCCESS, OUT_OF_QUOTA, INSUFFICIENT_FUNDS, INVALID, FAILURE
 	}
 
-	public static record OfferDraft(ItemStack stack, int price, long duration, OfferPostStrategy strategy) {
+	public static record OfferDraft(ItemStack stack, int price, long duration, OfferPostStrategy strategy, int fees) {
 	}
 
 	// Properties
@@ -76,7 +76,7 @@ public final class MarketOfferPostingUtil {
 			var singleStack = new ItemStack(draft.stack().getItem(), 1);
 			singleStack.setNbt(draft.stack().getOrCreateNbt().copy());
 
-			var singleDraft = new OfferDraft(singleStack, draft.price(), draft.duration(), draft.strategy());
+			var singleDraft = new OfferDraft(singleStack, draft.price(), draft.duration(), draft.strategy(), 0);
 			var offer = makeIndividualOfferFromDraft(player, singleDraft);
 
 			offers.add(offer);
@@ -123,7 +123,7 @@ public final class MarketOfferPostingUtil {
 	// Validation
 
 	private static boolean validatePlayerCanPostWithinQuota(ServerPlayerEntity player, OfferDraft draft) {
-		var remainingPostQuota = Commercialize.CONFIG.maxNumberOfPlayerOffersPerDay - usedPostQuotaForPlayer(player);
+		var remainingPostQuota = Commercialize.CONFIG.maxNumberOfPlayerOffersPerDay - usedPostingQuotaForPlayer(player);
 
 		if (remainingPostQuota <= 0) {
 			return false;
@@ -136,11 +136,11 @@ public final class MarketOfferPostingUtil {
 		return true;
 	}
 
-	private static int usedPostQuotaForPlayer(ServerPlayerEntity player) {
+	private static int usedPostingQuotaForPlayer(ServerPlayerEntity player) {
 		return dailyNumberOfPostsByPlayer.get().getOrDefault(player.getUuid(), 0);
 	}
 
-	private static void updatePostQuotaForPlayer(ServerPlayerEntity player, int addedNumberOfPosts) {
+	private static void updatePostingQuotaForPlayer(ServerPlayerEntity player, int addedNumberOfPosts) {
 		dailyNumberOfPostsByPlayer.updateAndGet(map -> {
 			var currentCount = map.getOrDefault(player.getUuid(), 0);
 			map.put(player.getUuid(), currentCount + addedNumberOfPosts);
@@ -149,10 +149,20 @@ public final class MarketOfferPostingUtil {
 		});
 	}
 
+	private static void writePostingToAnalytics(ServerPlayerEntity player, OfferDraft draft) {
+		MarketAnalyticsUtil.writeMarketPostingToAnalytics(player.getGameProfile(), draft);
+	}
+
 	private static boolean validateOfferDraft(OfferDraft draft) {
 		try {
-			return draft.duration() > 0 && draft.duration() < TimePreset.twoWeeks() && draft.price() > 0
-					&& draft.price() < Integer.MAX_VALUE;
+			var isDurationValid = draft.duration() > 0 && draft.duration() <= TimePreset.twoWeeks();
+			var isPriceValid = draft.price() > 0 && draft.price() < Integer.MAX_VALUE;
+
+			var calculatedFees = MarketPostingFeeUtils
+					.calculatePostingFees(draft.stack(), draft.price(), draft.duration(), draft.strategy());
+			var areFeesValid = draft.fees() == calculatedFees;
+
+			return isDurationValid && isPriceValid && areFeesValid;
 		} catch (Exception exception) {
 			return false;
 		}
