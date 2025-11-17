@@ -17,11 +17,6 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("market")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The interval in ticks at which new offers are attempted to be generated. (Default: 2,000 ticks)")
-	public int offerGenerationTickInterval = 2_000;
-
-	@ConfigEntry.Category("market")
-	@ConfigEntry.Gui.Tooltip
 	@Comment("The interval in ticks at which shipping blocks exchange items for currency. (Default: 24,000 ticks/1 day)")
 	public int shippingExchangeInterval = 24_000;
 
@@ -61,6 +56,11 @@ public final class CommercializeConfig implements ConfigData {
 	@ConfigEntry.Gui.Tooltip
 	@Comment("Procedurally generate offers on the market. Simulated players post offers based on templates with custom player names and profiles. (Default: true)")
 	public boolean generateOffers = true;
+
+	@ConfigEntry.Category("simulation")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("The interval in ticks at which new offers are attempted to be generated. (Default: 2,000 ticks)")
+	public int offerGenerationTickInterval = 2_000;
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
