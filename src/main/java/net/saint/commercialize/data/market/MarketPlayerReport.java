@@ -12,6 +12,9 @@ public class MarketPlayerReport {
 	public int numberOfSales = 0;
 	public int amountEarnedFromSales = 0;
 
+	public int numberOfPostings = 0;
+	public int amountSpentOnFees = 0;
+
 	public int numberOfOrders = 0;
 	public int amountSpentOnOrders = 0;
 
@@ -24,6 +27,8 @@ public class MarketPlayerReport {
 		report.playerName = nbt.getString("playerName");
 		report.numberOfSales = nbt.getInt("numberOfSales");
 		report.amountEarnedFromSales = nbt.getInt("amountEarnedFromSales");
+		report.numberOfPostings = nbt.getInt("numberOfPostings");
+		report.amountSpentOnFees = nbt.getInt("amountSpentOnFees");
 		report.numberOfOrders = nbt.getInt("numberOfOrders");
 		report.amountSpentOnOrders = nbt.getInt("amountSpentOnOrders");
 
@@ -37,6 +42,8 @@ public class MarketPlayerReport {
 		nbt.putString("playerName", playerName);
 		nbt.putInt("numberOfSales", numberOfSales);
 		nbt.putInt("amountEarnedFromSales", amountEarnedFromSales);
+		nbt.putInt("numberOfPostings", numberOfPostings);
+		nbt.putInt("amountSpentOnFees", amountSpentOnFees);
 		nbt.putInt("numberOfOrders", numberOfOrders);
 		nbt.putInt("amountSpentOnOrders", amountSpentOnOrders);
 
