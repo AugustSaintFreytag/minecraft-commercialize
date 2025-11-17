@@ -96,7 +96,6 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 			}
 
 			this.onEssentialsUpdate();
-			this.pushState();
 		});
 	}
 
@@ -285,12 +284,14 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 			return;
 		}
 
+		player.giveItemStack(this.blockInventory.getStack(0));
+
+		var state = this.owner.getScreenState();
 		state.stack = ItemStack.EMPTY;
 		state.price = 0;
 
-		owner.setScreenState(state);
+		this.owner.setScreenState(state);
 
-		player.giveItemStack(this.blockInventory.getStack(0));
 		world.playSound(null, owner.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
 		super.onClosed(player);
