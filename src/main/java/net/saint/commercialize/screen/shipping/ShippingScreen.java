@@ -100,6 +100,7 @@ public class ShippingScreen extends BaseOwoHandledScreen<FlowLayout, ShippingScr
 
 		var saleDisplay = Components.label(LocalizationUtil.localizedText("text", "no_value"));
 		saleDisplay.id("sale_display");
+		saleDisplay.tooltip(LocalizationUtil.localizedText("gui", "shipping.sale.tooltip"));
 		saleDisplay.horizontalTextAlignment(HorizontalAlignment.CENTER);
 		saleDisplay.positioning(Positioning.absolute(32, 71));
 		saleDisplay.sizing(Sizing.fixed(149), Sizing.fixed(8));

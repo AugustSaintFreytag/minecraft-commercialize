@@ -110,6 +110,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var priceTextBox = Components.currencyTextBox(Sizing.fixed(101));
 		priceTextBox.id("price_input");
+		priceTextBox.tooltip(LocalizationUtil.localizedText("gui", "posting.price.tooltip"));
 		priceTextBox.positioning(Positioning.absolute(74, 64));
 		priceTextBox.sizing(Sizing.fixed(101), Sizing.fixed(14));
 		priceTextBox.setEditableColor(0xfcfcfc);
@@ -132,6 +133,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var durationDropdown = Components.selectDropdown(PostingScreenUtil.offerDurationDropdownOptions());
 		durationDropdown.id("offer_time_dropdown");
+		durationDropdown.tooltip(LocalizationUtil.localizedText("gui", "posting.duration.tooltip"));
 		durationDropdown.positioning(Positioning.absolute(74, 83));
 		durationDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		durationDropdown.popoverWidth(75);
@@ -162,6 +164,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var postAsDropdown = Components.selectDropdown(PostingScreenUtil.offerPostAsDropdownOptions());
 		postAsDropdown.id("offer_post_as_dropdown");
+		postAsDropdown.tooltip(LocalizationUtil.localizedText("gui", "posting.post_as.tooltip"));
 		postAsDropdown.positioning(Positioning.absolute(74, 101));
 		postAsDropdown.sizing(Sizing.fixed(103), Sizing.fixed(15));
 		postAsDropdown.popoverWidth(95);
@@ -192,6 +195,7 @@ public class PostingScreen extends BaseOwoHandledScreen<FlowLayout, PostingScree
 
 		var feesTextBox = Components.currencyDisplay(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
 		feesTextBox.id("fees_display");
+		feesTextBox.tooltip(LocalizationUtil.localizedText("gui", "posting.fees.tooltip"));
 		feesTextBox.positioning(Positioning.absolute(74, 130));
 		feesTextBox.sizing(Sizing.fixed(102), Sizing.fixed(13));
 
