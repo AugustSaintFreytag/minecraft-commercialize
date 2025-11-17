@@ -233,7 +233,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var sortingTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.sort_mode"), ScreenAssets.STUB,
+		var sortingTabButton = makeTabButtonComponent(
+				LocalizationUtil.localizedText("gui", "market.sort_mode"), ScreenAssets.STUB,
 				component -> {
 					// If sprint key is held, toggle sort order.
 
@@ -248,17 +249,20 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 					}
 
 					this.updateDisplay();
-				});
+				}
+		);
 
 		sortingTabButton.id("sort_mode");
 		sortingTabButton.positioning(Positioning.absolute(4, 21));
 		leftSideComponent.child(sortingTabButton);
 
-		var filteringTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.filter_mode"), ScreenAssets.STUB,
+		var filteringTabButton = makeTabButtonComponent(
+				LocalizationUtil.localizedText("gui", "market.filter_mode"), ScreenAssets.STUB,
 				component -> {
 					delegate.cycleFilterMode();
 					this.updateDisplay();
-				});
+				}
+		);
 
 		filteringTabButton.id("filter_mode");
 		filteringTabButton.positioning(Positioning.absolute(4, 50));
@@ -311,7 +315,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		// Tabs
 
-		var orderTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.order_cart"),
+		var orderTabButton = makeTabButtonComponent(
+				LocalizationUtil.localizedText("gui", "market.order_cart"),
 				ScreenAssets.CONFIRM_ORDER_ICON, component -> {
 					if (delegate.getCart().isEmpty()) {
 						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
@@ -319,26 +324,31 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 					}
 
 					delegate.confirmCartOrder();
-				});
+				}
+		);
 
 		orderTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.order_cart.tooltip"));
 		orderTabButton.positioning(Positioning.absolute(168, 14));
 		rightSideComponent.child(orderTabButton);
 
-		var cyclePaymentMethodTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.payment_mode"),
+		var cyclePaymentMethodTabButton = makeTabButtonComponent(
+				LocalizationUtil.localizedText("gui", "market.payment_mode"),
 				ScreenAssets.STUB, component -> {
 					delegate.cyclePaymentMethod();
 					this.updateDisplay();
-				});
+				}
+		);
 
 		cyclePaymentMethodTabButton.id("payment_method");
 		cyclePaymentMethodTabButton.positioning(Positioning.absolute(168, 43));
 		rightSideComponent.child(cyclePaymentMethodTabButton);
 
-		var emptyCardTabButton = makeTabButtonComponent(LocalizationUtil.localizedText("gui", "market.empty_cart"),
+		var emptyCardTabButton = makeTabButtonComponent(
+				LocalizationUtil.localizedText("gui", "market.empty_cart"),
 				ScreenAssets.EMPTY_CART_ICON, component -> {
 					delegate.emptyCart();
-				});
+				}
+		);
 
 		emptyCardTabButton.tooltip(LocalizationUtil.localizedText("gui", "market.empty_cart.tooltip"));
 		emptyCardTabButton.positioning(Positioning.absolute(168, 72));
@@ -376,14 +386,14 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 	// Components
 
 	private CurrencyDisplayComponent makeTotalDisplayComponent() {
-		var displayComponent = new CurrencyDisplayComponent(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
+		var displayComponent = Components.currencyDisplay(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
 		displayComponent.id("total");
 
 		return displayComponent;
 	}
 
 	private CurrencyDisplayComponent makeBalanceDisplayComponent() {
-		var displayComponent = new CurrencyDisplayComponent(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
+		var displayComponent = Components.currencyDisplay(Text.empty(), CurrencyDisplayComponent.Appearance.NEUTRAL);
 		displayComponent.id("balance");
 
 		return displayComponent;
@@ -432,14 +442,22 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
 
-		return new OfferListComponent(itemStack, itemDescription, priceDescription, offerTooltip, sellerTooltip, sellerTexture, isDisabled,
+		return new OfferListComponent(
+				itemStack,
+				itemDescription,
+				priceDescription,
+				offerTooltip,
+				sellerTooltip,
+				sellerTexture,
+				isDisabled,
 				component -> {
 					if (delegate.hasOfferInCart(offer)) {
 						delegate.removeOfferFromCart(offer);
 					} else {
 						delegate.addOfferToCart(offer);
 					}
-				});
+				}
+		);
 	}
 
 	private OfferListCapComponent makeOfferListCapComponent() {
