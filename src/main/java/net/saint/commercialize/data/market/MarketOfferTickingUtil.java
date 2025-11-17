@@ -32,7 +32,7 @@ public final class MarketOfferTickingUtil {
 	public static void tickMarketOffersIfNecessary(World world) {
 		var time = world.getTimeOfDay();
 
-		if (time % Commercialize.CONFIG.offerCheckInterval == 0) {
+		if (time % Commercialize.CONFIG.offerTickInterval == 0) {
 			tickMarketOfferSaleGeneration(world);
 			tickMarketOfferGeneration(world);
 		}
