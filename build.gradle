@@ -17,9 +17,8 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-	flatDir { dirs 'libs' }
-
 	maven { url "https://maven.fabricmc.net/" }
+	maven { url "https://mvn.devos.one/releases/" }
 	maven { url "https://api.modrinth.com/maven" }
 	maven { url "https://cursemaven.com/" }
 	maven { url "https://maven.wispforest.io/releases/" }
@@ -53,7 +52,8 @@ dependencies {
 
 	// Create: Numismatics
 	
-	// Disabled transitive: modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
+	modCompileOnly("io.github.fabricators_of_create.Porting-Lib:fluids:${project.porting_lib_version}")
+	modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
 	modCompileOnly("maven.modrinth:numismatics:${project.numismatics_version}")
 
 	// Furniture Refurbished
