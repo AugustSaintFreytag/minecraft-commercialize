@@ -20,6 +20,7 @@
 		"minecraft:rooted_dirt": 1,
 		"minecraft:sand": 2,
 		"minecraft:shroomlight": 78,
-		"minecraft:snow_block": 1
+		"minecraft:snow_block": 1,
+		"minecraft:water": 2
 	}
 }
