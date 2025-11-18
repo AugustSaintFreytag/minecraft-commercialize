@@ -6,7 +6,7 @@ import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
-import net.saint.commercialize.data.valuation.ItemValueUtil;
+import net.saint.commercialize.data.valuation.ItemSaleValueUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class ShippingScreenUtil {
@@ -21,7 +21,7 @@ public final class ShippingScreenUtil {
 	}
 
 	public static int totalSaleValueForItemsInInventory(ShippingBlockInventory inventory) {
-		return ItemValueUtil.getApproximateSaleValueForItems(inventory.getItemStacks());
+		return ItemSaleValueUtil.getApproximateSaleValueForItems(inventory.getItemStacks());
 	}
 
 	// Shipping

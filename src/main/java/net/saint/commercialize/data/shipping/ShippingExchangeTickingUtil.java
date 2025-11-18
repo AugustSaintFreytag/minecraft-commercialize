@@ -15,7 +15,8 @@ import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.item.ItemListUtil;
-import net.saint.commercialize.data.item.ItemValueUtil;
+import net.saint.commercialize.data.valuation.ItemSaleValueUtil;
+import net.saint.commercialize.data.valuation.ItemValueUtil;
 
 public final class ShippingExchangeTickingUtil {
 
@@ -51,7 +52,7 @@ public final class ShippingExchangeTickingUtil {
 			return;
 		}
 
-		var saleValue = (int) (assortment.value * Commercialize.CONFIG.sellingPriceFactor * randomSellingPriceJitterFactor(world));
+		var saleValue = ItemSaleValueUtil.getSaleValueForValue(world, assortment.value);
 		var paymentCard = blockEntity.inventory.getCardStack();
 		var playerHasPaymentCard = !paymentCard.isEmpty();
 
@@ -134,10 +135,6 @@ public final class ShippingExchangeTickingUtil {
 	private static void dropItemStacksInWorld(World world, BlockPos position, List<ItemStack> itemStacks) {
 		var itemList = ItemListUtil.defauledItemStackListFromList(itemStacks);
 		ItemScatterer.spawn(world, position, itemList);
-	}
-
-	private static double randomSellingPriceJitterFactor(World world) {
-		return 1 + world.getRandom().nextTriangular(0, 0.05);
 	}
 
 	// Shipping Assortment
