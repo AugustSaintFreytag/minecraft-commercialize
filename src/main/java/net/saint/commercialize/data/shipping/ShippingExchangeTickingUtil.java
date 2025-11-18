@@ -15,7 +15,7 @@ import net.saint.commercialize.block.shipping.ShippingBlockInventory;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.inventory.InventoryCashUtil;
 import net.saint.commercialize.data.item.ItemListUtil;
-import net.saint.commercialize.data.item.ItemSaleValueUtil;
+import net.saint.commercialize.data.item.ItemValueUtil;
 
 public final class ShippingExchangeTickingUtil {
 
@@ -62,15 +62,21 @@ public final class ShippingExchangeTickingUtil {
 			var boundBankAccount = BankAccountAccessUtil.getBankAccountForCard(paymentCard);
 
 			if (boundBankAccount == null) {
-				Commercialize.LOGGER.warn("Could not get bank account from provided payment card with id '{}' in shipping block.",
-						boundAccountId);
+				Commercialize.LOGGER.warn(
+						"Could not get bank account from provided payment card with id '{}' in shipping block.",
+						boundAccountId
+				);
 				callback.accept(ShippingTickResult.FAILURE);
 				return;
 			}
 
 			var bankAccountOwnerName = BankAccountAccessUtil.getOwnerNameForBankAccount(world.getServer(), boundBankAccount);
-			Commercialize.LOGGER.info("Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.", saleValue,
-					bankAccountOwnerName, boundAccountId);
+			Commercialize.LOGGER.info(
+					"Depositing {} ¤ to bank account '{}' ({}) from provided payment card in shipping block.",
+					saleValue,
+					bankAccountOwnerName,
+					boundAccountId
+			);
 
 			var preDepositBalance = boundBankAccount.getBalance();
 			BankAccountAccessUtil.depositAccountBalanceForCard(paymentCard, saleValue);
@@ -80,7 +86,12 @@ public final class ShippingExchangeTickingUtil {
 				Commercialize.LOGGER.error(
 						"Bank account '{}' ({}) balance did not update correctly after depositing {} ¤ from shipping block payment card. "
 								+ "Pre-deposit balance: {} ¤, post-deposit balance: {} ¤.",
-						bankAccountOwnerName, boundAccountId, saleValue, preDepositBalance, postDepositBalance);
+						bankAccountOwnerName,
+						boundAccountId,
+						saleValue,
+						preDepositBalance,
+						postDepositBalance
+				);
 				callback.accept(ShippingTickResult.FAILURE);
 				return;
 			}
@@ -89,7 +100,11 @@ public final class ShippingExchangeTickingUtil {
 
 			Commercialize.LOGGER.info(
 					"Sold {} item(s) from shipping block, deposited {} ¤ to bank account '{}' ({}) from shipping block payment card.",
-					assortment.items.size(), saleValue, bankAccountOwnerName, boundAccountId);
+					assortment.items.size(),
+					saleValue,
+					bankAccountOwnerName,
+					boundAccountId
+			);
 
 			callback.accept(ShippingTickResult.SOLD);
 			return;
@@ -105,7 +120,10 @@ public final class ShippingExchangeTickingUtil {
 		if (remainingCurrencyItems.size() > 0) {
 			Commercialize.LOGGER.info(
 					"Sold {} item(s) from shipping block, paid out {} ¤ in cash ({} ¤ dropped in world due to full inventory).",
-					assortment.items.size(), saleValue, InventoryCashUtil.getCurrencyValueInList(remainingCurrencyItems));
+					assortment.items.size(),
+					saleValue,
+					InventoryCashUtil.getCurrencyValueInList(remainingCurrencyItems)
+			);
 		} else {
 			Commercialize.LOGGER.info("Sold {} item(s) from shipping block, paid out {} ¤ in cash.", assortment.items.size(), saleValue);
 		}
@@ -131,7 +149,7 @@ public final class ShippingExchangeTickingUtil {
 
 		for (var slot : ShippingBlockInventory.MAIN_SLOTS) {
 			var itemStack = inventory.getStack(slot);
-			var stackValue = ItemSaleValueUtil.getValueForItemStack(itemStack);
+			var stackValue = ItemValueUtil.getValueForItemStack(itemStack);
 
 			// Item has no value and can not be sold.
 			if (stackValue == 0) {

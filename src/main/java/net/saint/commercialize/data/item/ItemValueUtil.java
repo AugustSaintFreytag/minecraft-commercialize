@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.saint.commercialize.Commercialize;
 
-public final class ItemSaleValueUtil {
+public final class ItemValueUtil {
 
 	// Value Calculation
 

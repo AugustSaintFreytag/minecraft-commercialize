@@ -10,7 +10,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
-import net.saint.commercialize.data.item.ItemSaleValueUtil;
+import net.saint.commercialize.data.item.ItemValueUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
@@ -48,7 +48,8 @@ public final class MarketOfferTickingUtil {
 		}
 
 		var numberOfOffersToGenerate = Math.max(
-				0, Math.min(
+				0,
+				Math.min(
 						Commercialize.CONFIG.offerBatchSize,
 						Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()
 				)
@@ -111,7 +112,10 @@ public final class MarketOfferTickingUtil {
 		if (sellerProfile == null) {
 			Commercialize.LOGGER.error(
 					"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after simulated sale of offer '{}'.",
-					offer.sellerName, offer.sellerId, offer.price, offer.id
+					offer.sellerName,
+					offer.sellerId,
+					offer.price,
+					offer.id
 			);
 			return SaleResult.FAILURE_NO_SELLER;
 		}
@@ -119,7 +123,10 @@ public final class MarketOfferTickingUtil {
 		if (BankAccountAccessUtil.getBankAccountForPlayerById(sellerProfile.getId()) == null) {
 			Commercialize.LOGGER.error(
 					"Could not access bank account for player '{}' ({}) to pay out owed offer amount of {} ¤ for simulated sale of offer '{}'. The offer will not be sold.",
-					offer.sellerName, offer.sellerId, offer.price, offer.id
+					offer.sellerName,
+					offer.sellerId,
+					offer.price,
+					offer.id
 			);
 			return SaleResult.FAILURE_NO_ACCOUNT;
 		}
@@ -128,15 +135,19 @@ public final class MarketOfferTickingUtil {
 		MarketAnalyticsUtil.writeMarketOrderToAnalytics(offer, null);
 
 		Commercialize.LOGGER.info(
-				"Offer '{}' of {} has been purchased by a simulated player. Deposited {} ¤ to account of seller '{}' ({}).", offer.id,
-				ItemDescriptionUtil.descriptionForItemStack(offer.stack), offer.price, offer.sellerName, offer.sellerId
+				"Offer '{}' of {} has been purchased by a simulated player. Deposited {} ¤ to account of seller '{}' ({}).",
+				offer.id,
+				ItemDescriptionUtil.descriptionForItemStack(offer.stack),
+				offer.price,
+				offer.sellerName,
+				offer.sellerId
 		);
 
 		return SaleResult.SUCCESS;
 	}
 
 	private static double calculateOfferSaleChance(Offer offer) {
-		var intrinsicOfferValue = ItemSaleValueUtil.getValueForItemStack(offer.stack);
+		var intrinsicOfferValue = ItemValueUtil.getValueForItemStack(offer.stack);
 
 		if (intrinsicOfferValue == 0) {
 			// Items that can not be estimated can not be sold to virtual players.
@@ -200,7 +211,8 @@ public final class MarketOfferTickingUtil {
 
 		if (!MarketPlayerUtil.isKnownPlayerId(server, playerId)) {
 			Commercialize.LOGGER.error(
-					"Could not verify player '{}' ({}) as a known player on the server to return expired offer items to.", offer.sellerName,
+					"Could not verify player '{}' ({}) as a known player on the server to return expired offer items to.",
+					offer.sellerName,
 					offer.sellerId
 			);
 			return;
@@ -210,15 +222,19 @@ public final class MarketOfferTickingUtil {
 
 		if (!didDispatch) {
 			Commercialize.LOGGER.error(
-					"Could not dispatch return expired offer items to player '{}' ({}).", offer.sellerName,
+					"Could not dispatch return expired offer items to player '{}' ({}).",
+					offer.sellerName,
 					offer.sellerId
 			);
 			return;
 		}
 
 		Commercialize.LOGGER.info(
-				"Offer '{}' ({}) has expired and items were dispatched to seller '{}' ({}) via mail.", offer.id,
-				itemDescription, offer.sellerName, offer.sellerId
+				"Offer '{}' ({}) has expired and items were dispatched to seller '{}' ({}) via mail.",
+				offer.id,
+				itemDescription,
+				offer.sellerName,
+				offer.sellerId
 		);
 		Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer);
 	}
