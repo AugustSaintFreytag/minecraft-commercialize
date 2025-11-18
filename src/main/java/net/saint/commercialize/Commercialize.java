@@ -17,6 +17,7 @@ import net.minecraft.util.ActionResult;
 import net.saint.commercialize.data.inventory.InventoryAccessUtil;
 import net.saint.commercialize.data.item.ItemManager;
 import net.saint.commercialize.data.item.ItemManagerNetworking;
+import net.saint.commercialize.data.item.ItemValueDiscoveryUtil;
 import net.saint.commercialize.data.mail.MailTransitManager;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.market.MarketAnalyticsManager;
@@ -134,6 +135,7 @@ public class Commercialize implements ModInitializer {
 		ModConfig.reloadPlayerConfigs();
 		ModConfig.reloadOfferTemplateConfigs();
 
+		ItemValueDiscoveryUtil.discoverAndRegisterItemValues(server);
 		ItemManagerNetworking.syncItemRegistryToAllPlayers(server);
 	}
 
