@@ -1,0 +1,14 @@
+{
+	"values": {
+		"create:copper_shingles": 8,
+		"create:exposed_copper_shingles": 8,
+		"create:oxidized_copper_shingles": 8,
+		"create:weathered_copper_shingles": 8,
+		"minecraft:exposed_copper": 86,
+		"minecraft:oxidized_copper": 78,
+		"minecraft:waxed_exposed_copper": 92,
+		"minecraft:waxed_oxidized_copper": 84,
+		"minecraft:waxed_weathered_copper": 88,
+		"minecraft:weathered_copper": 82
+	}
+}

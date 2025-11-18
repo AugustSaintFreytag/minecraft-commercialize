@@ -1,0 +1,23 @@
+{
+	"values": {
+		"minecraft:bolt_armor_trim_smithing_template": 512,
+		"minecraft:coast_armor_trim_smithing_template": 512,
+		"minecraft:dune_armor_trim_smithing_template": 512,
+		"minecraft:eye_armor_trim_smithing_template": 512,
+		"minecraft:flow_armor_trim_smithing_template": 512,
+		"minecraft:host_armor_trim_smithing_template": 512,
+		"minecraft:netherite_upgrade_smithing_template": 512,
+		"minecraft:raiser_armor_trim_smithing_template": 512,
+		"minecraft:rib_armor_trim_smithing_template": 512,
+		"minecraft:sentry_armor_trim_smithing_template": 512,
+		"minecraft:shaper_armor_trim_smithing_template": 512,
+		"minecraft:silence_armor_trim_smithing_template": 512,
+		"minecraft:snout_armor_trim_smithing_template": 512,
+		"minecraft:spire_armor_trim_smithing_template": 512,
+		"minecraft:tide_armor_trim_smithing_template": 512,
+		"minecraft:vex_armor_trim_smithing_template": 512,
+		"minecraft:ward_armor_trim_smithing_template": 512,
+		"minecraft:wayfinder_armor_trim_smithing_template": 512,
+		"minecraft:wild_armor_trim_smithing_template": 512
+	}
+}

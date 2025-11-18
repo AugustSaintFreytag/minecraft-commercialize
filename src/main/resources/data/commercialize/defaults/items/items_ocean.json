@@ -1,0 +1,14 @@
+{
+	"values": {
+		"minecraft:brain_coral": 2,
+		"minecraft:bubble_coral": 2,
+		"minecraft:dead_brain_coral": 1,
+		"minecraft:dead_bubble_coral": 1,
+		"minecraft:dead_fire_coral": 1,
+		"minecraft:dead_horn_coral": 1,
+		"minecraft:dead_tube_coral": 1,
+		"minecraft:fire_coral": 2,
+		"minecraft:horn_coral": 2,
+		"minecraft:tube_coral": 2
+	}
+}

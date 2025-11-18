@@ -8,6 +8,7 @@
 		"betternether:blue_crying_obsidian": 92,
 		"betternether:blue_obsidian": 72,
 		"betternether:blue_weeping_obsidian": 92,
+		"betternether:crimson_nylium": 6,
 		"betternether:mushroom_fir_bark": 12,
 		"betternether:mushroom_fir_log": 12,
 		"betternether:mushroom_fir_planks": 3,
@@ -29,6 +30,7 @@
 		"betternether:stalagnate_planks": 3,
 		"betternether:stalagnate_stripped_bark": 12,
 		"betternether:stalagnate_stripped_log": 12,
+		"betternether:warped_nylium": 6,
 		"betternether:wart_bark": 12,
 		"betternether:wart_log": 12,
 		"betternether:wart_planks": 3,
@@ -42,6 +44,7 @@
 		"minecraft:nether_brick": 4,
 		"minecraft:netherrack": 2,
 		"minecraft:soul_sand": 3,
-		"minecraft:soul_soil": 4
+		"minecraft:soul_soil": 4,
+		"minecraft:warped_wart_block": 18
 	}
 }
