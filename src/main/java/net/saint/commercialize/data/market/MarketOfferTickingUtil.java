@@ -10,12 +10,12 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
-import net.saint.commercialize.data.item.ItemValueUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
+import net.saint.commercialize.data.valuation.ItemValueUtil;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketOfferTickingUtil {

@@ -1,4 +1,4 @@
-package net.saint.commercialize.data.item;
+package net.saint.commercialize.data.valuation;
 
 import java.util.List;
 
