@@ -336,7 +336,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Fetches the per-bucket cost for a fluid, deriving it if needed.
 	 *
-	 * Checks cached values first, then looks for bucket items to back into the fluid’s price when no direct entry exists.
+	 * Checks cached values first, then looks for bucket items to back 
+	 * into the fluid’s price when no direct entry exists.
 	 */
 	private static Optional<Integer> resolveFluidUnitValue(Fluid fluid, Map<Identifier, Integer> resolvedValues,
 			Map<Identifier, Integer> resolvedFluidValues) {
@@ -365,7 +366,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Calculates fluid value by subtracting the cost of an empty bucket from its filled variant.
 	 *
-	 * Enables fluid valuation even when only bucket items are preconfigured, ensuring container costs are not double-counted.
+	 * Enables fluid valuation even when only bucket items are preconfigured, 
+	 * ensures container costs are not double-counted.
 	 */
 	private static Optional<Integer> resolveFluidValueFromBucket(Fluid fluid, Map<Identifier, Integer> resolvedValues) {
 		Item bucketItem = fluid.getBucketItem();
@@ -390,7 +392,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Scales the per-bucket cost of a fluid to match a specific millibucket requirement.
 	 *
-	 * Uses Fabric’s bucket constant for proportional math and returns zero when inputs are invalid to avoid polluting totals.
+	 * Uses Fabric’s bucket constant for proportional math and returns zero when inputs 
+	 * are invalid to avoid polluting totals.
 	 */
 	private static int scaleFluidValue(int unitValue, int amount) {
 		if (amount <= 0 || unitValue < 0) {
@@ -404,7 +407,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Registers fluid output values when a recipe produces liquids instead of items.
 	 *
-	 * Distributes the total input cost across fluid amounts and also updates bucket items when available to keep inventories in sync.
+	 * Distributes the total input cost across fluid amounts and also updates 
+	 * bucket items when available to keep inventories in sync.
 	 */
 	private static boolean registerFluidOutputs(List<FluidStack> fluidResults, int totalInputValue,
 			Map<Identifier, Integer> resolvedValues,
@@ -476,7 +480,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Seeds the fluid value cache using any known filled bucket items.
 	 *
-	 * Helps bootstrap fluid pricing so fluid-only recipes have reference points even before explicit fluid outputs are discovered.
+	 * Helps bootstrap fluid pricing so fluid-only recipes have reference points 
+	 * even before explicit fluid outputs are discovered.
 	 */
 	private static void seedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues, Map<Identifier, Integer> resolvedFluidValues) {
 		var emptyBucketId = Registries.ITEM.getId(Items.BUCKET);
@@ -510,32 +515,13 @@ public final class ItemValueDiscoveryUtil {
 		}
 	}
 
-	// Utility
-
-	/**
-	 * Returns whether the given recipe type should be considered for valuation.
-	 *
-	 * Uses preset data to skip unsupported or circular recipe chains so discovery stays safe and performant.
-	 */
-	private static boolean isSupportedRecipeType(Identifier recipeTypeId) {
-		return ItemValueDiscoveryPresets.isSupportedRecipeType(recipeTypeId);
-	}
-
-	/**
-	 * Fetches the effort bonus assigned to a recipe type.
-	 *
-	 * Differentiates resource-intensive automation steps from trivial crafting for more realistic pricing.
-	 */
-	private static int getRecipeEffortValueForType(Identifier recipeTypeId) {
-		return ItemValueDiscoveryPresets.getRecipeEffortValue(recipeTypeId);
-	}
-
-	// Logging
+	// Analysis
 
 	/**
 	 * Counts how many recipe outputs still lack resolved values after discovery.
 	 *
-	 * Provides diagnostic logging so missing presets or unsupported recipes can be identified and addressed.
+	 * Provides diagnostic logging so missing presets or unsupported recipes 
+	 * can be identified and addressed.
 	 */
 	private static int countUnresolvedOutputs(Collection<Recipe<?>> recipeEntries, DynamicRegistryManager registryManager,
 			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds) {
@@ -560,6 +546,28 @@ public final class ItemValueDiscoveryUtil {
 		}
 
 		return unresolved;
+	}
+
+	// Utility
+
+	/**
+	 * Returns whether the given recipe type should be considered for valuation.
+	 *
+	 * Uses preset data to skip unsupported or circular recipe chains so 
+	 * discovery stays safe and performant.
+	 */
+	private static boolean isSupportedRecipeType(Identifier recipeTypeId) {
+		return ItemValueDiscoveryPresets.isSupportedRecipeType(recipeTypeId);
+	}
+
+	/**
+	 * Fetches the effort bonus assigned to a recipe type.
+	 *
+	 * Differentiates resource-intensive automation steps from trivial 
+	 * crafting for more realistic pricing.
+	 */
+	private static int getRecipeEffortValueForType(Identifier recipeTypeId) {
+		return ItemValueDiscoveryPresets.getRecipeEffortValue(recipeTypeId);
 	}
 
 }
