@@ -13,6 +13,7 @@
 		"deeperdarker:gloomy_geyser": 8,
 		"deeperdarker:gloomy_sculk": 6,
 		"deeperdarker:sculk_gleam": 8,
-		"deeperdarker:sculk_stone": 4
+		"deeperdarker:sculk_stone": 4,
+		"minecraft:calibrated_sculk_sensor": 256
 	}
 }
