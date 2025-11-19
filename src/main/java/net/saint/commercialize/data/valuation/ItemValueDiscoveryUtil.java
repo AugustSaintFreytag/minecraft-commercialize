@@ -64,7 +64,7 @@ public final class ItemValueDiscoveryUtil {
 		var resolvedFluidValues = new HashMap<Identifier, Integer>();
 		var discoveredItemIds = new HashSet<Identifier>();
 
-		seedFluidValuesFromBuckets(resolvedValues, resolvedFluidValues);
+		registerDerivedFluidValuesFromBuckets(resolvedValues, resolvedFluidValues);
 
 		var iteration = 0;
 		var maxIterations = recipeEntries.size();
@@ -483,7 +483,8 @@ public final class ItemValueDiscoveryUtil {
 	 * Helps bootstrap fluid pricing so fluid-only recipes have reference points 
 	 * even before explicit fluid outputs are discovered.
 	 */
-	private static void seedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues, Map<Identifier, Integer> resolvedFluidValues) {
+	private static void registerDerivedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues,
+			Map<Identifier, Integer> resolvedFluidValues) {
 		var emptyBucketId = Registries.ITEM.getId(Items.BUCKET);
 		var emptyBucketValue = resolvedValues.getOrDefault(emptyBucketId, 0);
 
