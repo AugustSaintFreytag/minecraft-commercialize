@@ -12,9 +12,9 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("minecraft", "smithing"), 0),
 			Map.entry(new Identifier("minecraft", "smithing_transform"), 0),
 			Map.entry(new Identifier("minecraft", "smithing_trim"), 0),
-			Map.entry(new Identifier("minecraft", "campfire_cooking"), 5),
-			Map.entry(new Identifier("minecraft", "smelting"), 5),
-			Map.entry(new Identifier("minecraft", "smoking"), 5),
+			Map.entry(new Identifier("minecraft", "campfire_cooking"), 4),
+			Map.entry(new Identifier("minecraft", "smelting"), 4),
+			Map.entry(new Identifier("minecraft", "smoking"), 4),
 			Map.entry(new Identifier("minecraft", "blasting"), 6),
 			Map.entry(new Identifier("minecraft", "brewing"), 18),
 			Map.entry(new Identifier("create", "compacting"), 10),
@@ -31,9 +31,14 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "sandpaper_polishing"), 12),
 			Map.entry(new Identifier("create", "sequenced_assembly"), 28),
 			Map.entry(new Identifier("create", "splashing"), 5),
-			Map.entry(new Identifier("create", "spout_filling"), 0),
+			Map.entry(new Identifier("create", "filling"), 0),
+			Map.entry(new Identifier("createaddition", "rolling"), 8),
+			Map.entry(new Identifier("createaddition", "charging"), 12),
+			Map.entry(new Identifier("createdieselgenerators", "basin_fermenting"), 22),
+			Map.entry(new Identifier("create_bic_bit", "deep_frying"), 14),
 			Map.entry(new Identifier("farmersdelight", "cooking"), 10),
-			Map.entry(new Identifier("farmersdelight", "cutting"), 4)
+			Map.entry(new Identifier("farmersdelight", "cutting"), 4),
+			Map.entry(new Identifier("farmersrespite", "brewing"), 10)
 	);
 
 	public static boolean isSupportedRecipeType(Identifier recipeTypeId) {
