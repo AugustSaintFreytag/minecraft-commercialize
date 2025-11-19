@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,8 @@ final class ItemValueDiscoveryStatsWriter {
 	private ItemValueDiscoveryStatsWriter() {
 	}
 
-	static void write(Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedIds, Set<Identifier> encounteredResultIds) {
+	static void write(Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedIds, Set<Identifier> encounteredResultIds,
+			Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
 		var discoveredIds = new HashSet<>(resolvedValues.keySet());
 		discoveredIds.removeAll(lockedIds);
 
@@ -40,6 +42,7 @@ final class ItemValueDiscoveryStatsWriter {
 		stats.add("configuredIds", toJsonArray(lockedIds));
 		stats.add("discoveredIds", toJsonArray(discoveredIds));
 		stats.add("unresolvedIds", toJsonArray(unresolvedIds));
+		stats.add("unsupportedTypes", toJsonObject(unsupportedRecipeTypes));
 
 		try {
 			var statsDir = Commercialize.MOD_CONFIG_DIR.resolve("stats");
@@ -59,6 +62,14 @@ final class ItemValueDiscoveryStatsWriter {
 				.sorted()
 				.forEach(array::add);
 		return array;
+	}
+
+	private static JsonObject toJsonObject(Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
+		var obj = new JsonObject();
+		unsupportedRecipeTypes.entrySet().stream()
+				.sorted(Map.Entry.comparingByKey(Comparator.comparing(Identifier::toString)))
+				.forEach(entry -> obj.add(entry.getKey().toString(), toJsonArray(entry.getValue())));
+		return obj;
 	}
 
 }

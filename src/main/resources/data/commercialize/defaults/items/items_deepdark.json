@@ -12,8 +12,14 @@
 		"deeperdarker:gloomslate": 4,
 		"deeperdarker:gloomy_geyser": 8,
 		"deeperdarker:gloomy_sculk": 6,
+		"deeperdarker:infested_jaw": 4,
+		"deeperdarker:infested_sculk": 4,
 		"deeperdarker:sculk_gleam": 8,
 		"deeperdarker:sculk_stone": 4,
-		"minecraft:calibrated_sculk_sensor": 256
+		"minecraft:sculk": 4,
+		"minecraft:sculk_catalyst": 72,
+		"minecraft:sculk_sensor": 256,
+		"minecraft:sculk_shrieker": 72,
+		"minecraft:sculk_vein": 10
 	}
 }
