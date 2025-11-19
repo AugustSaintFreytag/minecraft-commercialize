@@ -29,28 +29,33 @@ repositories {
 
 dependencies {
 	// Minecraft
+	
 	minecraft ("com.mojang:minecraft:${project.minecraft_version}")
 	mappings ("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	
 	// Fabric
+	
 	modImplementation ("net.fabricmc:fabric-loader:${project.loader_version}")
 	modImplementation ("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// OwO Lib
+	
 	modImplementation ("io.wispforest:owo-lib:${project.owo_version}")
 	include ("io.wispforest:owo-sentinel:${project.owo_version}")
 
 	// Cloth Config
+	
 	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
   	}
 	
 	// Mod Menu
+
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	// Create: Numismatics
+	// Create
 	
 	modCompileOnly("io.github.fabricators_of_create.Porting-Lib:fluids:${project.porting_lib_version}")
 	modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
@@ -60,6 +65,10 @@ dependencies {
 	
 	// Disabled transitive: modCompileOnly("curse.maven:framework-549225:${project.framework_version}")
 	modCompileOnly("curse.maven:refurbished-furniture-897116:${project.refurbished_furniture_version}")
+
+	// Farmer's Delight
+
+	modCompileOnly("maven.modrinth:farmers-delight-refabricated:${project.farmersdelight_version}")
 }
 
 fabricApi {
