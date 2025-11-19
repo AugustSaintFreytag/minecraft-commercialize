@@ -27,13 +27,13 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "milling"), 8),
 			Map.entry(new Identifier("create", "mixing"), 8),
 			Map.entry(new Identifier("create", "pressing"), 8),
-			Map.entry(new Identifier("create", "sawing"), 5),
+			Map.entry(new Identifier("create", "sawing"), 4),
 			Map.entry(new Identifier("create", "sandpaper_polishing"), 12),
 			Map.entry(new Identifier("create", "sequenced_assembly"), 28),
 			Map.entry(new Identifier("create", "splashing"), 5),
 			Map.entry(new Identifier("create", "spout_filling"), 0),
 			Map.entry(new Identifier("farmersdelight", "cooking"), 10),
-			Map.entry(new Identifier("farmersdelight", "cutting"), 10)
+			Map.entry(new Identifier("farmersdelight", "cutting"), 4)
 	);
 
 	public static boolean isSupportedRecipeType(Identifier recipeTypeId) {
