@@ -1,8 +1,7 @@
 {
 	"values": {
-		"minecraft:enchanted_golden_apple": 8636,
-		"minecraft:glistering_melon_slice": 908,
-		"minecraft:golden_apple": 8124,
-		"minecraft:golden_carrot": 908
+		"create_bic_bit:unripe_cheese": 180,
+		"create_bic_bit:young_cheese": 216,
+		"create_bic_bit:aged_cheese": 252
 	}
 }
