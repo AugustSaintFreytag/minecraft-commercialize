@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 
 import io.github.fabricators_of_create.porting_lib.fluids.FluidStack;
@@ -69,28 +68,20 @@ public final class ItemValueDiscoveryUtil {
 
 		var iteration = 0;
 		var maxIterations = recipeEntries.size();
-		var progress = true;
+		var didProgress = true;
 
-		while (progress && iteration < maxIterations) {
-			progress = false;
+		while (didProgress && iteration < maxIterations) {
+			didProgress = false;
 			iteration++;
 
 			for (var recipe : recipeEntries) {
 				if (registerRecipeValue(recipe, registryManager, resolvedValues, resolvedFluidValues, lockedItemIds, discoveredItemIds)) {
-					progress = true;
+					didProgress = true;
 				}
 			}
 		}
 
 		var unresolvedOutputs = countUnresolvedOutputs(recipeEntries, registryManager, resolvedValues, lockedItemIds);
-
-		if (discoveredItemIds.isEmpty()) {
-			Commercialize.LOGGER.info(
-					"No additional item values discovered after {} pass(es); {} recipe output(s) unresolved.",
-					iteration,
-					unresolvedOutputs
-			);
-		}
 
 		Commercialize.LOGGER.info(
 				"Discovered {} item value(s) in {} pass(es); {} recipe output(s) unresolved.",
@@ -112,13 +103,13 @@ public final class ItemValueDiscoveryUtil {
 	private static boolean registerRecipeValue(Recipe<?> recipe, DynamicRegistryManager registryManager,
 			Map<Identifier, Integer> resolvedValues, Map<Identifier, Integer> resolvedFluidValues,
 			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
-		var normalizedRecipe = normalizeRecipe(recipe, registryManager);
+		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
-		if (normalizedRecipe.isEmpty()) {
+		if (normalizedRecipe.isEmpty() || isSupportedRecipeType(null)) {
 			return false;
 		}
 
-		return registerNormalizedRecipe(normalizedRecipe.get(), resolvedValues, resolvedFluidValues, lockedItemIds, discoveredItemIds);
+		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, resolvedFluidValues, lockedItemIds, discoveredItemIds);
 	}
 
 	/**
@@ -149,64 +140,11 @@ public final class ItemValueDiscoveryUtil {
 	}
 
 	/**
-	 * Converts any supported recipe into a shared structure describing its inputs and outputs.
-	 *
-	 * Extracts item ingredients, optional fluid ingredients, and resulting stacks or fluids so later logic can stay agnostic of recipe subclasses.
-	 */
-	private static Optional<NormalizedRecipe> normalizeRecipe(Recipe<?> recipe, DynamicRegistryManager registryManager) {
-		var recipeTypeId = Registries.RECIPE_TYPE.getId(recipe.getType());
-
-		if (!isSupportedRecipeType(recipeTypeId)) {
-			return Optional.empty();
-		}
-
-		var itemIngredients = recipe.getIngredients();
-		var outputStack = recipe.getOutput(registryManager);
-
-		if (recipe instanceof ProcessingRecipe<?> processingRecipe) {
-			var fluidIngredients = processingRecipe.getFluidIngredients();
-			var fluidOutputs = processingRecipe.getFluidResults();
-
-			if (itemIngredients.isEmpty() && fluidIngredients.isEmpty()) {
-				return Optional.empty();
-			}
-
-			if (outputStack.isEmpty() && fluidOutputs.isEmpty()) {
-				return Optional.empty();
-			}
-
-			return Optional.of(
-					new NormalizedRecipe(
-							recipeTypeId,
-							itemIngredients,
-							fluidIngredients,
-							outputStack,
-							fluidOutputs
-					)
-			);
-		}
-
-		if (itemIngredients.isEmpty() || outputStack.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(
-				new NormalizedRecipe(
-						recipeTypeId,
-						itemIngredients,
-						List.of(),
-						outputStack,
-						List.of()
-				)
-		);
-	}
-
-	/**
 	 * Calculates the value of a normalized recipe’s outputs and updates caches.
 	 *
 	 * Totals ingredient costs, applies effort bonuses, and either registers the resulting item stack or propagates value to fluid outputs.
 	 */
-	private static boolean registerNormalizedRecipe(NormalizedRecipe recipe, Map<Identifier, Integer> resolvedValues,
+	private static boolean registerNormalizedItemRecipe(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues,
 			Map<Identifier, Integer> resolvedFluidValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		var totalInputValue = resolveTotalInputValue(recipe, resolvedValues, resolvedFluidValues);
 
@@ -214,7 +152,7 @@ public final class ItemValueDiscoveryUtil {
 			return false;
 		}
 
-		var progress = false;
+		var didProgress = false;
 		var outputStack = recipe.itemOutput();
 
 		if (!outputStack.isEmpty()) {
@@ -222,10 +160,10 @@ public final class ItemValueDiscoveryUtil {
 
 			if (perItemValue.isPresent()) {
 				var outputItemId = Registries.ITEM.getId(outputStack.getItem());
-				progress |= applyResolvedItemValue(outputItemId, perItemValue.get(), resolvedValues, lockedItemIds, discoveredItemIds);
+				didProgress |= applyResolvedItemValue(outputItemId, perItemValue.get(), resolvedValues, lockedItemIds, discoveredItemIds);
 			}
 		} else {
-			progress |= registerFluidOutputs(
+			didProgress |= registerFluidOutputs(
 					recipe.fluidOutputs(),
 					totalInputValue.get(),
 					resolvedValues,
@@ -235,58 +173,7 @@ public final class ItemValueDiscoveryUtil {
 			);
 		}
 
-		return progress;
-	}
-
-	/**
-	 * Returns the cheapest known price for any stack matching the given ingredient.
-	 *
-	 * Evaluates each possible stack expansion, multiplies base value by stack size, and keeps the smallest positive result so crafting picks the best option.
-	 */
-	private static Optional<Integer> resolveIngredientValue(Ingredient ingredient, Map<Identifier, Integer> resolvedValues) {
-		if (ingredient.isEmpty()) {
-			return Optional.of(0);
-		}
-
-		var matchingStacks = ingredient.getMatchingStacks();
-
-		if (matchingStacks.length == 0) {
-			return Optional.empty();
-		}
-
-		var cheapestValue = Integer.MAX_VALUE;
-		var foundValue = false;
-
-		for (var matchingStack : matchingStacks) {
-			if (matchingStack.isEmpty()) {
-				continue;
-			}
-
-			var matchingItemId = Registries.ITEM.getId(matchingStack.getItem());
-			var baseValue = resolvedValues.get(matchingItemId);
-
-			if (baseValue == null) {
-				continue;
-			}
-
-			var stackCount = Math.max(matchingStack.getCount(), 1);
-			var stackValue = baseValue * stackCount;
-
-			if (stackValue <= 0) {
-				continue;
-			}
-
-			if (stackValue < cheapestValue) {
-				cheapestValue = stackValue;
-				foundValue = true;
-			}
-		}
-
-		if (!foundValue) {
-			return Optional.empty();
-		}
-
-		return Optional.of(cheapestValue);
+		return didProgress;
 	}
 
 	/**
@@ -294,7 +181,7 @@ public final class ItemValueDiscoveryUtil {
 	 *
 	 * Adds up resolved item and fluid ingredients, applies the recipe-type effort bonus, and aborts if any dependency lacks a value.
 	 */
-	private static Optional<Integer> resolveTotalInputValue(NormalizedRecipe recipe, Map<Identifier, Integer> resolvedValues,
+	private static Optional<Integer> resolveTotalInputValue(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues,
 			Map<Identifier, Integer> resolvedFluidValues) {
 		if (recipe.itemIngredients().isEmpty() && recipe.fluidIngredients().isEmpty()) {
 			return Optional.empty();
@@ -322,13 +209,64 @@ public final class ItemValueDiscoveryUtil {
 			totalInputValue += fluidValue.get();
 		}
 
-		totalInputValue += getRecipeEffortValueForType(recipe.recipeTypeId());
+		totalInputValue += getRecipeEffortValueForType(recipe.recipeType());
 
 		if (totalInputValue <= 0) {
 			return Optional.empty();
 		}
 
 		return Optional.of(totalInputValue);
+	}
+
+	/**
+	 * Returns the cheapest known price for any stack matching the given ingredient.
+	 *
+	 * Evaluates each possible stack expansion, multiplies base value by stack size, and keeps the smallest positive result so crafting picks the best option.
+	 */
+	private static Optional<Integer> resolveIngredientValue(Ingredient ingredient, Map<Identifier, Integer> resolvedValues) {
+		if (ingredient.isEmpty()) {
+			return Optional.of(0);
+		}
+
+		var potentialIngredientStacks = ingredient.getMatchingStacks();
+
+		if (potentialIngredientStacks.length == 0) {
+			return Optional.empty();
+		}
+
+		var cheapestValue = Integer.MAX_VALUE;
+		var foundValue = false;
+
+		for (var potentialIngredientStack : potentialIngredientStacks) {
+			if (potentialIngredientStack.isEmpty()) {
+				continue;
+			}
+
+			var matchingItemId = Registries.ITEM.getId(potentialIngredientStack.getItem());
+			var baseValue = resolvedValues.get(matchingItemId);
+
+			if (baseValue == null) {
+				continue;
+			}
+
+			var stackCount = Math.max(potentialIngredientStack.getCount(), 1);
+			var stackValue = baseValue * stackCount;
+
+			if (stackValue == 0) {
+				continue;
+			}
+
+			if (stackValue < cheapestValue) {
+				cheapestValue = stackValue;
+				foundValue = true;
+			}
+		}
+
+		if (!foundValue) {
+			return Optional.empty();
+		}
+
+		return Optional.of(cheapestValue);
 	}
 
 	/**
@@ -573,14 +511,6 @@ public final class ItemValueDiscoveryUtil {
 	}
 
 	// Utility
-
-	private static record NormalizedRecipe(
-			Identifier recipeTypeId,
-			List<Ingredient> itemIngredients,
-			List<FluidIngredient> fluidIngredients,
-			ItemStack itemOutput,
-			List<FluidStack> fluidOutputs) {
-	}
 
 	/**
 	 * Returns whether the given recipe type should be considered for valuation.
