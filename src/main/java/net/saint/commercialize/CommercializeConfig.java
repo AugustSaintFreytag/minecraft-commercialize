@@ -185,4 +185,11 @@ public final class CommercializeConfig implements ConfigData {
 	@Comment("The time in ticks after which the market screen automatically refreshes its listing when inactive (no open screen). Will effectively prefetch to have listing ready before player interacts with block. Set to -1 to disable. (Default: 6000, 5 minutes)")
 	public int listingRefreshIntervalWhenInactive = 6000;
 
+	// Debug
+
+	@ConfigEntry.Category("debug")
+	@ConfigEntry.Gui.Tooltip
+	@Comment("Write stats on registered, discovered, and unknown item and fluid values when processing configs. (Default: false)")
+	public boolean writeValueDiscoveryStats = false;
+
 }
