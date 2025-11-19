@@ -62,6 +62,7 @@ public final class ItemValueDiscoveryUtil {
 		var lockedItemIds = Set.copyOf(seededValues.keySet());
 		var resolvedValues = new HashMap<Identifier, Integer>(seededValues);
 		var discoveredItemIds = new HashSet<Identifier>();
+		var encounteredResultIds = new HashSet<Identifier>();
 
 		registerDerivedFluidValuesFromBuckets(resolvedValues);
 
@@ -74,7 +75,7 @@ public final class ItemValueDiscoveryUtil {
 			iteration++;
 
 			for (var recipe : recipeEntries) {
-				if (registerRecipeValue(recipe, registryManager, resolvedValues, lockedItemIds, discoveredItemIds)) {
+				if (registerRecipeValue(recipe, registryManager, resolvedValues, lockedItemIds, discoveredItemIds, encounteredResultIds)) {
 					didProgress = true;
 				}
 			}
@@ -89,6 +90,10 @@ public final class ItemValueDiscoveryUtil {
 				unresolvedOutputs
 		);
 
+		if (Commercialize.CONFIG.writeValueDiscoveryStats) {
+			writeValueDiscoveryStats(resolvedValues, lockedItemIds, encounteredResultIds);
+		}
+
 		return resolvedValues;
 	}
 
@@ -100,14 +105,39 @@ public final class ItemValueDiscoveryUtil {
 	 * Acts as the entry point for per-recipe processing, ensuring both vanilla and Create recipes go through the same downstream logic.
 	 */
 	private static boolean registerRecipeValue(Recipe<?> recipe, DynamicRegistryManager registryManager,
-			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
+			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds,
+			Set<Identifier> encounteredResultIds) {
 		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
 		if (normalizedRecipe.isEmpty() || !isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
 			return false;
 		}
 
+		recordNormalizedRecipeOutputs(normalizedRecipe.get(), encounteredResultIds);
+
 		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, lockedItemIds, discoveredItemIds);
+	}
+
+	private static void recordNormalizedRecipeOutputs(NormalizedItemRecipe recipe, Set<Identifier> encounteredResultIds) {
+		var itemOutput = recipe.itemOutput();
+
+		if (!itemOutput.isEmpty()) {
+			encounteredResultIds.add(Registries.ITEM.getId(itemOutput.getItem()));
+		}
+
+		for (var fluidOutput : recipe.fluidOutputs()) {
+			if (fluidOutput == null || fluidOutput.isEmpty()) {
+				continue;
+			}
+
+			var fluid = fluidOutput.getFluid();
+
+			if (fluid == null || fluid == Fluids.EMPTY) {
+				continue;
+			}
+
+			encounteredResultIds.add(Registries.FLUID.getId(fluid));
+		}
 	}
 
 	/**
@@ -554,6 +584,11 @@ public final class ItemValueDiscoveryUtil {
 		}
 
 		return unresolved;
+	}
+
+	private static void writeValueDiscoveryStats(Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds,
+			Set<Identifier> encounteredResultIds) {
+		ItemValueDiscoveryStatsWriter.write(resolvedValues, lockedItemIds, encounteredResultIds);
 	}
 
 	// Utility
