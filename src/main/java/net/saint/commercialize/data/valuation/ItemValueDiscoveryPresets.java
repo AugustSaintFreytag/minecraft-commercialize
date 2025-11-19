@@ -31,6 +31,7 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "sandpaper_polishing"), 12),
 			Map.entry(new Identifier("create", "sequenced_assembly"), 28),
 			Map.entry(new Identifier("create", "splashing"), 5),
+			Map.entry(new Identifier("create", "spout_filling"), 0),
 			Map.entry(new Identifier("farmersdelight", "cooking"), 10),
 			Map.entry(new Identifier("farmersdelight", "cutting"), 10)
 	);
