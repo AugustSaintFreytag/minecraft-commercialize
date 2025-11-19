@@ -2,12 +2,15 @@ package net.saint.commercialize.data.valuation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 
 import io.github.fabricators_of_create.porting_lib.fluids.FluidStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -34,6 +37,10 @@ public final class RecipeNormalizationUtil {
 
 		if (recipe instanceof ProcessingRecipe<?> processingRecipe) {
 			return normalizeProcessingRecipe(processingRecipe, recipeType, registryManager);
+		}
+
+		if (recipe instanceof SequencedAssemblyRecipe sequencedAssemblyRecipe) {
+			return normalizeSequencedAssemblyRecipe(sequencedAssemblyRecipe, recipeType, registryManager);
 		}
 
 		if (recipe instanceof CookingPotRecipe) {
@@ -124,6 +131,101 @@ public final class RecipeNormalizationUtil {
 						List.of()
 				)
 		);
+	}
+
+	// Sequenced Assembly Recipe (Create)
+
+	private static Optional<NormalizedItemRecipe> normalizeSequencedAssemblyRecipe(SequencedAssemblyRecipe sequencedRecipe,
+			Identifier recipeType, DynamicRegistryManager registryManager) {
+		var transitionalStack = sequencedRecipe.getTransitionalItem();
+		var collectedItemIngredients = new ArrayList<Ingredient>();
+		var baseIngredient = sequencedRecipe.getIngredient();
+
+		if (baseIngredient != null && !baseIngredient.isEmpty()) {
+			collectedItemIngredients.add(baseIngredient);
+		}
+
+		for (var step : sequencedRecipe.getSequence()) {
+			var processingRecipe = step.getRecipe();
+
+			if (processingRecipe == null) {
+				continue;
+			}
+
+			var stepIngredients = processingRecipe.getIngredients();
+
+			if (stepIngredients == null || stepIngredients.isEmpty()) {
+				continue;
+			}
+
+			for (var ingredient : stepIngredients) {
+				if (ingredient == null || ingredient.isEmpty()) {
+					continue;
+				}
+
+				if (isTransitionalIngredient(ingredient, transitionalStack)) {
+					continue;
+				}
+
+				collectedItemIngredients.add(ingredient);
+			}
+		}
+
+		var normalizedItemIngredients = collectedItemIngredients.stream()
+				.filter(Objects::nonNull)
+				.filter(ingredient -> !ingredient.isEmpty())
+				.toList();
+
+		var fluidIngredients = new ArrayList<FluidIngredient>();
+		sequencedRecipe.addAdditionalFluidIngredients(fluidIngredients);
+
+		var normalizedFluidIngredients = fluidIngredients.stream()
+				.filter(Objects::nonNull)
+				.toList();
+
+		if (normalizedItemIngredients.isEmpty() && normalizedFluidIngredients.isEmpty()) {
+			return Optional.empty();
+		}
+
+		var outputStack = sequencedRecipe.getOutput(registryManager);
+
+		if (outputStack.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(
+				new NormalizedItemRecipe(
+						recipeType,
+						normalizedItemIngredients,
+						normalizedFluidIngredients,
+						outputStack,
+						List.of()
+				)
+		);
+	}
+
+	private static boolean isTransitionalIngredient(Ingredient ingredient, ItemStack transitionalStack) {
+		if (ingredient == null || ingredient.isEmpty() || transitionalStack == null || transitionalStack.isEmpty()) {
+			return false;
+		}
+
+		var matchingStacks = ingredient.getMatchingStacks();
+
+		if (matchingStacks == null || matchingStacks.length == 0) {
+			return false;
+		}
+
+		for (var matchingStack : matchingStacks) {
+			if (matchingStack == null || matchingStack.isEmpty()) {
+				return false;
+			}
+
+			if (!ItemStack.canCombine(matchingStack, transitionalStack)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	// Utility
