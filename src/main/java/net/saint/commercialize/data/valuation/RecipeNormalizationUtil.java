@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
+import com.simibubi.create.foundation.fluid.FluidIngredient;
 
+import io.github.fabricators_of_create.porting_lib.fluids.FluidStack;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 public final class RecipeNormalizationUtil {
 
@@ -34,10 +38,10 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeProcessingRecipe(ProcessingRecipe<?> processingRecipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
-		var itemIngredients = processingRecipe.getIngredients();
+		var itemIngredients = compactListFromIngredients(processingRecipe.getIngredients());
 		var outputStack = processingRecipe.getOutput(registryManager);
-		var fluidIngredients = processingRecipe.getFluidIngredients();
-		var fluidOutputs = processingRecipe.getFluidResults();
+		var fluidIngredients = compactListFromFluidIngredients(processingRecipe.getFluidIngredients());
+		var fluidOutputs = compactListFromFluidStacks(processingRecipe.getFluidResults());
 
 		if (itemIngredients.isEmpty() && fluidIngredients.isEmpty()) {
 			return Optional.empty();
@@ -62,7 +66,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeVanillaRecipe(Recipe<?> recipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
-		var itemIngredients = recipe.getIngredients();
+		var itemIngredients = compactListFromIngredients(recipe.getIngredients());
 		var outputStack = recipe.getOutput(registryManager);
 
 		if (itemIngredients.isEmpty() || outputStack.isEmpty()) {
@@ -78,6 +82,24 @@ public final class RecipeNormalizationUtil {
 						List.of()
 				)
 		);
+	}
+
+	// Utility
+
+	private static List<Ingredient> compactListFromIngredients(DefaultedList<Ingredient> list) {
+		return list.stream()
+				.filter(ingredient -> !ingredient.isEmpty())
+				.toList();
+	}
+
+	private static List<FluidIngredient> compactListFromFluidIngredients(DefaultedList<FluidIngredient> list) {
+		return list.stream().toList();
+	}
+
+	private static List<FluidStack> compactListFromFluidStacks(DefaultedList<FluidStack> list) {
+		return list.stream()
+				.filter(fluidStack -> !fluidStack.isEmpty())
+				.toList();
 	}
 
 }
