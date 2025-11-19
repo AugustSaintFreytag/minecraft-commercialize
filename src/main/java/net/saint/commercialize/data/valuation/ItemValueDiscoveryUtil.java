@@ -61,10 +61,9 @@ public final class ItemValueDiscoveryUtil {
 		var seededValues = Commercialize.ITEM_MANAGER.getValuesByItem();
 		var lockedItemIds = Set.copyOf(seededValues.keySet());
 		var resolvedValues = new HashMap<Identifier, Integer>(seededValues);
-		var resolvedFluidValues = new HashMap<Identifier, Integer>();
 		var discoveredItemIds = new HashSet<Identifier>();
 
-		registerDerivedFluidValuesFromBuckets(resolvedValues, resolvedFluidValues);
+		registerDerivedFluidValuesFromBuckets(resolvedValues);
 
 		var iteration = 0;
 		var maxIterations = recipeEntries.size();
@@ -75,7 +74,7 @@ public final class ItemValueDiscoveryUtil {
 			iteration++;
 
 			for (var recipe : recipeEntries) {
-				if (registerRecipeValue(recipe, registryManager, resolvedValues, resolvedFluidValues, lockedItemIds, discoveredItemIds)) {
+				if (registerRecipeValue(recipe, registryManager, resolvedValues, lockedItemIds, discoveredItemIds)) {
 					didProgress = true;
 				}
 			}
@@ -101,15 +100,14 @@ public final class ItemValueDiscoveryUtil {
 	 * Acts as the entry point for per-recipe processing, ensuring both vanilla and Create recipes go through the same downstream logic.
 	 */
 	private static boolean registerRecipeValue(Recipe<?> recipe, DynamicRegistryManager registryManager,
-			Map<Identifier, Integer> resolvedValues, Map<Identifier, Integer> resolvedFluidValues,
-			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
+			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
 		if (normalizedRecipe.isEmpty() || !isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
 			return false;
 		}
 
-		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, resolvedFluidValues, lockedItemIds, discoveredItemIds);
+		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, lockedItemIds, discoveredItemIds);
 	}
 
 	/**
@@ -145,8 +143,8 @@ public final class ItemValueDiscoveryUtil {
 	 * Totals ingredient costs, applies effort bonuses, and either registers the resulting item stack or propagates value to fluid outputs.
 	 */
 	private static boolean registerNormalizedItemRecipe(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
-		var totalInputValue = resolveTotalInputValue(recipe, resolvedValues, resolvedFluidValues);
+			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
+		var totalInputValue = resolveTotalInputValue(recipe, resolvedValues);
 
 		if (totalInputValue.isEmpty()) {
 			return false;
@@ -167,7 +165,6 @@ public final class ItemValueDiscoveryUtil {
 					recipe.fluidOutputs(),
 					totalInputValue.get(),
 					resolvedValues,
-					resolvedFluidValues,
 					lockedItemIds,
 					discoveredItemIds
 			);
@@ -181,8 +178,7 @@ public final class ItemValueDiscoveryUtil {
 	 *
 	 * Adds up resolved item and fluid ingredients, applies the recipe-type effort bonus, and aborts if any dependency lacks a value.
 	 */
-	private static Optional<Integer> resolveTotalInputValue(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues) {
+	private static Optional<Integer> resolveTotalInputValue(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues) {
 		if (recipe.itemIngredients().isEmpty() && recipe.fluidIngredients().isEmpty()) {
 			return Optional.empty();
 		}
@@ -200,7 +196,7 @@ public final class ItemValueDiscoveryUtil {
 		}
 
 		for (var fluidIngredient : recipe.fluidIngredients()) {
-			var fluidValue = resolveFluidIngredientValue(fluidIngredient, resolvedValues, resolvedFluidValues);
+			var fluidValue = resolveFluidIngredientValue(fluidIngredient, resolvedValues);
 
 			if (fluidValue.isEmpty()) {
 				return Optional.empty();
@@ -296,8 +292,7 @@ public final class ItemValueDiscoveryUtil {
 	 *
 	 * Processes all acceptable fluid stacks, calculates their value requirements, and returns the lowest to represent the optimal crafting choice.
 	 */
-	private static Optional<Integer> resolveFluidIngredientValue(FluidIngredient ingredient, Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues) {
+	private static Optional<Integer> resolveFluidIngredientValue(FluidIngredient ingredient, Map<Identifier, Integer> resolvedValues) {
 		var matchingStacks = ingredient.getMatchingFluidStacks();
 
 		if (matchingStacks == null || matchingStacks.isEmpty()) {
@@ -312,7 +307,7 @@ public final class ItemValueDiscoveryUtil {
 				continue;
 			}
 
-			var unitValue = resolveFluidUnitValue(matchingStack.getFluid(), resolvedValues, resolvedFluidValues);
+			var unitValue = resolveFluidUnitValue(matchingStack.getFluid(), resolvedValues);
 
 			if (unitValue.isEmpty()) {
 				continue;
@@ -339,14 +334,13 @@ public final class ItemValueDiscoveryUtil {
 	 * Checks cached values first, then looks for bucket items to back 
 	 * into the fluid’s price when no direct entry exists.
 	 */
-	private static Optional<Integer> resolveFluidUnitValue(Fluid fluid, Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues) {
+	private static Optional<Integer> resolveFluidUnitValue(Fluid fluid, Map<Identifier, Integer> resolvedValues) {
 		if (fluid == null || fluid == Fluids.EMPTY) {
 			return Optional.empty();
 		}
 
 		var fluidId = Registries.FLUID.getId(fluid);
-		var resolvedValue = resolvedFluidValues.get(fluidId);
+		var resolvedValue = resolvedValues.get(fluidId);
 
 		if (resolvedValue != null) {
 			return Optional.of(resolvedValue);
@@ -358,7 +352,7 @@ public final class ItemValueDiscoveryUtil {
 			return Optional.empty();
 		}
 
-		resolvedFluidValues.put(fluidId, bucketValue.get());
+		resolvedValues.put(fluidId, bucketValue.get());
 
 		return bucketValue;
 	}
@@ -411,8 +405,7 @@ public final class ItemValueDiscoveryUtil {
 	 * bucket items when available to keep inventories in sync.
 	 */
 	private static boolean registerFluidOutputs(List<FluidStack> fluidResults, int totalInputValue,
-			Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
+			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		if (fluidResults.isEmpty()) {
 			return false;
 		}
@@ -451,13 +444,18 @@ public final class ItemValueDiscoveryUtil {
 			}
 
 			var fluidId = Registries.FLUID.getId(fluid);
-			var existingValue = resolvedFluidValues.get(fluidId);
+
+			if (lockedItemIds.contains(fluidId)) {
+				continue;
+			}
+
+			var existingValue = resolvedValues.get(fluidId);
 
 			if (existingValue != null && existingValue <= perBucketValue) {
 				continue;
 			}
 
-			resolvedFluidValues.put(fluidId, perBucketValue);
+			resolvedValues.put(fluidId, perBucketValue);
 
 			var bucketItem = fluid.getBucketItem();
 
@@ -478,17 +476,18 @@ public final class ItemValueDiscoveryUtil {
 	}
 
 	/**
-	 * Seeds the fluid value cache using any known filled bucket items.
-	 *
-	 * Helps bootstrap fluid pricing so fluid-only recipes have reference points 
-	 * even before explicit fluid outputs are discovered.
+	 * Seeds fluid prices using any known filled bucket items so fluid-only recipes have reference points even before explicit fluid outputs are discovered.
 	 */
-	private static void registerDerivedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues,
-			Map<Identifier, Integer> resolvedFluidValues) {
+	private static void registerDerivedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues) {
 		var emptyBucketId = Registries.ITEM.getId(Items.BUCKET);
 		var emptyBucketValue = resolvedValues.getOrDefault(emptyBucketId, 0);
+		var derivedFluidValues = new HashMap<Identifier, Integer>();
 
 		for (var entry : resolvedValues.entrySet()) {
+			if (!Registries.ITEM.containsId(entry.getKey())) {
+				continue;
+			}
+
 			var item = Registries.ITEM.get(entry.getKey());
 
 			if (!(item instanceof BucketItem bucketItem)) {
@@ -508,12 +507,20 @@ public final class ItemValueDiscoveryUtil {
 				fluidValue = 0;
 			}
 
-			var existingValue = resolvedFluidValues.get(fluidId);
+			var existingValue = resolvedValues.get(fluidId);
 
-			if (existingValue == null || existingValue > fluidValue) {
-				resolvedFluidValues.put(fluidId, fluidValue);
+			if (existingValue != null && existingValue <= fluidValue) {
+				continue;
+			}
+
+			var queuedValue = derivedFluidValues.get(fluidId);
+
+			if (queuedValue == null || queuedValue > fluidValue) {
+				derivedFluidValues.put(fluidId, fluidValue);
 			}
 		}
+
+		resolvedValues.putAll(derivedFluidValues);
 	}
 
 	// Analysis
