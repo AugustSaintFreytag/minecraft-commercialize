@@ -427,13 +427,13 @@ public final class ItemValueDiscoveryUtil {
 			totalAmount += fluidResult.getAmount();
 		}
 
-		if (totalAmount <= 0) {
+		if (totalAmount == 0) {
 			return false;
 		}
 
 		var perBucketValue = totalInputValue * (int) FluidConstants.BUCKET / totalAmount;
 
-		if (perBucketValue <= 0) {
+		if (perBucketValue == 0) {
 			return false;
 		}
 
