@@ -10,14 +10,15 @@
 		"deeperdarker:resonarium_block": 1242,
 		"galosphere:silver_block": 6264,
 		"minecraft:amethyst_block": 80,
+		"minecraft:amethyst_cluster": 136,
 		"minecraft:coal_block": 72,
 		"minecraft:copper_block": 108,
 		"minecraft:diamond_block": 36864,
 		"minecraft:emerald_block": 18432,
-		"minecraft:netherite_block": 42012,
 		"minecraft:gold_block": 9216,
 		"minecraft:iron_block": 576,
 		"minecraft:lapis_block": 432,
+		"minecraft:netherite_block": 42012,
 		"minecraft:quartz_block": 272,
 		"minecraft:redstone_block": 342
 	}

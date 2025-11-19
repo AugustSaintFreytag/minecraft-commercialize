@@ -1,27 +1,24 @@
-package net.saint.commercialize.data.item;
+package net.saint.commercialize.data.valuation;
 
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 
 public final class ItemSaleValueUtil {
 
-	// Value Calculation
+	// Real
 
-	/**
-	 * Returns the total value for the provided item stack.
-	 */
-	public static int getValueForItemStack(ItemStack itemStack) {
-		var itemIdentifier = Registries.ITEM.getId(itemStack.getItem());
-		var itemValue = Commercialize.ITEM_MANAGER.getValueForItem(itemIdentifier);
-		var stackValue = itemValue * itemStack.getCount();
-
-		return stackValue;
+	public static int getSaleValueForValue(World world, int value) {
+		return (int) (value * Commercialize.CONFIG.sellingPriceFactor * randomSellingPriceJitterFactor(world));
 	}
 
-	// Sale Value Approximation
+	private static double randomSellingPriceJitterFactor(World world) {
+		return 1 + world.getRandom().nextTriangular(0, 0.05);
+	}
+
+	// Approximation
 
 	/**
 	 * Returns the total approximate sale value for the provided list of item stacks.
@@ -35,7 +32,7 @@ public final class ItemSaleValueUtil {
 		var totalValue = 0;
 
 		for (var itemStack : itemStacks) {
-			var stackValue = getValueForItemStack(itemStack);
+			var stackValue = ItemValueUtil.getValueForItemStack(itemStack);
 			var stackSaleValue = stackValue * Commercialize.CONFIG.sellingPriceFactor;
 
 			totalValue += stackSaleValue;

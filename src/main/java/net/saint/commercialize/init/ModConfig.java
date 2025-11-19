@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.text.NumericFormattingUtil;
 import net.saint.commercialize.util.ConfigDefaultsUtil;
 import net.saint.commercialize.util.ConfigLoadUtil;
 
@@ -14,14 +15,11 @@ public final class ModConfig {
 
 	public static void assertConfigStructure(ResourceManager resourceManager) {
 		try {
-			// Create directories if they don't already exist.
-			Files.createDirectories(Commercialize.MOD_CONFIG_DIR);
-
-			// Check if directory is empty, if so, copy over all defaults.
-			if (Files.list(Commercialize.MOD_CONFIG_DIR).findAny().isEmpty()) {
-				Commercialize.LOGGER.info("Config directory '{}' is empty, copying default config files.", Commercialize.MOD_CONFIG_DIR);
-				ConfigDefaultsUtil.copyAllDefaultConfigs(resourceManager);
+			if (!Files.exists(Commercialize.MOD_CONFIG_DIR)) {
+				Files.createDirectories(Commercialize.MOD_CONFIG_DIR);
 			}
+
+			ConfigDefaultsUtil.copyDefaultConfigsIfNotPresent(resourceManager);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create config directory or copy default config files.", e);
 		}
@@ -37,8 +35,11 @@ public final class ModConfig {
 			});
 		});
 
-		Commercialize.LOGGER.info("Loaded {} item preset(s) with a total of {} item(s).", itemPresets.size(),
-				Commercialize.ITEM_MANAGER.size());
+		Commercialize.LOGGER.info(
+				"Loaded {} item value configs with a total of {} item value entries.",
+				NumericFormattingUtil.formatNumber(itemPresets.size()),
+				NumericFormattingUtil.formatNumber(Commercialize.ITEM_MANAGER.size())
+		);
 	}
 
 	public static void reloadPlayerConfigs() {
@@ -47,7 +48,10 @@ public final class ModConfig {
 		Commercialize.PLAYER_TEMPLATE_MANAGER.clearReferencePlayerNames();
 		Commercialize.PLAYER_TEMPLATE_MANAGER.registerReferencePlayerNames(playersConfig.players);
 
-		Commercialize.LOGGER.info("Loaded {} mock player preset(s).", Commercialize.PLAYER_TEMPLATE_MANAGER.numberOfReferencePlayerNames());
+		Commercialize.LOGGER.info(
+				"Loaded {} mock player preset(s).",
+				NumericFormattingUtil.formatNumber(Commercialize.PLAYER_TEMPLATE_MANAGER.numberOfReferencePlayerNames())
+		);
 	}
 
 	public static void reloadOfferTemplateConfigs() {
@@ -69,8 +73,12 @@ public final class ModConfig {
 			});
 		});
 
-		Commercialize.LOGGER.info("Loaded offer templates from {} config file(s). Registered a total of {} offer(s) ({} skipped).",
-				offerTemplates.size(), numberOfLoadedTemplates.get(), numberOfSkippedTemplates.get());
+		Commercialize.LOGGER.info(
+				"Loaded offer templates from {} config file(s). Registered a total of {} offer(s) ({} skipped).",
+				NumericFormattingUtil.formatNumber(offerTemplates.size()),
+				NumericFormattingUtil.formatNumber(numberOfLoadedTemplates.get()),
+				NumericFormattingUtil.formatNumber(numberOfSkippedTemplates.get())
+		);
 	}
 
 }

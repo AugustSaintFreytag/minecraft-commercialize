@@ -28,6 +28,7 @@ import net.saint.commercialize.data.offer.OfferTemplateManager;
 import net.saint.commercialize.data.player.PlayerProfileManager;
 import net.saint.commercialize.data.player.PlayerTemplateManager;
 import net.saint.commercialize.data.text.TimePreset;
+import net.saint.commercialize.data.valuation.ItemValueDiscoveryUtil;
 import net.saint.commercialize.init.ModBlockEntities;
 import net.saint.commercialize.init.ModBlocks;
 import net.saint.commercialize.init.ModCommands;
@@ -134,6 +135,7 @@ public class Commercialize implements ModInitializer {
 		ModConfig.reloadPlayerConfigs();
 		ModConfig.reloadOfferTemplateConfigs();
 
+		ItemValueDiscoveryUtil.discoverAndRegisterItemValues(server);
 		ItemManagerNetworking.syncItemRegistryToAllPlayers(server);
 	}
 
