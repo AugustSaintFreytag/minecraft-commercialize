@@ -22,14 +22,14 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "cutting"), 10),
 			Map.entry(new Identifier("create", "deploying"), 2),
 			Map.entry(new Identifier("create", "item_application"), 2),
-			Map.entry(new Identifier("create", "haunting"), 20),
+			Map.entry(new Identifier("create", "haunting"), 4),
 			Map.entry(new Identifier("create", "mechanical_crafting"), 20),
 			Map.entry(new Identifier("create", "milling"), 8),
 			Map.entry(new Identifier("create", "mixing"), 8),
 			Map.entry(new Identifier("create", "pressing"), 8),
 			Map.entry(new Identifier("create", "sawing"), 4),
-			Map.entry(new Identifier("create", "sandpaper_polishing"), 12),
-			Map.entry(new Identifier("create", "sequenced_assembly"), 28),
+			Map.entry(new Identifier("create", "sandpaper_polishing"), 8),
+			Map.entry(new Identifier("create", "sequenced_assembly"), 20),
 			Map.entry(new Identifier("create", "splashing"), 5),
 			Map.entry(new Identifier("create", "filling"), 0),
 			Map.entry(new Identifier("createaddition", "rolling"), 8),
@@ -38,7 +38,10 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create_bic_bit", "deep_frying"), 14),
 			Map.entry(new Identifier("farmersdelight", "cooking"), 10),
 			Map.entry(new Identifier("farmersdelight", "cutting"), 4),
-			Map.entry(new Identifier("farmersrespite", "brewing"), 10)
+			Map.entry(new Identifier("farmersrespite", "brewing"), 10),
+			Map.entry(new Identifier("betterend", "infusion"), 12),
+			Map.entry(new Identifier("bclib", "smithing"), 10),
+			Map.entry(new Identifier("bclib", "alloying"), 10)
 	);
 
 	public static boolean isSupportedRecipeType(Identifier recipeTypeId) {
