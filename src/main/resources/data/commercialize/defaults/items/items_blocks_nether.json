@@ -29,6 +29,7 @@
 		"minecraft:soul_sand": 3,
 		"minecraft:soul_soil": 4,
 		"minecraft:warped_stem": 20,
-		"minecraft:warped_wart_block": 18
+		"minecraft:warped_wart_block": 18,
+		"the_fog_is_coming:bleeding_obsidian": 96
 	}
 }

@@ -1,9 +1,11 @@
 {
 	"values": {
 		"create:andesite_alloy": 10,
+		"create:blaze_burner": 674,
 		"create:brass_sheet": 516,
 		"create:copper_sheet": 18,
 		"create:electrum_sheet": 1764,
+		"create:empty_blaze_burner": 274,
 		"create:golden_sheet": 1028,
 		"create:iron_sheet": 68,
 		"create:powdered_obsidian": 48,
