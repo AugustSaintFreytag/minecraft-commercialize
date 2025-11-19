@@ -9,10 +9,23 @@ import net.saint.commercialize.Commercialize;
 
 public final class ConfigDefaultsUtil {
 
-	public static void copyAllDefaultConfigs(ResourceManager resourceManager) {
-		copyDirectory(resourceManager, "defaults/items", "items");
-		copyDirectory(resourceManager, "defaults/offers", "offers");
-		copyDirectory(resourceManager, "defaults/players", "players");
+	public static void copyDefaultConfigsIfNotPresent(ResourceManager resourceManager) {
+		copyDirectoryIfNotPresent(resourceManager, "defaults/items", "items");
+		copyDirectoryIfNotPresent(resourceManager, "defaults/offers", "offers");
+		copyDirectoryIfNotPresent(resourceManager, "defaults/players", "players");
+	}
+
+	private static void copyDirectoryIfNotPresent(ResourceManager resourceManager, String dataSubdirectory,
+			String configSubdirectory) {
+		var configDir = FabricLoader.getInstance().getConfigDir().resolve(Commercialize.MOD_ID);
+		var configRoot = configDir.resolve(configSubdirectory);
+
+		if (Files.exists(configRoot)) {
+			return;
+		}
+
+		copyDirectory(resourceManager, dataSubdirectory, configSubdirectory);
+		Commercialize.LOGGER.info("Copied default config files to directory '{}'.", configRoot);
 	}
 
 	private static void copyDirectory(ResourceManager resourceManager, String dataSubdirectory, String configSubdirectory) {
@@ -37,8 +50,12 @@ public final class ConfigDefaultsUtil {
 				Files.createDirectories(outputPath.getParent());
 				Files.copy(inputStream, outputPath);
 			} catch (IOException exception) {
-				Commercialize.LOGGER.error("Could not copy default config '{}' from data resources to path '{}'. {}", identifier,
-						outputPath, exception.getMessage());
+				Commercialize.LOGGER.error(
+						"Could not copy default config '{}' from data resources to path '{}'. {}",
+						identifier,
+						outputPath,
+						exception.getMessage()
+				);
 			}
 		}
 	}
