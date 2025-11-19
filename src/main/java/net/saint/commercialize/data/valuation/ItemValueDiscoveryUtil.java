@@ -105,7 +105,7 @@ public final class ItemValueDiscoveryUtil {
 			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
-		if (normalizedRecipe.isEmpty() || isSupportedRecipeType(null)) {
+		if (normalizedRecipe.isEmpty() || !isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
 			return false;
 		}
 
