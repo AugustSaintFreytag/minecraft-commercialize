@@ -34,7 +34,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Resolves all craftable item values and stores them in the shared manager.
 	 *
-	 * Runs discovery to compute prices, then writes the results back so other systems can immediately reference the resolved values.
+	 * Runs discovery to compute prices, then writes the results back so other
+	 * systems can immediately reference the resolved values.
 	 */
 	public static void discoverAndRegisterItemValues(MinecraftServer server) {
 		var discoveredValues = discoverItemValues(server);
@@ -47,7 +48,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Iteratively discovers item values by walking every recipe until convergence.
 	 *
-	 * Seeds known prices, repeatedly processes recipes for new data, and returns the final resolved map for further use.
+	 * Seeds known prices, repeatedly processes recipes for new data, and returns
+	 * the final resolved map for further use.
 	 */
 	public static Map<Identifier, Integer> discoverItemValues(MinecraftServer server) {
 		var registryManager = server.getRegistryManager();
@@ -63,6 +65,7 @@ public final class ItemValueDiscoveryUtil {
 		var resolvedValues = new HashMap<Identifier, Integer>(seededValues);
 		var discoveredItemIds = new HashSet<Identifier>();
 		var encounteredResultIds = new HashSet<Identifier>();
+		var unsupportedRecipeTypes = new HashMap<Identifier, Set<Identifier>>();
 
 		registerDerivedFluidValuesFromBuckets(resolvedValues);
 
@@ -75,7 +78,15 @@ public final class ItemValueDiscoveryUtil {
 			iteration++;
 
 			for (var recipe : recipeEntries) {
-				if (registerRecipeValue(recipe, registryManager, resolvedValues, lockedItemIds, discoveredItemIds, encounteredResultIds)) {
+				if (registerRecipeValue(
+						recipe,
+						registryManager,
+						resolvedValues,
+						lockedItemIds,
+						discoveredItemIds,
+						encounteredResultIds,
+						unsupportedRecipeTypes
+				)) {
 					didProgress = true;
 				}
 			}
@@ -91,7 +102,7 @@ public final class ItemValueDiscoveryUtil {
 		);
 
 		if (Commercialize.CONFIG.writeValueDiscoveryStats) {
-			writeValueDiscoveryStats(resolvedValues, lockedItemIds, encounteredResultIds);
+			writeValueDiscoveryStats(resolvedValues, lockedItemIds, encounteredResultIds, unsupportedRecipeTypes);
 		}
 
 		return resolvedValues;
@@ -102,14 +113,20 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Normalizes a recipe and attempts to register any newly resolvable outputs.
 	 *
-	 * Acts as the entry point for per-recipe processing, ensuring both vanilla and Create recipes go through the same downstream logic.
+	 * Acts as the entry point for per-recipe processing, ensuring both vanilla and
+	 * Create recipes go through the same downstream logic.
 	 */
 	private static boolean registerRecipeValue(Recipe<?> recipe, DynamicRegistryManager registryManager,
 			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds,
-			Set<Identifier> encounteredResultIds) {
+			Set<Identifier> encounteredResultIds, Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
 		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
-		if (normalizedRecipe.isEmpty() || !isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
+		if (normalizedRecipe.isEmpty()) {
+			return false;
+		}
+
+		if (!isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
+			recordUnsupportedRecipeType(recipe, registryManager, unsupportedRecipeTypes);
 			return false;
 		}
 
@@ -118,7 +135,8 @@ public final class ItemValueDiscoveryUtil {
 		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, lockedItemIds, discoveredItemIds);
 	}
 
-	private static void recordNormalizedRecipeOutputs(NormalizedItemRecipe recipe, Set<Identifier> encounteredResultIds) {
+	private static void recordNormalizedRecipeOutputs(NormalizedItemRecipe recipe,
+			Set<Identifier> encounteredResultIds) {
 		var itemOutput = recipe.itemOutput();
 
 		if (!itemOutput.isEmpty()) {
@@ -143,9 +161,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Stores a computed item value when it is new or cheaper than previous estimates.
 	 *
-	 * Protects locked seed values, keeps track of newly discovered items for logging, and prevents regressions to more expensive results.
+	 * Protects locked seed values, keeps track of newly discovered items for
+	 * logging, and prevents regressions to more expensive results.
 	 */
-	private static boolean applyResolvedItemValue(Identifier outputItemId, int resolvedValue, Map<Identifier, Integer> resolvedValues,
+	private static boolean applyResolvedItemValue(Identifier outputItemId, int resolvedValue,
+			Map<Identifier, Integer> resolvedValues,
 			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		if (lockedItemIds.contains(outputItemId)) {
 			return false;
@@ -170,9 +190,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Calculates the value of a normalized recipe’s outputs and updates caches.
 	 *
-	 * Totals ingredient costs, applies effort bonuses, and either registers the resulting item stack or propagates value to fluid outputs.
+	 * Totals ingredient costs, applies effort bonuses, and either registers the
+	 * resulting item stack or propagates value to fluid outputs.
 	 */
-	private static boolean registerNormalizedItemRecipe(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues,
+	private static boolean registerNormalizedItemRecipe(NormalizedItemRecipe recipe,
+			Map<Identifier, Integer> resolvedValues,
 			Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds) {
 		var totalInputValue = resolveTotalInputValue(recipe, resolvedValues);
 
@@ -188,7 +210,13 @@ public final class ItemValueDiscoveryUtil {
 
 			if (perItemValue.isPresent()) {
 				var outputItemId = Registries.ITEM.getId(outputStack.getItem());
-				didProgress |= applyResolvedItemValue(outputItemId, perItemValue.get(), resolvedValues, lockedItemIds, discoveredItemIds);
+				didProgress |= applyResolvedItemValue(
+						outputItemId,
+						perItemValue.get(),
+						resolvedValues,
+						lockedItemIds,
+						discoveredItemIds
+				);
 			}
 		} else {
 			didProgress |= registerFluidOutputs(
@@ -206,9 +234,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Aggregates every prerequisite cost for a normalized recipe into a single number.
 	 *
-	 * Adds up resolved item and fluid ingredients, applies the recipe-type effort bonus, and aborts if any dependency lacks a value.
+	 * Adds up resolved item and fluid ingredients, applies the recipe-type effort
+	 * bonus, and aborts if any dependency lacks a value.
 	 */
-	private static Optional<Integer> resolveTotalInputValue(NormalizedItemRecipe recipe, Map<Identifier, Integer> resolvedValues) {
+	private static Optional<Integer> resolveTotalInputValue(NormalizedItemRecipe recipe,
+			Map<Identifier, Integer> resolvedValues) {
 		if (recipe.itemIngredients().isEmpty() && recipe.fluidIngredients().isEmpty()) {
 			return Optional.empty();
 		}
@@ -247,9 +277,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Returns the cheapest known price for any stack matching the given ingredient.
 	 *
-	 * Evaluates each possible stack expansion, multiplies base value by stack size, and keeps the smallest positive result so crafting picks the best option.
+	 * Evaluates each possible stack expansion, multiplies base value by stack size,
+	 * and keeps the smallest positive result so crafting picks the best option.
 	 */
-	private static Optional<Integer> resolveIngredientValue(Ingredient ingredient, Map<Identifier, Integer> resolvedValues) {
+	private static Optional<Integer> resolveIngredientValue(Ingredient ingredient,
+			Map<Identifier, Integer> resolvedValues) {
 		if (ingredient.isEmpty()) {
 			return Optional.of(0);
 		}
@@ -298,7 +330,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Converts a recipe’s total input value into a per-item result price.
 	 *
-	 * Divides by output count, enforces rounding for nicer display, and rejects zeroed outcomes to avoid meaningless registrations.
+	 * Divides by output count, enforces rounding for nicer display, and rejects
+	 * zeroed outcomes to avoid meaningless registrations.
 	 */
 	private static Optional<Integer> resolvePerItemOutputValue(ItemStack outputStack, int totalInputValue) {
 		if (outputStack.isEmpty() || totalInputValue == 0) {
@@ -320,9 +353,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Determines the cheapest attainable cost for a fluid ingredient.
 	 *
-	 * Processes all acceptable fluid stacks, calculates their value requirements, and returns the lowest to represent the optimal crafting choice.
+	 * Processes all acceptable fluid stacks, calculates their value requirements,
+	 * and returns the lowest to represent the optimal crafting choice.
 	 */
-	private static Optional<Integer> resolveFluidIngredientValue(FluidIngredient ingredient, Map<Identifier, Integer> resolvedValues) {
+	private static Optional<Integer> resolveFluidIngredientValue(FluidIngredient ingredient,
+			Map<Identifier, Integer> resolvedValues) {
 		var matchingStacks = ingredient.getMatchingFluidStacks();
 
 		if (matchingStacks == null || matchingStacks.isEmpty()) {
@@ -361,7 +396,7 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Fetches the per-bucket cost for a fluid, deriving it if needed.
 	 *
-	 * Checks cached values first, then looks for bucket items to back 
+	 * Checks cached values first, then looks for bucket items to back
 	 * into the fluid’s price when no direct entry exists.
 	 */
 	private static Optional<Integer> resolveFluidUnitValue(Fluid fluid, Map<Identifier, Integer> resolvedValues) {
@@ -390,7 +425,7 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Calculates fluid value by subtracting the cost of an empty bucket from its filled variant.
 	 *
-	 * Enables fluid valuation even when only bucket items are preconfigured, 
+	 * Enables fluid valuation even when only bucket items are preconfigured,
 	 * ensures container costs are not double-counted.
 	 */
 	private static Optional<Integer> resolveFluidValueFromBucket(Fluid fluid, Map<Identifier, Integer> resolvedValues) {
@@ -416,8 +451,8 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Scales the per-bucket cost of a fluid to match a specific millibucket requirement.
 	 *
-	 * Uses Fabric’s bucket constant for proportional math and returns zero when inputs 
-	 * are invalid to avoid polluting totals.
+	 * Uses Fabric’s bucket constant for proportional math and returns zero when
+	 * inputs are invalid to avoid polluting totals.
 	 */
 	private static int scaleFluidValue(int unitValue, int amount) {
 		if (amount <= 0 || unitValue < 0) {
@@ -431,7 +466,7 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Registers fluid output values when a recipe produces liquids instead of items.
 	 *
-	 * Distributes the total input cost across fluid amounts and also updates 
+	 * Distributes the total input cost across fluid amounts and also updates
 	 * bucket items when available to keep inventories in sync.
 	 */
 	private static boolean registerFluidOutputs(List<FluidStack> fluidResults, int totalInputValue,
@@ -494,7 +529,13 @@ public final class ItemValueDiscoveryUtil {
 				var emptyBucketValue = resolvedValues.getOrDefault(Registries.ITEM.getId(Items.BUCKET), 0);
 				var bucketValue = emptyBucketValue + perBucketValue;
 
-				if (applyResolvedItemValue(bucketItemId, bucketValue, resolvedValues, lockedItemIds, discoveredItemIds)) {
+				if (applyResolvedItemValue(
+						bucketItemId,
+						bucketValue,
+						resolvedValues,
+						lockedItemIds,
+						discoveredItemIds
+				)) {
 					didUpdate = true;
 				}
 			}
@@ -506,7 +547,8 @@ public final class ItemValueDiscoveryUtil {
 	}
 
 	/**
-	 * Seeds fluid prices using any known filled bucket items so fluid-only recipes have reference points even before explicit fluid outputs are discovered.
+	 * Seeds fluid prices using any known filled bucket items so fluid-only recipes
+	 * have reference points even before explicit fluid outputs are discovered.
 	 */
 	private static void registerDerivedFluidValuesFromBuckets(Map<Identifier, Integer> resolvedValues) {
 		var emptyBucketId = Registries.ITEM.getId(Items.BUCKET);
@@ -558,10 +600,11 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Counts how many recipe outputs still lack resolved values after discovery.
 	 *
-	 * Provides diagnostic logging so missing presets or unsupported recipes 
+	 * Provides diagnostic logging so missing presets or unsupported recipes
 	 * can be identified and addressed.
 	 */
-	private static int countUnresolvedOutputs(Collection<Recipe<?>> recipeEntries, DynamicRegistryManager registryManager,
+	private static int countUnresolvedOutputs(Collection<Recipe<?>> recipeEntries,
+			DynamicRegistryManager registryManager,
 			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds) {
 		var unresolved = 0;
 
@@ -587,8 +630,32 @@ public final class ItemValueDiscoveryUtil {
 	}
 
 	private static void writeValueDiscoveryStats(Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds,
-			Set<Identifier> encounteredResultIds) {
-		ItemValueDiscoveryStatsWriter.write(resolvedValues, lockedItemIds, encounteredResultIds);
+			Set<Identifier> encounteredResultIds, Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
+		ItemValueDiscoveryStatsWriter.write(
+				resolvedValues,
+				lockedItemIds,
+				encounteredResultIds,
+				unsupportedRecipeTypes
+		);
+	}
+
+	private static void recordUnsupportedRecipeType(Recipe<?> recipe, DynamicRegistryManager registryManager,
+			Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
+		var recipeTypeId = Registries.RECIPE_TYPE.getId(recipe.getType());
+
+		if (recipeTypeId == null) {
+			return;
+		}
+
+		var outputStack = recipe.getOutput(registryManager);
+
+		if (outputStack.isEmpty()) {
+			return;
+		}
+
+		var outputId = Registries.ITEM.getId(outputStack.getItem());
+
+		unsupportedRecipeTypes.computeIfAbsent(recipeTypeId, ignored -> new HashSet<>()).add(outputId);
 	}
 
 	// Utility
@@ -596,7 +663,7 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Returns whether the given recipe type should be considered for valuation.
 	 *
-	 * Uses preset data to skip unsupported or circular recipe chains so 
+	 * Uses preset data to skip unsupported or circular recipe chains so
 	 * discovery stays safe and performant.
 	 */
 	private static boolean isSupportedRecipeType(Identifier recipeTypeId) {
@@ -606,7 +673,7 @@ public final class ItemValueDiscoveryUtil {
 	/**
 	 * Fetches the effort bonus assigned to a recipe type.
 	 *
-	 * Differentiates resource-intensive automation steps from trivial 
+	 * Differentiates resource-intensive automation steps from trivial
 	 * crafting for more realistic pricing.
 	 */
 	private static int getRecipeEffortValueForType(Identifier recipeTypeId) {
