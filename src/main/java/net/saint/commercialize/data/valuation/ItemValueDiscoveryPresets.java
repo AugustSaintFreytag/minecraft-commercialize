@@ -32,6 +32,7 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "sequenced_assembly"), 20),
 			Map.entry(new Identifier("create", "splashing"), 5),
 			Map.entry(new Identifier("create", "filling"), 0),
+			Map.entry(new Identifier("create", "spout_filling"), 0),
 			Map.entry(new Identifier("createaddition", "rolling"), 8),
 			Map.entry(new Identifier("createaddition", "charging"), 12),
 			Map.entry(new Identifier("createdieselgenerators", "basin_fermenting"), 22),
@@ -44,11 +45,17 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("bclib", "alloying"), 10)
 	);
 
+	public static final Map<NormalizedItemRecipe.Effort, Integer> RECIPE_EFFORT_VALUE_BY_LEVEL = Map.ofEntries(
+			Map.entry(NormalizedItemRecipe.Effort.REGULAR, 0),
+			Map.entry(NormalizedItemRecipe.Effort.ELEVATED, 12),
+			Map.entry(NormalizedItemRecipe.Effort.EXTREME, 24)
+	);
+
 	public static boolean isSupportedRecipeType(Identifier recipeTypeId) {
 		return RECIPE_EFFORT_VALUE_BY_TYPE.containsKey(recipeTypeId);
 	}
 
-	public static int getRecipeEffortValue(Identifier recipeTypeId) {
+	public static int getRecipeEffortValueForType(Identifier recipeTypeId) {
 		var effortValue = RECIPE_EFFORT_VALUE_BY_TYPE.get(recipeTypeId);
 
 		if (effortValue == null) {
@@ -56,6 +63,17 @@ public final class ItemValueDiscoveryPresets {
 		}
 
 		return effortValue;
+	}
+
+	public static boolean isSupportedRecipeType(NormalizedItemRecipe recipe) {
+		return isSupportedRecipeType(recipe.recipeType());
+	}
+
+	public static int getRecipeEffortValue(NormalizedItemRecipe recipe) {
+		var baseEffortValue = getRecipeEffortValueForType(recipe.recipeType());
+		var levelEffortValue = RECIPE_EFFORT_VALUE_BY_LEVEL.getOrDefault(recipe.recipeEffort(), 0);
+
+		return baseEffortValue + levelEffortValue;
 	}
 
 }

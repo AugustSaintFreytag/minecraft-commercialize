@@ -11,9 +11,14 @@ import net.minecraft.util.Identifier;
 
 public record NormalizedItemRecipe(
 		Identifier recipeType,
+		Effort recipeEffort,
 		List<Ingredient> itemIngredients,
 		List<FluidIngredient> fluidIngredients,
 		ItemStack itemOutput,
 		List<FluidStack> fluidOutputs) {
+
+	public enum Effort {
+		REGULAR, ELEVATED, EXTREME
+	}
 
 }
