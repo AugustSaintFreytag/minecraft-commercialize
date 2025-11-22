@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -13,10 +14,14 @@ import io.github.fabricators_of_create.porting_lib.fluids.FluidStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.SmithingTransformRecipe;
+import net.minecraft.recipe.SmithingTrimRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.saint.commercialize.mixin.SmithingTransformRecipeAccessor;
+import net.saint.commercialize.mixin.SmithingTrimRecipeAccessor;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 
 public final class RecipeNormalizationUtil {
@@ -30,17 +35,16 @@ public final class RecipeNormalizationUtil {
 	public static Optional<NormalizedItemRecipe> normalizeRecipe(Recipe<?> recipe, DynamicRegistryManager registryManager) {
 		var recipeType = Registries.RECIPE_TYPE.getId(recipe.getType());
 
-		var output = recipe.getOutput(registryManager);
-		if (output != null && output.getTranslationKey().contains("blaze")) {
-			var debug = true;
-		}
-
 		if (recipe instanceof ProcessingRecipe<?> processingRecipe) {
 			return normalizeProcessingRecipe(processingRecipe, recipeType, registryManager);
 		}
 
 		if (recipe instanceof SequencedAssemblyRecipe sequencedAssemblyRecipe) {
 			return normalizeSequencedAssemblyRecipe(sequencedAssemblyRecipe, recipeType, registryManager);
+		}
+
+		if (recipe instanceof SmithingTransformRecipe || recipe instanceof SmithingTrimRecipe) {
+			return normalizeSmithingRecipe(recipe, recipeType, registryManager);
 		}
 
 		if (recipe instanceof CookingPotRecipe) {
@@ -54,6 +58,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeProcessingRecipe(ProcessingRecipe<?> processingRecipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(processingRecipe.getIngredients());
 		var outputStack = processingRecipe.getOutput(registryManager);
 		var fluidIngredients = compactListFromFluidIngredients(processingRecipe.getFluidIngredients());
@@ -67,9 +72,16 @@ public final class RecipeNormalizationUtil {
 			return Optional.empty();
 		}
 
+		if (processingRecipe.getRequiredHeat() == HeatCondition.HEATED) {
+			recipeEffort = NormalizedItemRecipe.Effort.ELEVATED;
+		} else if (processingRecipe.getRequiredHeat() == HeatCondition.SUPERHEATED) {
+			recipeEffort = NormalizedItemRecipe.Effort.EXTREME;
+		}
+
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						fluidIngredients,
 						outputStack,
@@ -78,10 +90,67 @@ public final class RecipeNormalizationUtil {
 		);
 	}
 
+	// Smithing Recipe
+
+	private record SmithingIngredients(Ingredient template, Ingredient base, Ingredient addition) {
+	}
+
+	private static Optional<NormalizedItemRecipe> normalizeSmithingRecipe(Recipe<?> recipe, Identifier recipeType,
+			DynamicRegistryManager registryManager) {
+		var smithingIngredients = smithingIngredientsFromRecipe(recipe);
+
+		if (smithingIngredients == null) {
+			return Optional.empty();
+		}
+
+		var outputStack = recipe.getOutput(registryManager);
+		var itemIngredients = compactListFromIngredients(
+				List.of(smithingIngredients.template(), smithingIngredients.base(), smithingIngredients.addition())
+		);
+
+		if (itemIngredients.isEmpty() || outputStack.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(
+				new NormalizedItemRecipe(
+						recipeType,
+						NormalizedItemRecipe.Effort.REGULAR,
+						itemIngredients,
+						List.of(),
+						outputStack,
+						List.of()
+				)
+		);
+	}
+
+	private static SmithingIngredients smithingIngredientsFromRecipe(Recipe<?> recipe) {
+		if (recipe instanceof SmithingTransformRecipe smithingTransformRecipe) {
+			var accessor = (SmithingTransformRecipeAccessor) smithingTransformRecipe;
+			var templateIngredient = accessor.commercialize$getTemplate();
+			var baseIngredient = accessor.commercialize$getBase();
+			var additionIngredient = accessor.commercialize$getAddition();
+
+			return new SmithingIngredients(templateIngredient, baseIngredient, additionIngredient);
+		}
+
+		if (recipe instanceof SmithingTrimRecipe smithingTrimRecipe) {
+			var accessor = (SmithingTrimRecipeAccessor) smithingTrimRecipe;
+			var templateIngredient = accessor.commercialize$getTemplate();
+			var baseIngredient = accessor.commercialize$getBase();
+			var additionIngredient = accessor.commercialize$getAddition();
+
+			return new SmithingIngredients(templateIngredient, baseIngredient, additionIngredient);
+		}
+
+		return null;
+	}
+
 	// Cooking Pot Recipe (e.g. Farmer's Delight)
 
 	private static Optional<NormalizedItemRecipe> normalizeCookingPotRecipe(CookingPotRecipe cookingPotRecipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(cookingPotRecipe.getIngredients());
 		var outputStack = cookingPotRecipe.getOutput(registryManager);
 
@@ -103,6 +172,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						List.of(),
 						outputStack,
@@ -115,6 +185,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeVanillaRecipe(Recipe<?> recipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(recipe.getIngredients());
 		var outputStack = recipe.getOutput(registryManager);
 
@@ -125,6 +196,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						List.of(),
 						outputStack,
@@ -137,6 +209,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeSequencedAssemblyRecipe(SequencedAssemblyRecipe sequencedRecipe,
 			Identifier recipeType, DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var transitionalStack = sequencedRecipe.getTransitionalItem();
 		var collectedItemIngredients = new ArrayList<Ingredient>();
 		var baseIngredient = sequencedRecipe.getIngredient();
@@ -196,6 +269,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						normalizedItemIngredients,
 						normalizedFluidIngredients,
 						outputStack,
@@ -229,6 +303,12 @@ public final class RecipeNormalizationUtil {
 	}
 
 	// Utility
+
+	private static List<Ingredient> compactListFromIngredients(List<Ingredient> list) {
+		return list.stream()
+				.filter(ingredient -> !ingredient.isEmpty())
+				.toList();
+	}
 
 	private static List<Ingredient> compactListFromIngredients(DefaultedList<Ingredient> list) {
 		return list.stream()
