@@ -32,6 +32,7 @@ public final class ItemValueDiscoveryPresets {
 			Map.entry(new Identifier("create", "sequenced_assembly"), 20),
 			Map.entry(new Identifier("create", "splashing"), 5),
 			Map.entry(new Identifier("create", "filling"), 0),
+			Map.entry(new Identifier("create", "spout_filling"), 0),
 			Map.entry(new Identifier("createaddition", "rolling"), 8),
 			Map.entry(new Identifier("createaddition", "charging"), 12),
 			Map.entry(new Identifier("createdieselgenerators", "basin_fermenting"), 22),
