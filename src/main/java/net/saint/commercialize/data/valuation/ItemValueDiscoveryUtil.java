@@ -119,19 +119,19 @@ public final class ItemValueDiscoveryUtil {
 	private static boolean registerRecipeValue(Recipe<?> recipe, DynamicRegistryManager registryManager,
 			Map<Identifier, Integer> resolvedValues, Set<Identifier> lockedItemIds, Set<Identifier> discoveredItemIds,
 			Set<Identifier> encounteredResultIds, Map<Identifier, Set<Identifier>> unsupportedRecipeTypes) {
+		var recipeType = Registries.RECIPE_TYPE.getId(recipe.getType());
+		if (recipeType == null || !ItemValueDiscoveryPresets.isSupportedRecipeType(recipeType)) {
+			recordUnsupportedRecipeType(recipe, registryManager, unsupportedRecipeTypes);
+			return false;
+		}
+
 		var normalizedRecipe = RecipeNormalizationUtil.normalizeRecipe(recipe, registryManager);
 
 		if (normalizedRecipe.isEmpty()) {
 			return false;
 		}
 
-		if (!isSupportedRecipeType(normalizedRecipe.get().recipeType())) {
-			recordUnsupportedRecipeType(recipe, registryManager, unsupportedRecipeTypes);
-			return false;
-		}
-
 		recordNormalizedRecipeOutputs(normalizedRecipe.get(), encounteredResultIds);
-
 		return registerNormalizedItemRecipe(normalizedRecipe.get(), resolvedValues, lockedItemIds, discoveredItemIds);
 	}
 
@@ -265,7 +265,7 @@ public final class ItemValueDiscoveryUtil {
 			totalInputValue += fluidValue.get();
 		}
 
-		totalInputValue += getRecipeEffortValueForType(recipe.recipeType());
+		totalInputValue += ItemValueDiscoveryPresets.getRecipeEffortValue(recipe);
 
 		if (totalInputValue <= 0) {
 			return Optional.empty();
@@ -656,28 +656,6 @@ public final class ItemValueDiscoveryUtil {
 		var outputId = Registries.ITEM.getId(outputStack.getItem());
 
 		unsupportedRecipeTypes.computeIfAbsent(recipeTypeId, ignored -> new HashSet<>()).add(outputId);
-	}
-
-	// Utility
-
-	/**
-	 * Returns whether the given recipe type should be considered for valuation.
-	 *
-	 * Uses preset data to skip unsupported or circular recipe chains so
-	 * discovery stays safe and performant.
-	 */
-	private static boolean isSupportedRecipeType(Identifier recipeTypeId) {
-		return ItemValueDiscoveryPresets.isSupportedRecipeType(recipeTypeId);
-	}
-
-	/**
-	 * Fetches the effort bonus assigned to a recipe type.
-	 *
-	 * Differentiates resource-intensive automation steps from trivial
-	 * crafting for more realistic pricing.
-	 */
-	private static int getRecipeEffortValueForType(Identifier recipeTypeId) {
-		return ItemValueDiscoveryPresets.getRecipeEffortValue(recipeTypeId);
 	}
 
 }

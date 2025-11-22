@@ -64,4 +64,15 @@ public final class ItemValueDiscoveryPresets {
 		return effortValue;
 	}
 
+	public static boolean isSupportedRecipeType(NormalizedItemRecipe recipe) {
+		return isSupportedRecipeType(recipe.recipeType());
+	}
+
+	public static int getRecipeEffortValue(NormalizedItemRecipe recipe) {
+		var baseEffortValue = getRecipeEffortValueForType(recipe.recipeType());
+		var levelEffortValue = RECIPE_EFFORT_VALUE_BY_LEVEL.getOrDefault(recipe.recipeEffort(), 0);
+
+		return baseEffortValue + levelEffortValue;
+	}
+
 }
