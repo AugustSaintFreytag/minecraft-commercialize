@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -54,6 +55,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeProcessingRecipe(ProcessingRecipe<?> processingRecipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(processingRecipe.getIngredients());
 		var outputStack = processingRecipe.getOutput(registryManager);
 		var fluidIngredients = compactListFromFluidIngredients(processingRecipe.getFluidIngredients());
@@ -67,9 +69,16 @@ public final class RecipeNormalizationUtil {
 			return Optional.empty();
 		}
 
+		if (processingRecipe.getRequiredHeat() == HeatCondition.HEATED) {
+			recipeEffort = NormalizedItemRecipe.Effort.ELEVATED;
+		} else if (processingRecipe.getRequiredHeat() == HeatCondition.SUPERHEATED) {
+			recipeEffort = NormalizedItemRecipe.Effort.EXTREME;
+		}
+
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						fluidIngredients,
 						outputStack,
@@ -82,6 +91,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeCookingPotRecipe(CookingPotRecipe cookingPotRecipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(cookingPotRecipe.getIngredients());
 		var outputStack = cookingPotRecipe.getOutput(registryManager);
 
@@ -103,6 +113,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						List.of(),
 						outputStack,
@@ -115,6 +126,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeVanillaRecipe(Recipe<?> recipe, Identifier recipeType,
 			DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var itemIngredients = compactListFromIngredients(recipe.getIngredients());
 		var outputStack = recipe.getOutput(registryManager);
 
@@ -125,6 +137,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						itemIngredients,
 						List.of(),
 						outputStack,
@@ -137,6 +150,7 @@ public final class RecipeNormalizationUtil {
 
 	private static Optional<NormalizedItemRecipe> normalizeSequencedAssemblyRecipe(SequencedAssemblyRecipe sequencedRecipe,
 			Identifier recipeType, DynamicRegistryManager registryManager) {
+		var recipeEffort = NormalizedItemRecipe.Effort.REGULAR;
 		var transitionalStack = sequencedRecipe.getTransitionalItem();
 		var collectedItemIngredients = new ArrayList<Ingredient>();
 		var baseIngredient = sequencedRecipe.getIngredient();
@@ -196,6 +210,7 @@ public final class RecipeNormalizationUtil {
 		return Optional.of(
 				new NormalizedItemRecipe(
 						recipeType,
+						recipeEffort,
 						normalizedItemIngredients,
 						normalizedFluidIngredients,
 						outputStack,
