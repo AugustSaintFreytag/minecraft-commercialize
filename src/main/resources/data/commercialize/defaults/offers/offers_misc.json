@@ -93,8 +93,8 @@
 		{
 			"availability": "uncommon",
 			"item": "immersive_furniture:crafting_material",
-			"markup": "2.0",
-			"stack": "2-32"
+			"markup": "1.6",
+			"stack": "2-48"
 		}
 	]
 }
