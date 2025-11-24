@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.block.shipping.ShippingBlockEntity;
 import net.saint.commercialize.data.mail.MailTransitUtil;
+import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil.ShippingTickResult;
@@ -220,6 +221,23 @@ public final class ModCommands {
 											return 1;
 										})
 						)
+
+						// Reports
+
+						.then(literal("compileAndSendMarketReports").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+							var server = context.getSource().getServer();
+
+							MarketAnalyticsUtil.compileAndSendMarketReports(server);
+
+							context.getSource().sendFeedback(
+									() -> Text.literal(
+											"Compiled and sent " + MarketAnalyticsUtil.getNumberOfReportsSentInLastTick()
+													+ " market report(s) to players."
+									),
+									true
+							);
+							return 1;
+						}))
 
 						// Mail
 
