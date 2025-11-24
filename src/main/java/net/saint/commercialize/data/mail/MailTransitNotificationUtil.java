@@ -47,13 +47,26 @@ public final class MailTransitNotificationUtil {
 		var formattedTimeUntilNextAttempt = Text.literal("~").append(TimeFormattingUtil.formattedTime(timeUntilNextAttempt));
 
 		if (numberOfPackagesAboutToExpire > 0) {
-			return LocalizationUtil.localizedText("text", "delivery.expiration_notice_last", numberOfPackages,
-					formattedTimeUntilNextAttempt, numberOfPackagesAboutToExpire, numberOfPackages, numberOfDeliveryAttempts,
-					Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
+			return LocalizationUtil.localizedText(
+					"text",
+					"delivery.expiration_notice_last",
+					numberOfPackages,
+					formattedTimeUntilNextAttempt,
+					numberOfPackagesAboutToExpire,
+					numberOfPackages,
+					numberOfDeliveryAttempts,
+					Commercialize.CONFIG.maxNumberOfDeliveryAttempts
+			);
 		}
 
-		return LocalizationUtil.localizedText("text", "delivery.expiration_notice", numberOfPackages, formattedTimeUntilNextAttempt,
-				numberOfDeliveryAttempts, Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
+		return LocalizationUtil.localizedText(
+				"text",
+				"delivery.expiration_notice",
+				numberOfPackages,
+				formattedTimeUntilNextAttempt,
+				numberOfDeliveryAttempts,
+				Commercialize.CONFIG.maxNumberOfDeliveryAttempts
+		);
 	}
 
 	private static int numberOfItemsAboutToExpire(List<MailTransitItem> items) {
@@ -75,16 +88,19 @@ public final class MailTransitNotificationUtil {
 
 	public static void notifyPlayerOfDeliveryDiscard(MinecraftServer server, List<MailTransitItem> items) {
 		withOnlinePlayerParametersForItems(server, items, parameters -> {
-			// Text color: #ff7e7eff
-
 			var message = deliveryDiscardMessageForPlayerAndItems(server, items);
-			parameters.player.sendMessage(Text.of(message).copy().setStyle(Style.EMPTY.withColor(0xff7e7e).withItalic(true)));
+			parameters.player.sendMessage(message.copy());
 		});
 	}
 
-	private static String deliveryDiscardMessageForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
+	private static Text deliveryDiscardMessageForPlayerAndItems(MinecraftServer server, List<MailTransitItem> items) {
 		var numberOfPackages = items.size();
-		return LocalizationUtil.localizedString("text", "delivery.discard_notice", numberOfPackages);
+
+		// Text color: #ff7e7eff
+		var text = Text.empty().append(LocalizationUtil.localizedText("text", "delivery.discard_notice", numberOfPackages))
+				.setStyle(Style.EMPTY.withColor(0xff7e7e).withItalic(true));
+
+		return text;
 	}
 
 	// Utility
