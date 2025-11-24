@@ -22,24 +22,34 @@ public final class MarketAnalyticsUtil {
 
 	private static long ticksSinceLastReport = 0;
 
+	private static int numberOfReportsSentInLastTick = 0;
+
+	// Access
+
+	public static int getNumberOfReportsSentInLastTick() {
+		return numberOfReportsSentInLastTick;
+	}
+
 	// Ticking
 
-	public static void tickMarketReportCompilationIfNecessary(ServerWorld world) {
+	public static void compileAndSendMarketReportsIfNecessary(ServerWorld world) {
 		var server = world.getServer();
 		var time = world.getTimeOfDay();
 
 		ticksSinceLastReport += 1;
 
 		// Safeguard against having a server tick-paused on an exact report tick 
-		// and then flooding player mailboxes with reports.
+		// and then flooding player mailboxes with reports (min. 1 minute pacing).
 
-		if (time % Commercialize.CONFIG.reportInterval == 0 && ticksSinceLastReport >= 100) {
-			tickMarketReportCompilation(server);
+		if (time % Commercialize.CONFIG.reportInterval == 0 && ticksSinceLastReport >= 1200) {
+			compileAndSendMarketReports(server);
 			ticksSinceLastReport = 0;
 		}
 	}
 
-	public static void tickMarketReportCompilation(MinecraftServer server) {
+	public static void compileAndSendMarketReports(MinecraftServer server) {
+		numberOfReportsSentInLastTick = 0;
+
 		Commercialize.MARKET_ANALYTICS_MANAGER.getAllReports().forEach(report -> {
 			if (Commercialize.CONFIG.sendPlayerMarketBuyReports) {
 				compileAndSendBuyReportForPlayer(server, report);
@@ -61,8 +71,11 @@ public final class MarketAnalyticsUtil {
 
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.buy.name");
 		var letterReportText = LocalizationUtil.localizedText(
-				"text", "report.buy.format", report.playerName, itemCountText,
-				Text.of(CurrencyFormattingUtil.currencyString(report.amountSpentOnOrders))
+				"text",
+				"report.buy.format",
+				report.playerName,
+				itemCountText,
+				CurrencyFormattingUtil.currencyText(report.amountSpentOnOrders)
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
@@ -73,6 +86,8 @@ public final class MarketAnalyticsUtil {
 
 		report.amountSpentOnOrders = 0;
 		report.numberOfOrders = 0;
+
+		numberOfReportsSentInLastTick++;
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
@@ -92,8 +107,14 @@ public final class MarketAnalyticsUtil {
 
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.sale.name");
 		var letterReportText = LocalizationUtil.localizedText(
-				"text", "report.sale.format", report.playerName, itemCountText, postingCountText, feesPaidText,
-				grossEarningsText, netEarningsText
+				"text",
+				"report.sale.format",
+				report.playerName,
+				itemCountText,
+				postingCountText,
+				feesPaidText,
+				grossEarningsText,
+				netEarningsText
 		);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
@@ -104,6 +125,8 @@ public final class MarketAnalyticsUtil {
 
 		report.amountEarnedFromSales = 0;
 		report.numberOfSales = 0;
+
+		numberOfReportsSentInLastTick++;
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}

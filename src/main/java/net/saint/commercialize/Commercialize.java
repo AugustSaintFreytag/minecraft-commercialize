@@ -119,7 +119,7 @@ public class Commercialize implements ModInitializer {
 
 			MarketOfferTickingUtil.tickMarketOffersIfNecessary(world);
 			MailTransitUtil.tickMailTransitIfNecessary(world);
-			MarketAnalyticsUtil.tickMarketReportCompilationIfNecessary(world);
+			MarketAnalyticsUtil.compileAndSendMarketReportsIfNecessary(world);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

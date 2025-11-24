@@ -13,6 +13,7 @@ import net.saint.commercialize.data.bank.BankAccountAccessUtil;
 import net.saint.commercialize.data.mail.MailTransitUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
+import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.valuation.ItemValueUtil;
@@ -104,6 +105,15 @@ public final class MarketOfferTickingUtil {
 		var server = world.getServer();
 
 		if (offer.isGenerated) {
+			Commercialize.LOGGER.info(
+					"Generated offer '{}' of {} has been purchased by a simulated player.",
+					offer.id,
+					ItemDescriptionUtil.descriptionForItemStack(offer.stack),
+					CurrencyFormattingUtil.currencyString(offer.price),
+					offer.sellerName,
+					offer.sellerId
+			);
+
 			return SaleResult.SUCCESS;
 		}
 
@@ -111,10 +121,10 @@ public final class MarketOfferTickingUtil {
 
 		if (sellerProfile == null) {
 			Commercialize.LOGGER.error(
-					"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after simulated sale of offer '{}'.",
+					"Could not find player '{}' ({}) to pay out owed offer amount of {} after simulated sale of offer '{}'.",
 					offer.sellerName,
 					offer.sellerId,
-					offer.price,
+					CurrencyFormattingUtil.currencyString(offer.price),
 					offer.id
 			);
 			return SaleResult.FAILURE_NO_SELLER;
@@ -122,10 +132,10 @@ public final class MarketOfferTickingUtil {
 
 		if (BankAccountAccessUtil.getBankAccountForPlayerById(sellerProfile.getId()) == null) {
 			Commercialize.LOGGER.error(
-					"Could not access bank account for player '{}' ({}) to pay out owed offer amount of {} ¤ for simulated sale of offer '{}'. The offer will not be sold.",
+					"Could not access bank account for player '{}' ({}) to pay out owed offer amount of {} for simulated sale of offer '{}'. The offer will not be sold.",
 					offer.sellerName,
 					offer.sellerId,
-					offer.price,
+					CurrencyFormattingUtil.currencyString(offer.price),
 					offer.id
 			);
 			return SaleResult.FAILURE_NO_ACCOUNT;
@@ -135,10 +145,10 @@ public final class MarketOfferTickingUtil {
 		MarketAnalyticsUtil.writeMarketOrderToAnalytics(offer, null);
 
 		Commercialize.LOGGER.info(
-				"Offer '{}' of {} has been purchased by a simulated player. Deposited {} ¤ to account of seller '{}' ({}).",
+				"Offer '{}' of {} has been purchased by a simulated player. Deposited {} to account of seller '{}' ({}).",
 				offer.id,
 				ItemDescriptionUtil.descriptionForItemStack(offer.stack),
-				offer.price,
+				CurrencyFormattingUtil.currencyString(offer.price),
 				offer.sellerName,
 				offer.sellerId
 		);
