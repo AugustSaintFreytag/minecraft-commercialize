@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.commercialize.data.mail.MailTransitItem;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
-import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketPlayerUtil {
 
@@ -25,7 +24,7 @@ public final class MarketPlayerUtil {
 		var playerProfile = PlayerProfileAccessUtil.getPlayerProfileById(server, playerId);
 
 		if (playerProfile == null) {
-			return LocalizationUtil.localizedString("text", "player_unknown");
+			return "Unknown";
 		}
 
 		return playerProfile.getName();
