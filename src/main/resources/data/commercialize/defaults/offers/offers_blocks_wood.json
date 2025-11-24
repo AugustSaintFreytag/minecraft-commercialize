@@ -58,55 +58,55 @@
 			"item": "minecraft:crimson_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "rare"
 		},
 		{
 			"item": "betternether:anchor_tree_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:mushroom_fir_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:nether_sakura_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:rubeus_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:stalagnate_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:warped_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:wart_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		},
 		{
 			"item": "betternether:willow_log",
 			"stack": "8-64",
 			"markup": "3.5",
-			"availability": "uncommon"
+			"availability": "veryRare"
 		}
 	]
 }

@@ -2,7 +2,7 @@
 	"offers": [
 		{
 			"item": "minecraft:terracotta",
-			"markup": "2.5",
+			"markup": "2.2",
 			"availability": "veryCommon",
 			"stack": "16-64"
 		}

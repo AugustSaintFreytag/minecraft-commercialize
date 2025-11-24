@@ -3,13 +3,13 @@
 		{
 			"item": "minecraft:glass",
 			"stack": "32-64",
-			"markup": "3.0",
+			"markup": "2.4",
 			"availability": "extremelyCommon"
 		},
 		{
 			"item": "minecraft:tinted_glass",
 			"stack": "32-64",
-			"markup": "3.0",
+			"markup": "2.6",
 			"availability": "veryCommon"
 		}
 	]

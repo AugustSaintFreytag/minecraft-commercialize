@@ -3,7 +3,7 @@
 		{
 			"item": "minecraft:glowstone_dust",
 			"stack": "8-64",
-			"markup": "2.5",
+			"markup": "2.3",
 			"availability": "common"
 		},
 		{
@@ -15,13 +15,13 @@
 		{
 			"item": "betternether:cincinnasite_ingot",
 			"stack": "4-16",
-			"markup": "2.5",
+			"markup": "2.3",
 			"availability": "veryRare"
 		},
 		{
 			"availability": "extremelyRare",
 			"item": "betternether:nether_ruby",
-			"markup": "2.5",
+			"markup": "2.3",
 			"stack": "1-8"
 		},
 		{
@@ -44,7 +44,7 @@
 		},
 		{
 			"item": "minecraft:ghast_tear",
-			"stack": "1-4",
+			"stack": "1-8",
 			"markup": "2.0",
 			"availability": "veryRare"
 		}
