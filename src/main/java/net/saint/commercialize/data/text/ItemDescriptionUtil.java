@@ -7,7 +7,7 @@ public final class ItemDescriptionUtil {
 
 	private static final String COUNT_SYMBOL = "x";
 
-	public static String descriptionForItemStack(ItemStack stack) {
+	public static String descriptionForItemStackWithCount(ItemStack stack) {
 		var numberOfItems = stack.getCount();
 
 		if (numberOfItems > 1) {
@@ -17,14 +17,19 @@ public final class ItemDescriptionUtil {
 		return stack.getName().getString();
 	}
 
-	public static Text textForItemStack(ItemStack stack) {
+	public static Text textForItemStackWithCount(ItemStack stack) {
+		var itemStackText = Text.translatable(stack.getTranslationKey());
 		var numberOfItems = stack.getCount();
 
-		if (numberOfItems > 1) {
-			return Text.translatable(stack.getTranslationKey()).append(Text.literal(" (" + COUNT_SYMBOL + numberOfItems + ")"));
+		if (numberOfItems == 1) {
+			return itemStackText;
 		}
 
-		return Text.translatable(stack.getTranslationKey());
+		return itemStackText.append(textForItemStackCount(numberOfItems));
+	}
+
+	public static Text textForItemStackCount(int count) {
+		return Text.literal(" (" + COUNT_SYMBOL + count + ")");
 	}
 
 }
