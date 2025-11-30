@@ -175,7 +175,7 @@ public class PostingScreenHandler extends ScreenHandler implements PostingScreen
 		addClientboundMessage(S2CPostOfferActionMessage.class, message -> {
 			switch (message.result()) {
 				case SUCCESS: {
-					var itemDescription = ItemDescriptionUtil.descriptionForItemStack(message.stack());
+					var itemDescription = ItemDescriptionUtil.descriptionForItemStackWithCount(message.stack());
 					var displayText = LocalizationUtil.localizedText("gui", "posting.posting_confirm", itemDescription);
 					this.player().sendMessage(displayText, true);
 					break;
