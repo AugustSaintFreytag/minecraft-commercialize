@@ -41,6 +41,7 @@ dependencies {
 	// OwO Lib
 	
 	modImplementation ("io.wispforest:owo-lib:${project.owo_version}")
+
 	include ("io.wispforest:owo-sentinel:${project.owo_version}")
 
 	// Cloth Config
@@ -57,9 +58,11 @@ dependencies {
 
 	// Create
 	
+	modCompileOnly("io.github.fabricators_of_create.Porting-Lib:transfer:${project.porting_lib_version}")
 	modCompileOnly("io.github.fabricators_of_create.Porting-Lib:fluids:${project.porting_lib_version}")
-	modCompileOnly("maven.modrinth:create-fabric:${project.create_version}")
-	modCompileOnly("maven.modrinth:numismatics:${project.numismatics_version}")
+	
+	modImplementation("maven.modrinth:create-fabric:${project.create_version}")
+	modImplementation("maven.modrinth:numismatics:${project.numismatics_version}")
 
 	// Furniture Refurbished
 	

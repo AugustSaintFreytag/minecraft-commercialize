@@ -7,8 +7,9 @@ import java.util.Map;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.saint.commercialize.data.text.ItemDescriptionUtil;
 
-public class ItemNameFormattingUtil {
+public class AbbreviatableItemDescriptionUtil {
 
 	// Configuration
 
@@ -29,18 +30,34 @@ public class ItemNameFormattingUtil {
 
 	// Formatting
 
-	public static String itemName(ItemStack stack) {
+	public static Text abbreviatableTextForItemStackWithCount(ItemStack stack, int limit) {
+		var itemDescriptionText = abbreviatableNameTextForItemStack(stack, limit);
+
+		if (stack.getCount() == 1) {
+			return itemDescriptionText;
+		}
+
+		var itemNameText = ItemDescriptionUtil.textForItemStackCount(stack.getCount());
+		return itemDescriptionText.copy().append(itemNameText);
+	}
+
+	public static Text abbreviatableNameTextForItemStack(ItemStack stack, int limit) {
+		var abbreviatedItemName = abbreviatableNameForItemStack(stack, limit);
+		return Text.of(abbreviatedItemName);
+	}
+
+	private static String abbreviatableNameForItemStack(ItemStack stack, int limit) {
+		var rawItemName = descriptionForItemStack(stack);
+		var abbreviatedItemName = abbreviatedName(rawItemName, limit);
+
+		return abbreviatedItemName;
+	}
+
+	private static String descriptionForItemStack(ItemStack stack) {
 		return I18n.translate(stack.getTranslationKey());
 	}
 
-	public static Text abbreviatedItemText(ItemStack stack, int limit) {
-		var itemNameString = itemName(stack);
-		var abbreviatedItemNameString = abbreviatedItemName(itemNameString, limit);
-
-		return Text.of(abbreviatedItemNameString);
-	}
-
-	public static String abbreviatedItemName(String name, int limit) {
+	private static String abbreviatedName(String name, int limit) {
 		// Split name on space into name components.
 		// If entire name fits in character limit, return as is.
 		// If name is above limit, abbreviate longest components first.
@@ -56,7 +73,7 @@ public class ItemNameFormattingUtil {
 
 		var components = new ArrayList<String>(java.util.List.of(name.split(" ")));
 		var currentName = name;
-		
+
 		while (currentName.length() > limit) {
 			var longestIndex = -1;
 			var longestLength = 0;

@@ -23,7 +23,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
-import net.saint.commercialize.data.item.ItemNameFormattingUtil;
+import net.saint.commercialize.data.item.AbbreviatableItemDescriptionUtil;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.RandomPlayerHeadUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
@@ -234,7 +234,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		// Tabs
 
 		var sortingTabButton = makeTabButtonComponent(
-				LocalizationUtil.localizedText("gui", "market.sort_mode"), ScreenAssets.STUB,
+				LocalizationUtil.localizedText("gui", "market.sort_mode"),
+				ScreenAssets.STUB,
 				component -> {
 					// If sprint key is held, toggle sort order.
 
@@ -257,7 +258,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 		leftSideComponent.child(sortingTabButton);
 
 		var filteringTabButton = makeTabButtonComponent(
-				LocalizationUtil.localizedText("gui", "market.filter_mode"), ScreenAssets.STUB,
+				LocalizationUtil.localizedText("gui", "market.filter_mode"),
+				ScreenAssets.STUB,
 				component -> {
 					delegate.cycleFilterMode();
 					this.updateDisplay();
@@ -317,7 +319,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var orderTabButton = makeTabButtonComponent(
 				LocalizationUtil.localizedText("gui", "market.order_cart"),
-				ScreenAssets.CONFIRM_ORDER_ICON, component -> {
+				ScreenAssets.CONFIRM_ORDER_ICON,
+				component -> {
 					if (delegate.getCart().isEmpty()) {
 						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1f, 0.5f);
 						return;
@@ -333,7 +336,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var cyclePaymentMethodTabButton = makeTabButtonComponent(
 				LocalizationUtil.localizedText("gui", "market.payment_mode"),
-				ScreenAssets.STUB, component -> {
+				ScreenAssets.STUB,
+				component -> {
 					delegate.cyclePaymentMethod();
 					this.updateDisplay();
 				}
@@ -345,7 +349,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 		var emptyCardTabButton = makeTabButtonComponent(
 				LocalizationUtil.localizedText("gui", "market.empty_cart"),
-				ScreenAssets.EMPTY_CART_ICON, component -> {
+				ScreenAssets.EMPTY_CART_ICON,
+				component -> {
 					delegate.emptyCart();
 				}
 		);
@@ -436,8 +441,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private OfferListComponent makeOfferListComponent(Offer offer, boolean isDisabled) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 12);
-		var priceDescription = Text.of(CurrencyFormattingUtil.currencyString(offer.price));
+		var itemDescription = AbbreviatableItemDescriptionUtil.abbreviatableNameTextForItemStack(itemStack, 12);
+		var priceDescription = CurrencyFormattingUtil.currencyText(offer.price);
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 		var sellerTooltip = MarketScreenUtil.tooltipTextForSeller(offer);
 		var sellerTexture = profileTextureForOffer(offer);
@@ -481,8 +486,8 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
-		var itemDescription = ItemNameFormattingUtil.abbreviatedItemText(itemStack, 9);
-		var priceDescription = Text.of(CurrencyFormattingUtil.currencyString(offer.price));
+		var itemDescription = AbbreviatableItemDescriptionUtil.abbreviatableNameTextForItemStack(itemStack, 9);
+		var priceDescription = CurrencyFormattingUtil.currencyText(offer.price);
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 
 		return new CartListComponent(itemStack, itemDescription, priceDescription, offerTooltip, component -> {

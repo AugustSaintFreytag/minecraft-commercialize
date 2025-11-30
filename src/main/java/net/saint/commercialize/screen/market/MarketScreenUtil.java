@@ -149,7 +149,8 @@ public final class MarketScreenUtil {
 			var perItemLabel = Text
 					.literal(
 							" " + LocalizationUtil.localizedString(
-									"text", "offer.tooltip.price_breakdown",
+									"text",
+									"offer.tooltip.price_breakdown",
 									CurrencyFormattingUtil.currencyString(offer.price / offer.stack.getCount())
 							)
 					)
@@ -173,7 +174,8 @@ public final class MarketScreenUtil {
 		// Posted
 		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
 		var postedFormattedText = LocalizationUtil.localizedText(
-				"text", "offer.tooltip.time_posted_format",
+				"text",
+				"offer.tooltip.time_posted_format",
 				TextFormattingUtil.capitalizedString(rawPosted.getString())
 		);
 		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
@@ -254,7 +256,7 @@ public final class MarketScreenUtil {
 		}
 
 		var itemNames = offers.stream().map(offer -> {
-			return ItemDescriptionUtil.descriptionForItemStack(offer.stack);
+			return ItemDescriptionUtil.descriptionForItemStackWithCount(offer.stack);
 		}).distinct().toList();
 
 		if (itemNames.size() <= MAX_ORDER_SUMMARY_ITEM_NAMES) {

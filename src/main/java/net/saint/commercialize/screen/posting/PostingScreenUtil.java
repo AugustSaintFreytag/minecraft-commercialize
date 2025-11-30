@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
+import net.saint.commercialize.data.item.AbbreviatableItemDescriptionUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
-import net.saint.commercialize.data.text.ItemDescriptionUtil;
 import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.text.TimePreset;
@@ -18,6 +18,8 @@ import net.saint.commercialize.util.LocalizationUtil;
 
 public final class PostingScreenUtil {
 
+	private static final int MAX_ITEM_NAME_LENGTH = 16;
+
 	// Item Stack
 
 	public static Text descriptionForItemStack(ItemStack itemStack) {
@@ -25,7 +27,7 @@ public final class PostingScreenUtil {
 			return LocalizationUtil.localizedText("text", "no_value");
 		}
 
-		return Text.of(ItemDescriptionUtil.descriptionForItemStack(itemStack));
+		return AbbreviatableItemDescriptionUtil.abbreviatableTextForItemStackWithCount(itemStack, MAX_ITEM_NAME_LENGTH);
 	}
 
 	public static Text descriptionForItemOfferPrice(int offerPrice) {
@@ -33,7 +35,7 @@ public final class PostingScreenUtil {
 			return LocalizationUtil.localizedText("text", "no_value");
 		}
 
-		return Text.of(CurrencyFormattingUtil.currencyString(offerPrice));
+		return CurrencyFormattingUtil.currencyText(offerPrice);
 	}
 
 	// Price
