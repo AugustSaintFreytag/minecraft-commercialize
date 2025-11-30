@@ -58,7 +58,8 @@ public final class MarketBlockServerNetworking {
 			} catch (Exception e) {
 				Commercialize.LOGGER.error(
 						"Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(), e
+						player.getName().getString(),
+						e
 				);
 				return;
 			}
@@ -74,7 +75,8 @@ public final class MarketBlockServerNetworking {
 			} catch (Exception e) {
 				Commercialize.LOGGER.error(
 						"Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(), e
+						player.getName().getString(),
+						e
 				);
 				return;
 			}
@@ -91,7 +93,8 @@ public final class MarketBlockServerNetworking {
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
 			Commercialize.LOGGER.error(
-					"Could not resolve market block entity at position {}, invalid type '{}'.", position,
+					"Could not resolve market block entity at position {}, invalid type '{}'.",
+					position,
 					blockEntity.getClass().getName()
 			);
 			return;
@@ -204,11 +207,14 @@ public final class MarketBlockServerNetworking {
 			if (!cardOwner.equals(player.getName().getString())) {
 				Commercialize.LOGGER.warn(
 						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
-						player.getName().getString(), cardOwner
+						player.getName().getString(),
+						cardOwner
 				);
 				handleMarketOrderResponse(player, message.position, offers, 0, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 				sendMarketOrderResponse(
-						responseSender, message.position, message.offers,
+						responseSender,
+						message.position,
+						message.offers,
 						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD
 				);
 
@@ -222,7 +228,9 @@ public final class MarketBlockServerNetworking {
 		if (offerTotal > balance) {
 			Commercialize.LOGGER.warn(
 					"Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
-					player.getName().getString(), offerTotal, balance
+					player.getName().getString(),
+					offerTotal,
+					balance
 			);
 			handleMarketOrderResponse(player, message.position, offers, offerTotal, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
@@ -333,7 +341,7 @@ public final class MarketBlockServerNetworking {
 	}
 
 	private static Text textForPackagedDelivery(List<ItemStack> itemStacks) {
-		var itemStackTexts = itemStacks.stream().map(stack -> ItemDescriptionUtil.textForItemStack(stack)).toList();
+		var itemStackTexts = itemStacks.stream().map(stack -> ItemDescriptionUtil.textForItemStackWithCount(stack)).toList();
 		var itemStackDescription = TextUtil.joinTexts(itemStackTexts, Text.of(", "));
 
 		var packageItemsText = Text.translatable(LocalizationUtil.key("text", "delivery.receipt_format"), itemStackDescription);
@@ -421,15 +429,21 @@ public final class MarketBlockServerNetworking {
 			if (sellerProfile == null) {
 				Commercialize.LOGGER.error(
 						"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
-						offer.sellerName, offer.sellerId, offer.price, offer.id
+						offer.sellerName,
+						offer.sellerId,
+						offer.price,
+						offer.id
 				);
 				continue;
 			}
 
 			BankAccountAccessUtil.depositAccountBalanceForPlayer(offer.sellerId, offer.price);
 			Commercialize.LOGGER.info(
-					"Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
-					offer.price, offer.id
+					"Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.",
+					offer.sellerName,
+					offer.sellerId,
+					offer.price,
+					offer.id
 			);
 		}
 	}
