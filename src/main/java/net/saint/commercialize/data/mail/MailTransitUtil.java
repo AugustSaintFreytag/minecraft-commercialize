@@ -63,7 +63,7 @@ public final class MailTransitUtil {
 			var playerId = item.recipient;
 			var playerName = MarketPlayerUtil.getPlayerNameForId(server, playerId);
 
-			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
+			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStackWithCount(item.stack);
 
 			if (!deliverMailTransitItem(server, item)) {
 				item.timeLastDeliveryAttempted = time;
@@ -73,14 +73,21 @@ public final class MailTransitUtil {
 					itemsToBeDiscardedByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
 					Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
 
-					Commercialize.LOGGER.info("Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
-							itemStackDescriptions, playerName, item.numberOfDeliveryAttempts + 1);
+					Commercialize.LOGGER.info(
+							"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
+							itemStackDescriptions,
+							playerName,
+							item.numberOfDeliveryAttempts + 1
+					);
 					return;
 				}
 
 				Commercialize.LOGGER.info(
 						"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s). Item will remain in queue.",
-						itemStackDescriptions, playerName, item.numberOfDeliveryAttempts);
+						itemStackDescriptions,
+						playerName,
+						item.numberOfDeliveryAttempts
+				);
 
 				itemsNotDeliveredByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
 				Commercialize.MAIL_TRANSIT_MANAGER.updateItem(item);
@@ -101,12 +108,15 @@ public final class MailTransitUtil {
 	public static void forceDeliverAllMailTransitItems(MinecraftServer server) {
 		Commercialize.MAIL_TRANSIT_MANAGER.getItems().forEach(item -> {
 			var playerName = MarketPlayerUtil.getPlayerNameForId(server, item.recipient);
-			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStack(item.stack);
+			var itemStackDescriptions = ItemDescriptionUtil.descriptionForItemStackWithCount(item.stack);
 			var didDeliverItem = deliverMailTransitItem(server, item);
 
 			if (!didDeliverItem) {
-				Commercialize.LOGGER.warn("Could not force-deliver mail item with '{}' to mailbox of player '{}'.", itemStackDescriptions,
-						playerName);
+				Commercialize.LOGGER.warn(
+						"Could not force-deliver mail item with '{}' to mailbox of player '{}'.",
+						itemStackDescriptions,
+						playerName
+				);
 				return;
 			}
 
