@@ -1,7 +1,7 @@
 {
 	"offers": [
 		{
-			"availability": "rare",
+			"availability": "uncommon",
 			"item": "minecraft:amethyst_shard",
 			"markup": "1.5",
 			"stack": "8-32"
@@ -49,9 +49,9 @@
 			"stack": "16-64"
 		},
 		{
-			"availability": "rare",
+			"availability": "uncommon",
 			"item": "minecraft:quartz",
-			"markup": "4.0",
+			"markup": "2.6",
 			"stack": "16-64"
 		},
 		{
@@ -75,19 +75,19 @@
 		{
 			"availability": "uncommon",
 			"item": "create:brass_ingot",
-			"markup": "2.6",
+			"markup": "2.5",
 			"stack": "4-64"
 		},
 		{
 			"availability": "uncommon",
 			"item": "create:rose_quartz",
-			"markup": "3.8",
+			"markup": "2.6",
 			"stack": "1-8"
 		},
 		{
 			"availability": "extremelyRare",
 			"item": "createaddition:electrum_ingot",
-			"markup": "3.6",
+			"markup": "3.0",
 			"stack": "8-48"
 		},
 		{
@@ -99,13 +99,13 @@
 		{
 			"availability": "uncommon",
 			"item": "create_ironworks:bronze_ingot",
-			"markup": "2.6",
+			"markup": "2.4",
 			"stack": "8-64"
 		},
 		{
 			"availability": "common",
 			"item": "create_ironworks:tin_ingot",
-			"markup": "2.1",
+			"markup": "2.0",
 			"stack": "8-64"
 		},
 		{
@@ -127,9 +127,9 @@
 			"stack": "2-8"
 		},
 		{
-			"availability": "rare",
+			"availability": "uncommon",
 			"item": "galosphere:silver_ingot",
-			"markup": "2.5",
+			"markup": "1.8",
 			"stack": "8-48"
 		}
 	]
