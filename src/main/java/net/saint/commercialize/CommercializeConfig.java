@@ -89,8 +89,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The chance that a simulated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)")
-	public double offerSaleGenerationChance = 0.025;
+	@Comment("The chance that a simulated offer sale occurs during an offer tick. (Default: 0.02 = 2%)")
+	public double offerSaleGenerationChance = 0.02;
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
