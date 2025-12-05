@@ -4,6 +4,8 @@ A highly integrated commerce mod for Minecraft. Introduces a server-wide goods m
 
 Developed for Saint's [Project Haze](https://haze.blockworlds.io/), a finely rebalanced survival mod pack with a vision.
 
+<img width="2121" height="1141" alt="2025-12-05_03 58 03 - Copy" src="https://github.com/user-attachments/assets/a2ed43eb-e695-40df-a093-0563a6df0471" />
+
 # Features
 
 The mod integrates with its sibling mods to provide the following features:
