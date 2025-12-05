@@ -1,6 +1,7 @@
 package net.saint.commercialize.data.market;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
+import net.saint.commercialize.data.text.NumericFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.valuation.ItemValueUtil;
 import net.saint.commercialize.util.LocalizationUtil;
@@ -52,11 +54,26 @@ public final class MarketOfferTickingUtil {
 				0,
 				Math.min(
 						Commercialize.CONFIG.offerBatchSize,
-						Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()));
+						Commercialize.CONFIG.maxNumberOfOffers - Commercialize.MARKET_OFFER_MANAGER.size()
+				)
+		);
+
+		var numberOfGeneratedOffers = new AtomicInteger(0);
 
 		for (int i = 0; i < numberOfOffersToGenerate; i++) {
 			var generatedOffer = MarketOfferGenerator.generateOffer(world);
-			generatedOffer.ifPresent(offer -> Commercialize.MARKET_OFFER_MANAGER.addOffer(offer));
+			generatedOffer.ifPresent(offer -> {
+				Commercialize.MARKET_OFFER_MANAGER.addOffer(offer);
+				numberOfGeneratedOffers.incrementAndGet();
+			});
+		}
+
+		if (numberOfGeneratedOffers.get() > 0) {
+			Commercialize.LOGGER.info(
+					"Generated {} new market offers. Total market offers: {}.",
+					NumericFormattingUtil.formatNumber(numberOfGeneratedOffers.get()),
+					NumericFormattingUtil.formatNumber(Commercialize.MARKET_OFFER_MANAGER.size())
+			);
 		}
 	}
 
@@ -109,7 +126,8 @@ public final class MarketOfferTickingUtil {
 					ItemDescriptionUtil.descriptionForItemStackWithCount(offer.stack),
 					CurrencyFormattingUtil.currencyString(offer.price),
 					offer.sellerName,
-					offer.sellerId);
+					offer.sellerId
+			);
 
 			return SaleResult.SUCCESS;
 		}
@@ -122,7 +140,8 @@ public final class MarketOfferTickingUtil {
 					offer.sellerName,
 					offer.sellerId,
 					CurrencyFormattingUtil.currencyString(offer.price),
-					offer.id);
+					offer.id
+			);
 			return SaleResult.FAILURE_NO_SELLER;
 		}
 
@@ -132,7 +151,8 @@ public final class MarketOfferTickingUtil {
 					offer.sellerName,
 					offer.sellerId,
 					CurrencyFormattingUtil.currencyString(offer.price),
-					offer.id);
+					offer.id
+			);
 			return SaleResult.FAILURE_NO_ACCOUNT;
 		}
 
@@ -145,7 +165,8 @@ public final class MarketOfferTickingUtil {
 				ItemDescriptionUtil.descriptionForItemStackWithCount(offer.stack),
 				CurrencyFormattingUtil.currencyString(offer.price),
 				offer.sellerName,
-				offer.sellerId);
+				offer.sellerId
+		);
 
 		return SaleResult.SUCCESS;
 	}
@@ -207,8 +228,11 @@ public final class MarketOfferTickingUtil {
 		var itemDescription = ItemDescriptionUtil.textForItemStackWithCount(offer.stack);
 		var packageSender = LocalizationUtil.localizedText("text", "delivery.market");
 		var packageReceipt = LocalizationUtil.localizedText("text", "return.offer_format", itemDescription);
-		var packageSignature = LocalizationUtil.localizedText("text", "return.message",
-				TimeFormattingUtil.formattedTime(offer.duration));
+		var packageSignature = LocalizationUtil.localizedText(
+				"text",
+				"return.message",
+				TimeFormattingUtil.formattedTime(offer.duration)
+		);
 
 		var packageMessage = packageReceipt.copy().append(Text.of("\n\n")).append(packageSignature);
 
@@ -219,18 +243,25 @@ public final class MarketOfferTickingUtil {
 			Commercialize.LOGGER.error(
 					"Could not verify player '{}' ({}) as a known player on the server to return expired offer items to.",
 					offer.sellerName,
-					offer.sellerId);
+					offer.sellerId
+			);
 			return;
 		}
 
-		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, playerId, itemList,
-				packageMessage, packageSender);
+		var didDispatch = MailTransitUtil.packageAndDispatchItemStacksToPlayer(
+				server,
+				playerId,
+				itemList,
+				packageMessage,
+				packageSender
+		);
 
 		if (!didDispatch) {
 			Commercialize.LOGGER.error(
 					"Could not dispatch return expired offer items to player '{}' ({}).",
 					offer.sellerName,
-					offer.sellerId);
+					offer.sellerId
+			);
 			return;
 		}
 
@@ -239,7 +270,8 @@ public final class MarketOfferTickingUtil {
 				offer.id,
 				itemDescription,
 				offer.sellerName,
-				offer.sellerId);
+				offer.sellerId
+		);
 		Commercialize.MARKET_OFFER_MANAGER.removeOffer(offer);
 	}
 
