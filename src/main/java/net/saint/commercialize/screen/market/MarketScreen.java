@@ -486,7 +486,7 @@ public class MarketScreen extends BaseOwoScreen<FlowLayout> {
 
 	private CartListComponent makeCartListComponent(Offer offer) {
 		var itemStack = offer.stack;
-		var itemDescription = AbbreviatableItemDescriptionUtil.abbreviatableNameTextForItemStack(itemStack, 9);
+		var itemDescription = AbbreviatableItemDescriptionUtil.abbreviatableNameTextForItemStack(itemStack, 7);
 		var priceDescription = CurrencyFormattingUtil.currencyText(offer.price);
 		var offerTooltip = MarketScreenUtil.tooltipTextForOffer(client.world, offer);
 

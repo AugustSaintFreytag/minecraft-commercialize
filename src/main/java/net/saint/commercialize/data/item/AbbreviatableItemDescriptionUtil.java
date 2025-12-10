@@ -16,10 +16,10 @@ public class AbbreviatableItemDescriptionUtil {
 	private static Map<String, String> abbreviatedNameComponents = new HashMap<>() {
 		{
 			this.put("Block", "Bl.");
-			this.put("Redstone", "Redst.");
-			this.put("Glowstone", "Glowst.");
+			this.put("Redstone", "Rdst.");
+			this.put("Glowstone", "Glwst.");
 			this.put("Ingot", "Ing.");
-			this.put("Powder", "Pwdr.");
+			this.put("Powder", "Pwd.");
 			this.put("Diamond", "Dmnd.");
 			this.put("Netherite", "Nthrt.");
 			this.put("Book", "Bk.");
@@ -99,7 +99,7 @@ public class AbbreviatableItemDescriptionUtil {
 
 		if (currentName.length() > limit) {
 			if (limit > 3) {
-				var truncated = currentName.substring(0, limit - 3);
+				var truncated = currentName.substring(0, limit - 3).trim();
 
 				if (truncated.endsWith(".")) {
 					return truncated;

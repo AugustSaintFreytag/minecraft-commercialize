@@ -5,7 +5,8 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name = Commercialize.MOD_ID) @Config.Gui.Background("minecraft:textures/block/emerald_block.png")
+@Config(name = Commercialize.MOD_ID)
+@Config.Gui.Background("minecraft:textures/block/emerald_block.png")
 public final class CommercializeConfig implements ConfigData {
 
 	// Market
@@ -94,8 +95,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The highest acceptable price factor for a simulated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.75)")
-	public double offerSaleGenerationMaxPriceFactor = 1.75;
+	@Comment("The highest acceptable price factor for a simulated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.5)")
+	public double offerSaleGenerationMaxPriceFactor = 1.5;
 
 	// Payment
 
