@@ -52,7 +52,7 @@
 			"availability": "uncommon",
 			"item": "minecraft:quartz",
 			"markup": "2.6",
-			"stack": "16-64"
+			"stack": "8-64"
 		},
 		{
 			"availability": "common",
