@@ -5,7 +5,8 @@
 	"name": "Commercialize",
 	"description": "An accessible commerce mod introducing a server-wide dynamic market with browsable offers, payment, and shipping. Integrates with Create: Numismatics for monetary management and Furniture Refurbished for postal services.",
 	"authors": [
-		"Saint"
+		"Saint",
+		"Mezu"
 	],
 	"contact": {
 		"homepage": "https://github.com/augustsaintfreytag/minecraft-commercialize",
