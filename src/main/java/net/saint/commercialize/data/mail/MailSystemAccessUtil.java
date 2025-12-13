@@ -88,7 +88,7 @@ public final class MailSystemAccessUtil {
 			}
 
 			var ownerId = owner.get().getId();
-			return ownerId == playerId;
+			return ownerId.equals(playerId);
 		}).toList();
 
 		return playerOwnedMailboxes;
