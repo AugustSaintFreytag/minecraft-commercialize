@@ -75,6 +75,20 @@ public class MarketPlayerReport {
 
 	// Merge
 
+	public void clearBuyerSide() {
+		this.numberOfOrders = 0;
+		this.amountSpentOnOrders = 0;
+	}
+
+	public void clearSellerSide() {
+		this.numberOfPostingsSold = 0;
+		this.numberOfPostingsOpen = 0;
+		this.numberOfPostingsExpired = 0;
+		this.amountEarnedFromSales = 0;
+		this.amountSpentOnPostingsSold = 0;
+		this.amountSpentOnPostingsExpired = 0;
+	}
+
 	public void union(MarketPlayerReport report) {
 		this.numberOfPostingsSold += report.numberOfPostingsSold;
 		this.numberOfPostingsOpen += report.numberOfPostingsOpen;
