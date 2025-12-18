@@ -91,15 +91,18 @@ public class MarketPlayerReport {
 		this.amountSpentOnPostingsExpired = 0;
 	}
 
-	public void union(MarketPlayerReport report) {
+	public void unionBuyerSide(MarketPlayerReport report) {
+		this.numberOfOrders += report.numberOfOrders;
+		this.amountSpentOnOrders += report.amountSpentOnOrders;
+	}
+
+	public void unionSellerSide(MarketPlayerReport report) {
 		this.numberOfPostingsSold += report.numberOfPostingsSold;
 		this.numberOfPostingsOpen += report.numberOfPostingsOpen;
 		this.numberOfPostingsExpired += report.numberOfPostingsExpired;
 		this.amountEarnedFromSales += report.amountEarnedFromSales;
 		this.amountSpentOnPostingsSold += report.amountSpentOnPostingsSold;
 		this.amountSpentOnPostingsExpired += report.amountSpentOnPostingsExpired;
-		this.numberOfOrders += report.numberOfOrders;
-		this.amountSpentOnOrders += report.amountSpentOnOrders;
 	}
 
 	// Utility
