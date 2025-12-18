@@ -2,6 +2,8 @@ package net.saint.commercialize.data.market;
 
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.nbt.NbtCompound;
 
 public class MarketPlayerReport {
@@ -98,6 +100,12 @@ public class MarketPlayerReport {
 		this.amountSpentOnPostingsExpired += report.amountSpentOnPostingsExpired;
 		this.numberOfOrders += report.numberOfOrders;
 		this.amountSpentOnOrders += report.amountSpentOnOrders;
+	}
+
+	// Utility
+
+	public GameProfile getGameProfile() {
+		return new GameProfile(playerId, playerName);
 	}
 
 }
