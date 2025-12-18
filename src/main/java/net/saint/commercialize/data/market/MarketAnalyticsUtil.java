@@ -9,18 +9,17 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.mail.MailTransitUtil;
-import net.saint.commercialize.data.market.MarketOfferPostingUtil.OfferDraft;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.NumericFormattingUtil;
+import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.item.LetterItem;
-import net.saint.commercialize.screen.posting.OfferPostStrategy;
 import net.saint.commercialize.util.LocalizationUtil;
 
 public final class MarketAnalyticsUtil {
 
-	private static long ticksSinceLastReport = 0;
+	private static long ticksSinceLastKnownReport = 0;
 
 	private static int numberOfReportsSentInLastTick = 0;
 
@@ -36,21 +35,21 @@ public final class MarketAnalyticsUtil {
 		var server = world.getServer();
 		var time = world.getTimeOfDay();
 
-		ticksSinceLastReport += 1;
+		ticksSinceLastKnownReport += 1;
 
-		// Safeguard against having a server tick-paused on an exact report tick 
+		// Safeguard against having a server tick-paused on an exact report tick
 		// and then flooding player mailboxes with reports (min. 1 minute pacing).
 
-		if (time % Commercialize.CONFIG.reportInterval == 0 && ticksSinceLastReport >= 1200) {
+		if (time % Commercialize.CONFIG.reportInterval == 0 && ticksSinceLastKnownReport >= 1200) {
 			compileAndSendMarketReports(server);
-			ticksSinceLastReport = 0;
+			ticksSinceLastKnownReport = 0;
 		}
 	}
 
 	public static void compileAndSendMarketReports(MinecraftServer server) {
 		numberOfReportsSentInLastTick = 0;
 
-		Commercialize.MARKET_ANALYTICS_MANAGER.getAllReports().forEach(report -> {
+		Commercialize.MARKET_ANALYTICS_MANAGER.getAllIntervalReports().forEach(report -> {
 			if (Commercialize.CONFIG.sendPlayerMarketBuyReports) {
 				compileAndSendBuyReportForPlayer(server, report);
 			}
@@ -69,65 +68,51 @@ public final class MarketAnalyticsUtil {
 		var senderText = LocalizationUtil.localizedText("text", "delivery.market");
 		var itemCountText = localizedItemCountText(report.numberOfOrders);
 
+		var intervalText = TimeFormattingUtil.formattedTime(Commercialize.CONFIG.reportInterval);
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.buy.name");
-		var letterReportText = LocalizationUtil.localizedText(
-				"text",
-				"report.buy.format",
-				report.playerName,
-				itemCountText,
-				CurrencyFormattingUtil.currencyText(report.amountSpentOnOrders)
-		);
+		var letterReportText = LocalizationUtil.localizedText("text", "report.buy.format", report.playerName, intervalText, itemCountText,
+				CurrencyFormattingUtil.currencyText(report.amountSpentOnOrders));
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
 		var packageItemStacks = defaultedListFromItemStack(letterItemStack);
 		var packageMessageText = packageTextForBuyReport();
 
 		MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, report.playerId, packageItemStacks, packageMessageText, senderText);
-
-		report.amountSpentOnOrders = 0;
-		report.numberOfOrders = 0;
-
 		numberOfReportsSentInLastTick++;
 
+		report.clearBuyerSide();
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
 
 	public static void compileAndSendSaleReportForPlayer(MinecraftServer server, MarketPlayerReport report) {
-		if (report.numberOfSales == 0) {
+		if (report.numberOfPostingsSold == 0 && report.numberOfPostingsExpired == 0) {
 			return;
 		}
 
+		var amountSpentOnPostings = report.amountSpentOnPostingsSold + report.amountSpentOnPostingsExpired;
+		var amountEarnedFromSales = report.amountEarnedFromSales;
+		var netEarningsAmount = amountEarnedFromSales - amountSpentOnPostings;
+
 		var senderText = LocalizationUtil.localizedText("text", "delivery.market");
-		var itemCountText = localizedItemCountText(report.numberOfSales);
-		var postingCountText = localizedItemCountText(report.numberOfPostings);
-		var feesPaidText = CurrencyFormattingUtil.currencyText(report.amountSpentOnFees);
-		var grossEarningsText = CurrencyFormattingUtil.currencyText(report.amountEarnedFromSales);
-		var netEarningsAmount = report.amountEarnedFromSales - report.amountSpentOnFees;
+		var intervalText = TimeFormattingUtil.formattedTime(Commercialize.CONFIG.reportInterval);
+		var offersPostedCountText = localizedItemCountText(report.numberOfPostingsSold + report.numberOfPostingsExpired);
+		var offersSoldCountText = localizedItemCountText(report.numberOfPostingsSold);
+		var feesPaidText = CurrencyFormattingUtil.currencyText(amountSpentOnPostings);
+		var grossEarningsText = CurrencyFormattingUtil.currencyText(amountEarnedFromSales);
 		var netEarningsText = CurrencyFormattingUtil.currencyText(netEarningsAmount);
 
 		var letterSubjectText = LocalizationUtil.localizedText("text", "report.sale.name");
-		var letterReportText = LocalizationUtil.localizedText(
-				"text",
-				"report.sale.format",
-				report.playerName,
-				itemCountText,
-				postingCountText,
-				feesPaidText,
-				grossEarningsText,
-				netEarningsText
-		);
+		var letterReportText = LocalizationUtil.localizedText("text", "report.sale.format", report.playerName, intervalText,
+				offersPostedCountText, offersSoldCountText, feesPaidText, grossEarningsText, netEarningsText);
 
 		var letterItemStack = makeLetterItemStack(senderText, letterSubjectText, letterReportText);
 		var packageItemStacks = defaultedListFromItemStack(letterItemStack);
 		var packageMessageText = packageTextForSaleReport();
 
 		MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, report.playerId, packageItemStacks, packageMessageText, senderText);
-
-		report.amountEarnedFromSales = 0;
-		report.numberOfSales = 0;
-
 		numberOfReportsSentInLastTick++;
 
+		report.clearSellerSide();
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
 
@@ -145,29 +130,29 @@ public final class MarketAnalyticsUtil {
 
 	public static void writeMarketOrderToAnalytics(Offer offer, GameProfile buyerProfile) {
 		if (buyerProfile != null) {
-			var buyerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(buyerProfile);
+			var buyerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateIntervalReportForProfile(buyerProfile);
 
 			buyerReport.numberOfOrders += 1;
 			buyerReport.amountSpentOnOrders += offer.price;
 		}
 
 		var sellerProfile = new GameProfile(offer.sellerId, offer.sellerName);
-		var sellerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(sellerProfile);
+		var sellerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateIntervalReportForProfile(sellerProfile);
 
-		sellerReport.numberOfSales += 1;
+		sellerReport.numberOfPostingsSold += 1;
 		sellerReport.amountEarnedFromSales += offer.price;
+		sellerReport.amountSpentOnPostingsSold += offer.fees;
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
 
 	// Postings
 
-	public static void writeMarketPostingToAnalytics(GameProfile profile, OfferDraft draft) {
-		var report = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateReportForProfile(profile);
-		var numberOfPosts = draft.strategy() == OfferPostStrategy.AS_ITEMS ? draft.stack().getCount() : 1;
+	public static void writeMarketExpirationToAnalytics(GameProfile profile, Offer offer) {
+		var report = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateIntervalReportForProfile(profile);
 
-		report.numberOfPostings += numberOfPosts;
-		report.amountSpentOnFees += draft.fees();
+		report.numberOfPostingsExpired += 1;
+		report.amountSpentOnPostingsExpired += offer.fees;
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
