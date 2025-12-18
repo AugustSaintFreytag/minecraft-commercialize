@@ -138,6 +138,11 @@ public final class MarketAnalyticsUtil {
 			buyerReport.amountSpentOnOrders += offer.price;
 		}
 
+		if (offer.isGenerated) {
+			Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
+			return;
+		}
+
 		var sellerProfile = new GameProfile(offer.sellerId, offer.sellerName);
 		var sellerReport = Commercialize.MARKET_ANALYTICS_MANAGER.getOrCreateIntervalReportForProfile(sellerProfile);
 
