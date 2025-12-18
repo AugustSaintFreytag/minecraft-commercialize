@@ -12,6 +12,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.market.MarketPlayerUtil;
+import net.saint.commercialize.data.player.PlayerProfileAccessUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
 
 public final class MailTransitUtil {
@@ -50,7 +51,7 @@ public final class MailTransitUtil {
 				return true;
 			}
 
-			var player = MarketPlayerUtil.getPlayerEntityForId(server, item.recipient);
+			var player = MarketPlayerUtil.getOnlinePlayerEntityForId(server, item.recipient);
 			var playerIsOnline = player != null;
 
 			return playerIsOnline;
@@ -73,21 +74,14 @@ public final class MailTransitUtil {
 					itemsToBeDiscardedByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
 					Commercialize.MAIL_TRANSIT_MANAGER.removeItem(item);
 
-					Commercialize.LOGGER.info(
-							"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
-							itemStackDescriptions,
-							playerName,
-							item.numberOfDeliveryAttempts + 1
-					);
+					Commercialize.LOGGER.info("Could not deliver '{}' to mailbox of player '{}' after {} attempt(s).",
+							itemStackDescriptions, playerName, item.numberOfDeliveryAttempts + 1);
 					return;
 				}
 
 				Commercialize.LOGGER.info(
 						"Could not deliver '{}' to mailbox of player '{}' after {} attempt(s). Item will remain in queue.",
-						itemStackDescriptions,
-						playerName,
-						item.numberOfDeliveryAttempts
-				);
+						itemStackDescriptions, playerName, item.numberOfDeliveryAttempts);
 
 				itemsNotDeliveredByPlayer.computeIfAbsent(playerId, k -> new java.util.ArrayList<>()).add(item);
 				Commercialize.MAIL_TRANSIT_MANAGER.updateItem(item);
@@ -112,11 +106,8 @@ public final class MailTransitUtil {
 			var didDeliverItem = deliverMailTransitItem(server, item);
 
 			if (!didDeliverItem) {
-				Commercialize.LOGGER.warn(
-						"Could not force-deliver mail item with '{}' to mailbox of player '{}'.",
-						itemStackDescriptions,
-						playerName
-				);
+				Commercialize.LOGGER.warn("Could not force-deliver mail item with '{}' to mailbox of player with '{}'.",
+						itemStackDescriptions, playerName);
 				return;
 			}
 
@@ -128,14 +119,14 @@ public final class MailTransitUtil {
 	// Delivery
 
 	public static boolean deliverMailTransitItem(MinecraftServer server, MailTransitItem item) {
-		var player = MarketPlayerUtil.getPlayerEntityForId(server, item.recipient);
+		var profile = PlayerProfileAccessUtil.getPlayerProfileById(server, item.recipient);
 
-		if (player == null) {
-			Commercialize.LOGGER.warn("Could not find offline player '{}' for mail delivery.", item.recipient);
+		if (profile == null) {
+			Commercialize.LOGGER.warn("Could not find player with id '{}' for mail delivery.", item.recipient);
 			return false;
 		}
 
-		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, item.stack);
+		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, profile, item.stack);
 	}
 
 	// Dispatch
@@ -154,7 +145,9 @@ public final class MailTransitUtil {
 	public static boolean packageAndDeliverItemStacksToPlayer(MinecraftServer server, ServerPlayerEntity player,
 			DefaultedList<ItemStack> itemStacks, Text message, Text sender) {
 		var packagedOrder = MailSystemAccessUtil.packageItemStacksForDelivery(itemStacks, message, sender);
-		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, player, packagedOrder);
+		var profile = player.getGameProfile();
+
+		return MailSystemAccessUtil.deliverItemStackToPlayerMailbox(server, profile, packagedOrder);
 	}
 
 }

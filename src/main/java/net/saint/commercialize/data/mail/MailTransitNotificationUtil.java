@@ -47,26 +47,13 @@ public final class MailTransitNotificationUtil {
 		var formattedTimeUntilNextAttempt = Text.literal("~").append(TimeFormattingUtil.formattedTime(timeUntilNextAttempt));
 
 		if (numberOfPackagesAboutToExpire > 0) {
-			return LocalizationUtil.localizedText(
-					"text",
-					"delivery.expiration_notice_last",
-					numberOfPackages,
-					formattedTimeUntilNextAttempt,
-					numberOfPackagesAboutToExpire,
-					numberOfPackages,
-					numberOfDeliveryAttempts,
-					Commercialize.CONFIG.maxNumberOfDeliveryAttempts
-			);
+			return LocalizationUtil.localizedText("text", "delivery.expiration_notice_last", numberOfPackages,
+					formattedTimeUntilNextAttempt, numberOfPackagesAboutToExpire, numberOfPackages, numberOfDeliveryAttempts,
+					Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
 		}
 
-		return LocalizationUtil.localizedText(
-				"text",
-				"delivery.expiration_notice",
-				numberOfPackages,
-				formattedTimeUntilNextAttempt,
-				numberOfDeliveryAttempts,
-				Commercialize.CONFIG.maxNumberOfDeliveryAttempts
-		);
+		return LocalizationUtil.localizedText("text", "delivery.expiration_notice", numberOfPackages, formattedTimeUntilNextAttempt,
+				numberOfDeliveryAttempts, Commercialize.CONFIG.maxNumberOfDeliveryAttempts);
 	}
 
 	private static int numberOfItemsAboutToExpire(List<MailTransitItem> items) {
@@ -109,7 +96,7 @@ public final class MailTransitNotificationUtil {
 			Consumer<PlayerParameters> block) {
 		var playerId = MarketPlayerUtil.getPlayerIdAsRecipientFromItems(server, items);
 		var playerName = MarketPlayerUtil.getPlayerNameForId(server, playerId);
-		var player = MarketPlayerUtil.getPlayerEntityForId(server, playerId);
+		var player = MarketPlayerUtil.getOnlinePlayerEntityForId(server, playerId);
 
 		if (player == null) {
 			// Player is offline, can not message.

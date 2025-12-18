@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
@@ -30,12 +30,12 @@ public final class MailSystemAccessUtil {
 		return packageItemStack;
 	}
 
-	public static boolean deliverItemStackToPlayerMailbox(MinecraftServer server, PlayerEntity player, ItemStack itemStack) {
-		var mailbox = getMailboxForPlayer(server, player);
+	public static boolean deliverItemStackToPlayerMailbox(MinecraftServer server, GameProfile profile, ItemStack itemStack) {
+		var mailbox = getMailboxForPlayerId(server, profile);
 
 		if (mailbox == null) {
-			Commercialize.LOGGER.error("Could not deliver item stack '{}' to player '{}', no available delivery mailbox.",
-					itemStack.getName(), player.getName());
+			Commercialize.LOGGER.error("Could not deliver item stack '{}' to player '{}' (), no available delivery mailbox.",
+					itemStack.getName(), profile.getName(), profile.getId());
 			return false;
 		}
 
@@ -45,8 +45,8 @@ public final class MailSystemAccessUtil {
 
 	// Mailbox
 
-	public static Mailbox getMailboxForPlayer(MinecraftServer server, PlayerEntity player) {
-		var playerOwnedMailboxes = getMailboxesOwnedByPlayer(server, player);
+	public static Mailbox getMailboxForPlayerId(MinecraftServer server, GameProfile profile) {
+		var playerOwnedMailboxes = getMailboxesOwnedByPlayerId(server, profile.getId());
 
 		if (playerOwnedMailboxes.isEmpty()) {
 			return null;
@@ -71,14 +71,13 @@ public final class MailSystemAccessUtil {
 		// No conclusive pick was made, use first available mailbox for player as fallback.
 
 		Commercialize.LOGGER.info(
-				"Player '{}' does not have a determinable main mailbox for delivery ({} available). Picked first available as fallback.",
-				player.getName(), playerOwnedMailboxes.size());
+				"Player '{}' ({}) does not have a determinable main mailbox for delivery ({} available). Picked first available as fallback.",
+				profile.getName(), profile.getId(), playerOwnedMailboxes.size());
 
 		return playerOwnedMailboxes.get(0);
 	}
 
-	private static List<Mailbox> getMailboxesOwnedByPlayer(MinecraftServer server, PlayerEntity player) {
-		var playerId = player.getUuid();
+	private static List<Mailbox> getMailboxesOwnedByPlayerId(MinecraftServer server, UUID playerId) {
 		var mailboxesById = getMailboxesById(server);
 		var playerOwnedMailboxes = mailboxesById.values().stream().filter(mailbox -> {
 			var owner = mailbox.getOwner();
