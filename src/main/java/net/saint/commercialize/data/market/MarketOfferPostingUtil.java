@@ -104,6 +104,7 @@ public final class MarketOfferPostingUtil {
 
 		offer.stack = draft.stack();
 		offer.price = draft.price();
+		offer.fees = draft.fees();
 
 		return offer;
 	}

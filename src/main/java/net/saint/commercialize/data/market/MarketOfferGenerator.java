@@ -67,6 +67,7 @@ public final class MarketOfferGenerator {
 		offer.duration = Commercialize.CONFIG.offerDuration;
 		offer.stack = itemStack;
 		offer.price = price;
+		offer.fees = 0;
 
 		return Optional.of(offer);
 	}
