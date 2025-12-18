@@ -51,19 +51,21 @@ public final class MarketAnalyticsUtil {
 
 		Commercialize.MARKET_ANALYTICS_MANAGER.getAllIntervalReports().forEach(report -> {
 			if (Commercialize.CONFIG.sendPlayerMarketBuyReports) {
-				compileAndSendBuyReportForPlayer(server, report);
+				compileAndSendBuyReport(server, report);
 			}
 
 			if (Commercialize.CONFIG.sendPlayerMarketSaleReports) {
-				compileAndSendSaleReportForPlayer(server, report);
+				compileAndSendSaleReport(server, report);
 			}
 		});
 	}
 
-	public static void compileAndSendBuyReportForPlayer(MinecraftServer server, MarketPlayerReport report) {
+	public static void compileAndSendBuyReport(MinecraftServer server, MarketPlayerReport report) {
 		if (report.numberOfOrders == 0) {
 			return;
 		}
+
+		var profile = report.getGameProfile();
 
 		var senderText = LocalizationUtil.localizedText("text", "delivery.market");
 		var itemCountText = localizedItemCountText(report.numberOfOrders);
@@ -84,7 +86,7 @@ public final class MarketAnalyticsUtil {
 		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
 	}
 
-	public static void compileAndSendSaleReportForPlayer(MinecraftServer server, MarketPlayerReport report) {
+	public static void compileAndSendSaleReport(MinecraftServer server, MarketPlayerReport report) {
 		if (report.numberOfPostingsSold == 0 && report.numberOfPostingsExpired == 0) {
 			return;
 		}

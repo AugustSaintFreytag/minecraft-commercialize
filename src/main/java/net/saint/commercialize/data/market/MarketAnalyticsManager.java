@@ -156,9 +156,9 @@ public final class MarketAnalyticsManager extends PersistentState {
 
 	// Mutation
 
-	public void sealIntervalReportForProfile(GameProfile profile) {
-		// Add all values from current interval report to all-time report, then clear interval
-		// report.
+	public void sealIntervalReportForPlayerId(GameProfile profile) {
+		// Add all values from current interval report to all-time report,
+		// then clear interval report.
 
 		var intervalReport = intervalReportsByPlayerId.get(profile.getId());
 
