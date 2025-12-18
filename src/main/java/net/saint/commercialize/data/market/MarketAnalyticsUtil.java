@@ -82,14 +82,15 @@ public final class MarketAnalyticsUtil {
 		MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, report.playerId, packageItemStacks, packageMessageText, senderText);
 		numberOfReportsSentInLastTick++;
 
-		report.clearBuyerSide();
-		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
+		Commercialize.MARKET_ANALYTICS_MANAGER.sealBuyerSideIntervalReportForPlayerId(profile);
 	}
 
 	public static void compileAndSendSaleReport(MinecraftServer server, MarketPlayerReport report) {
 		if (report.numberOfPostingsSold == 0 && report.numberOfPostingsExpired == 0) {
 			return;
 		}
+
+		var profile = report.getGameProfile();
 
 		var amountSpentOnPostings = report.amountSpentOnPostingsSold + report.amountSpentOnPostingsExpired;
 		var amountEarnedFromSales = report.amountEarnedFromSales;
@@ -114,8 +115,7 @@ public final class MarketAnalyticsUtil {
 		MailTransitUtil.packageAndDispatchItemStacksToPlayer(server, report.playerId, packageItemStacks, packageMessageText, senderText);
 		numberOfReportsSentInLastTick++;
 
-		report.clearSellerSide();
-		Commercialize.MARKET_ANALYTICS_MANAGER.markDirty();
+		Commercialize.MARKET_ANALYTICS_MANAGER.sealSellerSideIntervalReportForPlayerId(profile);
 	}
 
 	private static ItemStack makeLetterItemStack(Text author, Text subject, Text message) {
