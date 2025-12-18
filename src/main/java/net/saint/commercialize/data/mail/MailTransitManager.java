@@ -18,6 +18,8 @@ public final class MailTransitManager extends PersistentState {
 
 	public static final String NAME = Commercialize.MOD_ID + "_mail";
 
+	private static final String ITEMS_NBT_KEY = "Items";
+
 	// Properties
 
 	private final AtomicReference<List<MailTransitItem>> items = new AtomicReference<>(Collections.emptyList());
@@ -43,14 +45,14 @@ public final class MailTransitManager extends PersistentState {
 			list.add(itemNbt);
 		}
 
-		nbt.put("items", list);
+		nbt.put(ITEMS_NBT_KEY, list);
 		return nbt;
 	}
 
 	public static MailTransitManager fromNbt(NbtCompound nbt) {
 		var manager = new MailTransitManager();
 
-		var list = nbt.getList("items", 10); // 10 = NbtCompound
+		var list = nbt.getList(ITEMS_NBT_KEY, 10); // 10 = NbtCompound
 		var newItems = new ArrayList<MailTransitItem>();
 
 		for (int i = 0; i < list.size(); i++) {

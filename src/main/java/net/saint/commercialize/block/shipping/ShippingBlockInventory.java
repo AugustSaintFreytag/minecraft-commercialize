@@ -30,8 +30,8 @@ public class ShippingBlockInventory implements Inventory {
 	public static final int[] MAIN_SLOTS = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	public static final int CARD_SLOT = 9;
 
-	public static final String MAIN_INVENTORY_NBT_KEY = "main";
-	public static final String CARD_INVENTORY_NBT_KEY = "card";
+	public static final String MAIN_INVENTORY_NBT_KEY = "Main";
+	public static final String CARD_INVENTORY_NBT_KEY = "Card";
 
 	// Properties
 

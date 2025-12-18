@@ -29,7 +29,7 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "shipping_block_entity");
 
-	public static final String INVENTORY_NBT_KEY = "items";
+	public static final String INVENTORY_NBT_KEY = "Items";
 
 	// Properties
 
@@ -89,16 +89,16 @@ public class ShippingBlockEntity extends BlockEntity implements ImplementedInven
 
 		ShippingExchangeTickingUtil.tickShippingIfNecessary(world, blockEntity, result -> {
 			switch (result) {
-				case SOLD:
-					world.playSound(null, blockEntity.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 0.7f, 0.75f);
-					world.playSound(null, blockEntity.getPos(), ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 0.7f, 0.75f);
-					break;
-				case NO_ITEMS:
-					// No feedback sound when not selling items.
-					break;
-				case FAILURE:
-					world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-					break;
+			case SOLD:
+				world.playSound(null, blockEntity.getPos(), ModSounds.SHIPPING_CLOSE_SOUND, SoundCategory.BLOCKS, 0.7f, 0.75f);
+				world.playSound(null, blockEntity.getPos(), ModSounds.MAILBOX_DELIVERY_SOUND, SoundCategory.BLOCKS, 0.7f, 0.75f);
+				break;
+			case NO_ITEMS:
+				// No feedback sound when not selling items.
+				break;
+			case FAILURE:
+				world.playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+				break;
 			}
 		});
 	}
