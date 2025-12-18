@@ -91,6 +91,10 @@ public final class ModCommands {
 					var numberOfOffers = Commercialize.MARKET_OFFER_MANAGER.size();
 
 					Commercialize.MARKET_OFFER_MANAGER.getOffers().forEach(offer -> {
+						if (offer == null) {
+							return;
+						}
+
 						MarketOfferTickingUtil.expireAndRemoveOffer(world, offer);
 					});
 
