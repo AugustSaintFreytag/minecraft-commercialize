@@ -21,6 +21,9 @@ public final class MarketAnalyticsManager extends PersistentState {
 
 	public static final String NAME = Commercialize.MOD_ID + "_analytics";
 
+	private static final String INTERVAL_REPORTS_NBT_KEY = "IntervalReports";
+	private static final String ALL_TIME_REPORTS_NBT_KEY = "AllTimeReports";
+
 	// Events
 
 	@FunctionalInterface
@@ -34,9 +37,10 @@ public final class MarketAnalyticsManager extends PersistentState {
 		}
 	});
 
-	// Properties
+	// State
 
-	private Map<UUID, MarketPlayerReport> reportsByPlayerId = new HashMap<>();
+	private Map<UUID, MarketPlayerReport> intervalReportsByPlayerId = new HashMap<>();
+	private Map<UUID, MarketPlayerReport> allTimeReportsByPlayerId = new HashMap<>();
 
 	// Load
 
@@ -50,35 +54,54 @@ public final class MarketAnalyticsManager extends PersistentState {
 	// NBT
 
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		var reportsNbt = new NbtCompound();
+		var intervalReportsNbt = encodeMapToNBT(intervalReportsByPlayerId);
+		var allTimeReportsNbt = encodeMapToNBT(allTimeReportsByPlayerId);
 
-		for (var entry : reportsByPlayerId.entrySet()) {
+		nbt.put(INTERVAL_REPORTS_NBT_KEY, intervalReportsNbt);
+		nbt.put(ALL_TIME_REPORTS_NBT_KEY, allTimeReportsNbt);
+
+		return nbt;
+	}
+
+	public static MarketAnalyticsManager fromNbt(NbtCompound nbt) {
+		var manager = new MarketAnalyticsManager();
+		var intervalReports = decodeMapFromNBT(nbt.getCompound(INTERVAL_REPORTS_NBT_KEY));
+		var allTimeReports = decodeMapFromNBT(nbt.getCompound(ALL_TIME_REPORTS_NBT_KEY));
+
+		manager.intervalReportsByPlayerId = intervalReports;
+		manager.allTimeReportsByPlayerId = allTimeReports;
+
+		return manager;
+	}
+
+	private static NbtCompound encodeMapToNBT(Map<UUID, MarketPlayerReport> map) {
+		var nbt = new NbtCompound();
+
+		for (var entry : map.entrySet()) {
 			var playerId = entry.getKey();
 			var report = entry.getValue();
 
 			var reportNbt = new NbtCompound();
 			report.writeNbt(reportNbt);
 
-			reportsNbt.put(playerId.toString(), reportNbt);
+			nbt.put(playerId.toString(), reportNbt);
 		}
 
-		nbt.put("reports", reportsNbt);
 		return nbt;
 	}
 
-	public static MarketAnalyticsManager fromNbt(NbtCompound nbt) {
-		var manager = new MarketAnalyticsManager();
-		var reportsNbt = nbt.getCompound("reports");
+	private static Map<UUID, MarketPlayerReport> decodeMapFromNBT(NbtCompound nbt) {
+		var map = new HashMap<UUID, MarketPlayerReport>();
 
-		for (String key : reportsNbt.getKeys()) {
+		for (String key : nbt.getKeys()) {
 			var playerId = UUID.fromString(key);
-			var reportNbt = reportsNbt.getCompound(key);
+			var reportNbt = nbt.getCompound(key);
 			var report = MarketPlayerReport.fromNbt(reportNbt);
 
-			manager.reportsByPlayerId.put(playerId, report);
+			map.put(playerId, report);
 		}
 
-		return manager;
+		return map;
 	}
 
 	// Invalidation
@@ -89,18 +112,18 @@ public final class MarketAnalyticsManager extends PersistentState {
 		STATE_MODIFIED.invoker().onStateModified(this);
 	}
 
-	// Access
+	// Access (Interval)
 
-	public List<MarketPlayerReport> getAllReports() {
-		return new ArrayList<>(reportsByPlayerId.values());
+	public List<MarketPlayerReport> getAllIntervalReports() {
+		return new ArrayList<>(intervalReportsByPlayerId.values());
 	}
 
-	public MarketPlayerReport getReportForPlayerId(UUID playerId) {
-		return reportsByPlayerId.get(playerId);
+	public MarketPlayerReport getIntervalReportForPlayerId(UUID playerId) {
+		return intervalReportsByPlayerId.get(playerId);
 	}
 
-	public MarketPlayerReport getOrCreateReportForProfile(GameProfile profile) {
-		return reportsByPlayerId.computeIfAbsent(profile.getId(), id -> {
+	public MarketPlayerReport getOrCreateIntervalReportForProfile(GameProfile profile) {
+		return intervalReportsByPlayerId.computeIfAbsent(profile.getId(), id -> {
 			var report = new MarketPlayerReport();
 
 			report.playerId = profile.getId();
@@ -110,8 +133,42 @@ public final class MarketAnalyticsManager extends PersistentState {
 		});
 	}
 
-	public void addReport(MarketPlayerReport report) {
-		reportsByPlayerId.put(report.playerId, report);
+	// Access (All-Time)
+
+	public List<MarketPlayerReport> getAllAllTimeReports() {
+		return new ArrayList<>(allTimeReportsByPlayerId.values());
+	}
+
+	public MarketPlayerReport getAllTimeReportForPlayerId(UUID playerId) {
+		return allTimeReportsByPlayerId.get(playerId);
+	}
+
+	public MarketPlayerReport getOrCreateAllTimeReportForProfile(GameProfile profile) {
+		return allTimeReportsByPlayerId.computeIfAbsent(profile.getId(), id -> {
+			var report = new MarketPlayerReport();
+
+			report.playerId = profile.getId();
+			report.playerName = profile.getName();
+
+			return report;
+		});
+	}
+
+	// Mutation
+
+	public void sealIntervalReportForProfile(GameProfile profile) {
+		// Add all values from current interval report to all-time report, then clear interval
+		// report.
+
+		var intervalReport = intervalReportsByPlayerId.get(profile.getId());
+
+		if (intervalReport == null) {
+			return;
+		}
+
+		var allTimeReport = getOrCreateAllTimeReportForProfile(profile);
+		allTimeReport.union(intervalReport);
+
 		markDirty();
 	}
 
