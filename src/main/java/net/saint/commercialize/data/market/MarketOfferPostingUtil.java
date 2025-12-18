@@ -153,7 +153,8 @@ public final class MarketOfferPostingUtil {
 	}
 
 	private static void writePostingToAnalytics(ServerPlayerEntity player, OfferDraft draft) {
-		MarketAnalyticsUtil.writeMarketPostingToAnalytics(player.getGameProfile(), draft);
+		// Posting is not currently logged.
+		// Only sales and expirations are logged to analytics.
 	}
 
 	private static boolean validateOfferDraft(OfferDraft draft) {
