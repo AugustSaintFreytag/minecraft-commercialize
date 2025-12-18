@@ -56,11 +56,8 @@ public final class MarketBlockServerNetworking {
 					onReceiveMarketDataRequest(server, player, responseSender, message);
 				});
 			} catch (Exception e) {
-				Commercialize.LOGGER.error(
-						"Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(),
-						e
-				);
+				Commercialize.LOGGER.error("Could not decode and forward market data request from player '{}'.",
+						player.getName().getString(), e);
 				return;
 			}
 		});
@@ -73,11 +70,8 @@ public final class MarketBlockServerNetworking {
 					onReceiveMarketOrderRequest(server, player, responseSender, message);
 				});
 			} catch (Exception e) {
-				Commercialize.LOGGER.error(
-						"Could not decode and forward market data request from player '{}'.",
-						player.getName().getString(),
-						e
-				);
+				Commercialize.LOGGER.error("Could not decode and forward market data request from player '{}'.",
+						player.getName().getString(), e);
 				return;
 			}
 		});
@@ -92,11 +86,8 @@ public final class MarketBlockServerNetworking {
 		var blockEntity = world.getBlockEntity(position);
 
 		if (!(blockEntity instanceof MarketBlockEntity)) {
-			Commercialize.LOGGER.error(
-					"Could not resolve market block entity at position {}, invalid type '{}'.",
-					position,
-					blockEntity.getClass().getName()
-			);
+			Commercialize.LOGGER.error("Could not resolve market block entity at position {}, invalid type '{}'.", position,
+					blockEntity.getClass().getName());
 			return;
 		}
 
@@ -111,30 +102,30 @@ public final class MarketBlockServerNetworking {
 		var world = player.getWorld();
 
 		switch (reason) {
-			case INTERACTION_START: {
-				world.playSound(null, position, ModSounds.MARKET_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
-				var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
+		case INTERACTION_START: {
+			world.playSound(null, position, ModSounds.MARKET_OPEN_SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
 
-				if (playerHoldsPaymentCard) {
-					world.playSound(null, position, ModSounds.CARD_INSERT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
-				}
-
-				break;
+			if (playerHoldsPaymentCard) {
+				world.playSound(null, position, ModSounds.CARD_INSERT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
 			}
-			case INTERACTION_END: {
-				world.playSound(null, position, ModSounds.MARKET_CLOSE_SOUND, SoundCategory.BLOCKS, 0.5f, 1.0f);
 
-				var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
+			break;
+		}
+		case INTERACTION_END: {
+			world.playSound(null, position, ModSounds.MARKET_CLOSE_SOUND, SoundCategory.BLOCKS, 0.5f, 1.0f);
 
-				if (playerHoldsPaymentCard) {
-					world.playSound(null, position, ModSounds.CARD_EJECT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
-				}
+			var playerHoldsPaymentCard = BankAccountAccessUtil.isPaymentCard(player.getMainHandStack());
 
-				break;
+			if (playerHoldsPaymentCard) {
+				world.playSound(null, position, ModSounds.CARD_EJECT_SOUND, SoundCategory.BLOCKS, 0.75f, 1.0f);
 			}
-			default: {
-				break;
-			}
+
+			break;
+		}
+		default: {
+			break;
+		}
 		}
 	}
 
@@ -193,8 +184,7 @@ public final class MarketBlockServerNetworking {
 		if (Commercialize.CONFIG.requireCardForMarketPayment && message.paymentMethod == PaymentMethod.ACCOUNT) {
 			Commercialize.LOGGER.warn(
 					"Player '{}' tried to order offers with payment method 'ACCOUNT' while configuration forbids direct-from-account payment.",
-					player.getName().getString()
-			);
+					player.getName().getString());
 			handleMarketOrderResponse(player, message.position, offers, 0, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 
@@ -207,16 +197,10 @@ public final class MarketBlockServerNetworking {
 			if (!cardOwner.equals(player.getName().getString())) {
 				Commercialize.LOGGER.warn(
 						"Player '{}' tried to order offers with a payment card belonging to '{}' but configuration forbids foreign card payment.",
-						player.getName().getString(),
-						cardOwner
-				);
+						player.getName().getString(), cardOwner);
 				handleMarketOrderResponse(player, message.position, offers, 0, MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
-				sendMarketOrderResponse(
-						responseSender,
-						message.position,
-						message.offers,
-						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD
-				);
+				sendMarketOrderResponse(responseSender, message.position, message.offers,
+						MarketS2COrderMessage.Result.INVIABLE_PAYMENT_METHOD);
 
 				return;
 			}
@@ -226,12 +210,8 @@ public final class MarketBlockServerNetworking {
 		var balance = balanceForPlayerAndPaymentMethod(player, message.paymentMethod);
 
 		if (offerTotal > balance) {
-			Commercialize.LOGGER.warn(
-					"Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
-					player.getName().getString(),
-					offerTotal,
-					balance
-			);
+			Commercialize.LOGGER.warn("Player '{}' tried to order offers for total price of '{}' ¤ but only has '{}' ¤ in inventory.",
+					player.getName().getString(), offerTotal, balance);
 			handleMarketOrderResponse(player, message.position, offers, offerTotal, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 			sendMarketOrderResponse(responseSender, message.position, message.offers, MarketS2COrderMessage.Result.INSUFFICIENT_FUNDS);
 
@@ -268,30 +248,30 @@ public final class MarketBlockServerNetworking {
 		var world = player.getWorld();
 
 		switch (result) {
-			case INSUFFICIENT_FUNDS: {
-				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
-			}
-			case INVIABLE_DELIVERY: {
-				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
-			}
-			case INVIABLE_OFFERS: {
-				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
-			}
-			case INVIABLE_PAYMENT_METHOD: {
-				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
-			}
-			case FAILURE: {
-				world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
-				break;
-			}
-			case SUCCESS: {
-				world.playSound(null, position, ModSounds.ORDER_CONFIRM_SOUND, SoundCategory.BLOCKS, 1f, 1f);
-				break;
-			}
+		case INSUFFICIENT_FUNDS: {
+			world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+			break;
+		}
+		case INVIABLE_DELIVERY: {
+			world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+			break;
+		}
+		case INVIABLE_OFFERS: {
+			world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+			break;
+		}
+		case INVIABLE_PAYMENT_METHOD: {
+			world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+			break;
+		}
+		case FAILURE: {
+			world.playSound(null, position, SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), SoundCategory.BLOCKS, 1f, 0.5f);
+			break;
+		}
+		case SUCCESS: {
+			world.playSound(null, position, ModSounds.ORDER_CONFIRM_SOUND, SoundCategory.BLOCKS, 1f, 1f);
+			break;
+		}
 		}
 	}
 
@@ -312,7 +292,8 @@ public final class MarketBlockServerNetworking {
 	// Actions
 
 	private static boolean dispatchOffersToPlayer(MinecraftServer server, ServerPlayerEntity player, List<Offer> offers) {
-		var playerCanReceiveDeliveries = MailSystemAccessUtil.getMailboxForPlayer(server, player) != null;
+		var profile = player.getGameProfile();
+		var playerCanReceiveDeliveries = MailSystemAccessUtil.getMailboxForPlayerId(server, profile) != null;
 
 		if (!playerCanReceiveDeliveries) {
 			return false;
@@ -375,16 +356,16 @@ public final class MarketBlockServerNetworking {
 
 	private static int balanceForPlayerAndPaymentMethod(ServerPlayerEntity player, PaymentMethod paymentMethod) {
 		switch (paymentMethod) {
-			case INVENTORY:
-				return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
-			case ACCOUNT:
-				return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player.getUuid());
-			case SPECIFIED_ACCOUNT:
-				var heldItemStack = player.getMainHandStack();
-				return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
-			default:
-				Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
-				return 0;
+		case INVENTORY:
+			return InventoryCashUtil.getCurrencyValueInAnyInventoriesForPlayer(player);
+		case ACCOUNT:
+			return BankAccountAccessUtil.getBankAccountBalanceForPlayer(player.getUuid());
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			return BankAccountAccessUtil.getBankAccountBalanceForCard(heldItemStack);
+		default:
+			Commercialize.LOGGER.error("Requested player balance with invalid payment method '{}'.", paymentMethod);
+			return 0;
 		}
 	}
 
@@ -401,19 +382,19 @@ public final class MarketBlockServerNetworking {
 
 	private static void deductAmountFromPlayerBalance(ServerPlayerEntity player, PaymentMethod paymentMethod, int amount) {
 		switch (paymentMethod) {
-			case INVENTORY:
-				var remainingAmount = InventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
-				InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
-				break;
-			case ACCOUNT:
-				BankAccountAccessUtil.deductAccountBalanceForPlayer(player.getUuid(), amount);
-				break;
-			case SPECIFIED_ACCOUNT:
-				var heldItemStack = player.getMainHandStack();
-				BankAccountAccessUtil.deductAccountBalanceForCard(heldItemStack, amount);
-				break;
-			default:
-				Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
+		case INVENTORY:
+			var remainingAmount = InventoryCashUtil.removeCurrencyFromInventory(player.getInventory(), amount);
+			InventoryCashUtil.addCurrencyToAnyInventoriesForPlayer(player, -remainingAmount);
+			break;
+		case ACCOUNT:
+			BankAccountAccessUtil.deductAccountBalanceForPlayer(player.getUuid(), amount);
+			break;
+		case SPECIFIED_ACCOUNT:
+			var heldItemStack = player.getMainHandStack();
+			BankAccountAccessUtil.deductAccountBalanceForCard(heldItemStack, amount);
+			break;
+		default:
+			Commercialize.LOGGER.error("Requested transactional deduction with invalid payment method '{}'.", paymentMethod);
 		}
 	}
 
@@ -427,24 +408,14 @@ public final class MarketBlockServerNetworking {
 			var sellerProfile = PlayerProfileAccessUtil.getPlayerProfileById(server, offer.sellerId);
 
 			if (sellerProfile == null) {
-				Commercialize.LOGGER.error(
-						"Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
-						offer.sellerName,
-						offer.sellerId,
-						offer.price,
-						offer.id
-				);
+				Commercialize.LOGGER.error("Could not find player '{}' ({}) to pay out owed offer amount of {} ¤ after sale of offer '{}'.",
+						offer.sellerName, offer.sellerId, offer.price, offer.id);
 				continue;
 			}
 
 			BankAccountAccessUtil.depositAccountBalanceForPlayer(offer.sellerId, offer.price);
-			Commercialize.LOGGER.info(
-					"Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.",
-					offer.sellerName,
-					offer.sellerId,
-					offer.price,
-					offer.id
-			);
+			Commercialize.LOGGER.info("Paid player '{}' ({}) an amount of {} ¤ for sale of offer '{}'.", offer.sellerName, offer.sellerId,
+					offer.price, offer.id);
 		}
 	}
 
