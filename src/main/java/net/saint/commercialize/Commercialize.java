@@ -2,9 +2,6 @@ package net.saint.commercialize;
 
 import java.nio.file.Path;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -37,6 +34,7 @@ import net.saint.commercialize.init.ModItems;
 import net.saint.commercialize.init.ModScreenHandlers;
 import net.saint.commercialize.init.ModServerNetworking;
 import net.saint.commercialize.init.ModSounds;
+import net.saint.commercialize.util.Logger;
 
 public class Commercialize implements ModInitializer {
 
@@ -47,7 +45,7 @@ public class Commercialize implements ModInitializer {
 
 	// References
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
+	public static final Logger LOGGER = Logger.create(MOD_NAME);
 
 	public static CommercializeConfig CONFIG;
 
