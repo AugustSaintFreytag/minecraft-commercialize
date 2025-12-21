@@ -9,7 +9,6 @@ import net.minecraft.text.Text;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.item.AbbreviatableItemDescriptionUtil;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
-import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.data.text.TimePreset;
 import net.saint.commercialize.gui.common.SelectDropdownComponent;
@@ -63,12 +62,7 @@ public final class PostingScreenUtil {
 				TimePreset.fiveDays(), TimePreset.oneWeek(), TimePreset.twoWeeks() };
 
 		for (var preset : presets) {
-			options.add(
-					new SelectDropdownComponent.Option<Long>(
-							preset,
-							TextFormattingUtil.capitalizedString(TimeFormattingUtil.formattedTime(preset).getString())
-					)
-			);
+			options.add(new SelectDropdownComponent.Option<Long>(preset, TimeFormattingUtil.formattedTime(preset).getString()));
 		}
 
 		return options;
@@ -77,19 +71,11 @@ public final class PostingScreenUtil {
 	public static List<SelectDropdownComponent.Option<OfferPostStrategy>> offerPostAsDropdownOptions() {
 		var options = new ArrayList<SelectDropdownComponent.Option<OfferPostStrategy>>();
 
-		options.add(
-				new SelectDropdownComponent.Option<OfferPostStrategy>(
-						OfferPostStrategy.AS_STACK,
-						LocalizationUtil.localizedString("gui", "posting.post_as.stack")
-				)
-		);
+		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_STACK,
+				LocalizationUtil.localizedString("gui", "posting.post_as.stack")));
 
-		options.add(
-				new SelectDropdownComponent.Option<OfferPostStrategy>(
-						OfferPostStrategy.AS_ITEMS,
-						LocalizationUtil.localizedString("gui", "posting.post_as.items")
-				)
-		);
+		options.add(new SelectDropdownComponent.Option<OfferPostStrategy>(OfferPostStrategy.AS_ITEMS,
+				LocalizationUtil.localizedString("gui", "posting.post_as.items")));
 
 		return options;
 	}
