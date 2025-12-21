@@ -73,12 +73,13 @@ public final class MarketOfferPostingUtil {
 
 	private static List<Offer> makeBatchOffersFromDraft(ServerPlayerEntity player, OfferDraft draft) {
 		var offers = new ArrayList<Offer>();
+		var feesPerItem = draft.fees() / draft.stack().getCount();
 
 		for (int i = 0; i < draft.stack().getCount(); i++) {
 			var singleStack = new ItemStack(draft.stack().getItem(), 1);
 			singleStack.setNbt(draft.stack().getOrCreateNbt().copy());
 
-			var singleDraft = new OfferDraft(singleStack, draft.price(), draft.duration(), draft.strategy(), 0);
+			var singleDraft = new OfferDraft(singleStack, draft.price(), draft.duration(), draft.strategy(), feesPerItem);
 			var offer = makeIndividualOfferFromDraft(player, singleDraft);
 
 			offers.add(offer);
