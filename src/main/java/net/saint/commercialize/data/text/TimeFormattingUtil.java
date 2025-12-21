@@ -8,7 +8,6 @@ public final class TimeFormattingUtil {
 	public static Text formattedTime(long tickCount) {
 		var totalNumberOfHours = tickCount / (double) TimePreset.oneHour();
 
-		// Fractional Hours
 		if (totalNumberOfHours < 0.15) {
 			return LocalizationUtil.localizedText("text", "time.short.moment");
 		}

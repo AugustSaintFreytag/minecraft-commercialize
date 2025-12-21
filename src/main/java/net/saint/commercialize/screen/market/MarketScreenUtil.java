@@ -16,7 +16,6 @@ import net.saint.commercialize.data.offer.OfferSortOrder;
 import net.saint.commercialize.data.payment.PaymentMethod;
 import net.saint.commercialize.data.text.CurrencyFormattingUtil;
 import net.saint.commercialize.data.text.ItemDescriptionUtil;
-import net.saint.commercialize.data.text.TextFormattingUtil;
 import net.saint.commercialize.data.text.TimeFormattingUtil;
 import net.saint.commercialize.library.TextureReference;
 import net.saint.commercialize.screen.icons.ScreenAssets;
@@ -29,10 +28,10 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortMode(OfferSortMode sortMode) {
 		return switch (sortMode) {
-			case ITEM_NAME -> ScreenAssets.SORT_BY_NAME_ICON;
-			case TIME_POSTED -> ScreenAssets.SORT_BY_TIME_ICON;
-			case PRICE -> ScreenAssets.SORT_BY_PRICE_ICON;
-			case PLAYER_NAME -> ScreenAssets.SORT_BY_PLAYER_ICON;
+		case ITEM_NAME -> ScreenAssets.SORT_BY_NAME_ICON;
+		case TIME_POSTED -> ScreenAssets.SORT_BY_TIME_ICON;
+		case PRICE -> ScreenAssets.SORT_BY_PRICE_ICON;
+		case PLAYER_NAME -> ScreenAssets.SORT_BY_PLAYER_ICON;
 		};
 	}
 
@@ -48,8 +47,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForFilterMode(OfferFilterMode filterMode) {
 		return switch (filterMode) {
-			case AFFORDABLE -> ScreenAssets.FILTER_BY_PRICE_ICON;
-			case ALL -> ScreenAssets.FILTER_BY_ALL_ICON;
+		case AFFORDABLE -> ScreenAssets.FILTER_BY_PRICE_ICON;
+		case ALL -> ScreenAssets.FILTER_BY_ALL_ICON;
 		};
 	}
 
@@ -64,8 +63,8 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForSortOrder(OfferSortOrder sortOrder) {
 		return switch (sortOrder) {
-			case ASCENDING -> ScreenAssets.SORT_ASCENDING_ICON;
-			case DESCENDING -> ScreenAssets.SORT_DESCENDING_ICON;
+		case ASCENDING -> ScreenAssets.SORT_ASCENDING_ICON;
+		case DESCENDING -> ScreenAssets.SORT_DESCENDING_ICON;
 		};
 	}
 
@@ -73,40 +72,40 @@ public final class MarketScreenUtil {
 
 	public static TextureReference textureForPaymentMethod(PaymentMethod paymentMethod) {
 		return switch (paymentMethod) {
-			case INVENTORY -> ScreenAssets.WALLET_ICON;
-			case ACCOUNT -> ScreenAssets.CARD_ICON;
-			case SPECIFIED_ACCOUNT -> ScreenAssets.SPECIFIED_CARD_ICON;
+		case INVENTORY -> ScreenAssets.WALLET_ICON;
+		case ACCOUNT -> ScreenAssets.CARD_ICON;
+		case SPECIFIED_ACCOUNT -> ScreenAssets.SPECIFIED_CARD_ICON;
 		};
 	}
 
 	public static Text labelTextForBalance(PaymentMethod paymentMethod) {
 		return switch (paymentMethod) {
-			case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash");
-			case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
-			case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
-			default -> Text.of("...");
+		case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash");
+		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
+		case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account");
+		default -> Text.of("...");
 		};
 	}
 
 	public static Text tooltipTextForBalance(PaymentMethod paymentMethod, String ownerName) {
 		return switch (paymentMethod) {
-			case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash.tooltip");
-			case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account.tooltip");
-			case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.specified_account.tooltip", ownerName);
-			default -> Text.of("...");
+		case INVENTORY -> LocalizationUtil.localizedText("gui", "market.cash.tooltip");
+		case ACCOUNT -> LocalizationUtil.localizedText("gui", "market.account.tooltip");
+		case SPECIFIED_ACCOUNT -> LocalizationUtil.localizedText("gui", "market.specified_account.tooltip", ownerName);
+		default -> Text.of("...");
 		};
 	}
 
 	public static Text tooltipTextForPaymentMethod(PaymentMethod paymentMethod, String ownerName) {
 		switch (paymentMethod) {
-			case INVENTORY:
-				return LocalizationUtil.localizedText("gui", "market.payment_mode.inventory.tooltip");
-			case ACCOUNT:
-				return LocalizationUtil.localizedText("gui", "market.payment_mode.account.tooltip");
-			case SPECIFIED_ACCOUNT:
-				return LocalizationUtil.localizedText("gui", "market.payment_mode.specified_account.tooltip", ownerName);
-			default:
-				return Text.empty();
+		case INVENTORY:
+			return LocalizationUtil.localizedText("gui", "market.payment_mode.inventory.tooltip");
+		case ACCOUNT:
+			return LocalizationUtil.localizedText("gui", "market.payment_mode.account.tooltip");
+		case SPECIFIED_ACCOUNT:
+			return LocalizationUtil.localizedText("gui", "market.payment_mode.specified_account.tooltip", ownerName);
+		default:
+			return Text.empty();
 		}
 	}
 
@@ -147,13 +146,8 @@ public final class MarketScreenUtil {
 		if (offer.stack.getCount() > 1) {
 			// If the item stack has more than one item, show the per-item price breakdown
 			var perItemLabel = Text
-					.literal(
-							" " + LocalizationUtil.localizedString(
-									"text",
-									"offer.tooltip.price_breakdown",
-									CurrencyFormattingUtil.currencyString(offer.price / offer.stack.getCount())
-							)
-					)
+					.literal(" " + LocalizationUtil.localizedString("text", "offer.tooltip.price_breakdown",
+							CurrencyFormattingUtil.currencyString(offer.price / offer.stack.getCount())))
 					.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x989280)));
 			priceLine = priceLine.append(perItemLabel);
 		}
@@ -173,11 +167,7 @@ public final class MarketScreenUtil {
 
 		// Posted
 		var rawPosted = TimeFormattingUtil.formattedTime(elapsedTicks);
-		var postedFormattedText = LocalizationUtil.localizedText(
-				"text",
-				"offer.tooltip.time_posted_format",
-				TextFormattingUtil.capitalizedString(rawPosted.getString())
-		);
+		var postedFormattedText = LocalizationUtil.localizedText("text", "offer.tooltip.time_posted_format", rawPosted.getString());
 		var postedLabel = Text.literal(LocalizationUtil.localizedString("text", "offer.tooltip.time_posted") + ": ")
 				.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
 		var postedValue = postedFormattedText.copy().setStyle(Style.EMPTY.withColor(Formatting.GRAY));

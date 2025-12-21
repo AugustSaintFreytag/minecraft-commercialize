@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.saint.commercialize.Commercialize;
 import net.saint.commercialize.data.bank.BankAccountAccessUtil;
@@ -164,12 +165,11 @@ public final class MarketOfferTickingUtil {
 			return 1.0;
 		}
 
-		// Divergence moves from 1.0 up to 1.5 and sale should start at 100% and become
-		// less likely.
-		var clampedDivergence = Math.min(offerValueDivergence, Commercialize.CONFIG.offerSaleGenerationMaxPriceFactor);
-		var saleChance = 1.0 - (clampedDivergence - 1.0) / 0.5;
+		// (1 - (1.0/1.5)) * 2
+		var rawSaleChance = (1.0 - (offerValueDivergence / Commercialize.CONFIG.offerSaleGenerationMaxPriceFactor)) * 2.0;
+		var clampedSaleChance = MathHelper.clamp(rawSaleChance, 0.0, 1.0);
 
-		return saleChance;
+		return clampedSaleChance;
 	}
 
 	private static double getOfferTemplatePriceFactorForStack(ItemStack stack) {

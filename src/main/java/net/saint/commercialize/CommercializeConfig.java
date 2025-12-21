@@ -60,8 +60,8 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The interval in ticks at which new offers are attempted to be generated. (Default: 2,000 ticks)")
-	public int offerGenerationTickInterval = 2_000;
+	@Comment("The interval in ticks at which new offers are attempted to be generated. (Default: 600 ticks)")
+	public int offerGenerationTickInterval = 600;
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
@@ -80,23 +80,18 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The default duration of generated market offers in ticks. (Default: 96,000 ticks = 4 days)")
-	public int offerDuration = 96_000;
-
-	@ConfigEntry.Category("simulation")
-	@ConfigEntry.Gui.Tooltip
 	@Comment("Allow generated and player-created offers to be purchased by simulated players. (Default: false)")
 	public boolean generateOfferSales = false;
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The chance that a simulated offer sale occurs during an offer tick. (Default: 0.02 = 2%)")
-	public double offerSaleGenerationChance = 0.02;
+	@Comment("The chance that a simulated offer sale occurs during an offer tick. (Default: 0.025 = 2.5%)")
+	public double offerSaleGenerationChance = 0.025;
 
 	@ConfigEntry.Category("simulation")
 	@ConfigEntry.Gui.Tooltip
-	@Comment("The highest acceptable price factor for a simulated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.5)")
-	public double offerSaleGenerationMaxPriceFactor = 1.5;
+	@Comment("The highest acceptable price factor for a simulated offer sale compared to to its intrinsic value. Sale chance declines the higher the price divergence. (Default: 1.25)")
+	public double offerSaleGenerationMaxPriceFactor = 1.25;
 
 	// Payment
 
