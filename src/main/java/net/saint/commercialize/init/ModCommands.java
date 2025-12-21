@@ -19,6 +19,7 @@ import net.saint.commercialize.data.market.MarketAnalyticsUtil;
 import net.saint.commercialize.data.market.MarketOfferTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil;
 import net.saint.commercialize.data.shipping.ShippingExchangeTickingUtil.ShippingTickResult;
+import net.saint.commercialize.data.text.NumericFormattingUtil;
 import net.saint.commercialize.util.WorldUtil;
 
 public final class ModCommands {
@@ -70,11 +71,30 @@ public final class ModCommands {
 
 				// Offers
 
+				.then(literal("queryActiveOffers").then(argument("player", EntityArgumentType.player())).executes(context -> {
+					var player = EntityArgumentType.getPlayer(context, "player");
+					var playerName = player.getName().getString();
+					var activeOfferCount = (int) Commercialize.MARKET_OFFER_MANAGER.getOffers()
+							.filter(offer -> offer.isActive && !offer.isGenerated && offer.sellerId.equals(player.getUuid())).count();
+
+					context.getSource()
+							.sendFeedback(
+									() -> Text.literal("Player " + playerName + " currently has "
+											+ NumericFormattingUtil.formatNumber(activeOfferCount) + " active offer(s) on the market."),
+									false);
+
+					return activeOfferCount;
+				}))
+
 				.then(literal("clearOffers").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					var world = context.getSource().getWorld();
 					var numberOfOffers = Commercialize.MARKET_OFFER_MANAGER.size();
 
 					Commercialize.MARKET_OFFER_MANAGER.getOffers().forEach(offer -> {
+						if (offer == null) {
+							return;
+						}
+
 						MarketOfferTickingUtil.expireAndRemoveOffer(world, offer);
 					});
 

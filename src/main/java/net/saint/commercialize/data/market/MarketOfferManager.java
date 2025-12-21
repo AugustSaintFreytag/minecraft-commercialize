@@ -23,6 +23,8 @@ public final class MarketOfferManager extends PersistentState {
 
 	public static final String NAME = Commercialize.MOD_ID + "_market";
 
+	private static final String OFFERS_NBT_KEY = "Offers";
+
 	// Events
 
 	@FunctionalInterface
@@ -60,14 +62,14 @@ public final class MarketOfferManager extends PersistentState {
 			list.add(offerNbt);
 		}
 
-		nbt.put("offers", list);
+		nbt.put(OFFERS_NBT_KEY, list);
 		return nbt;
 	}
 
 	public static MarketOfferManager fromNbt(NbtCompound nbt) {
 		var collection = new MarketOfferManager();
 
-		var list = nbt.getList("offers", 10); // 10 = NbtCompound
+		var list = nbt.getList(OFFERS_NBT_KEY, 10); // 10 = NbtCompound
 
 		for (int i = 0; i < list.size(); i++) {
 			var offerNbt = list.getCompound(i);

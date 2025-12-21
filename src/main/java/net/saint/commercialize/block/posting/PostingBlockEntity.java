@@ -28,8 +28,8 @@ public class PostingBlockEntity extends BlockEntity implements ImplementedInvent
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "posting_block_entity");
 
-	public static final String INVENTORY_NBT_KEY = "inventory";
-	public static final String STATE_NBT_KEY = "posting_screen_state";
+	public static final String INVENTORY_NBT_KEY = "Inventory";
+	public static final String STATE_NBT_KEY = "PostingScreenState";
 
 	// Properties
 
@@ -66,6 +66,7 @@ public class PostingBlockEntity extends BlockEntity implements ImplementedInvent
 	public void writeNbt(NbtCompound nbt) {
 		var inventoryNbtList = new NbtList();
 		var itemStackNbtCompound = this.inventory.getStack(0).writeNbt(new NbtCompound());
+
 		inventoryNbtList.add(itemStackNbtCompound);
 		nbt.put(INVENTORY_NBT_KEY, inventoryNbtList);
 

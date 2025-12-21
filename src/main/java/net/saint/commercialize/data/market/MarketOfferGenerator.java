@@ -67,6 +67,7 @@ public final class MarketOfferGenerator {
 		offer.duration = Commercialize.CONFIG.offerDuration;
 		offer.stack = itemStack;
 		offer.price = price;
+		offer.fees = 0;
 
 		return Optional.of(offer);
 	}
@@ -85,8 +86,10 @@ public final class MarketOfferGenerator {
 	public static void pregenerateNames() {
 		playerPool.clear();
 
+		var numberOfGeneratedPlayers = Math.max(1, (int) Math.ceil(Commercialize.CONFIG.offerBatchSize / 2));
+
 		// Generate a pool of random player names to use for offers
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < numberOfGeneratedPlayers; i++) {
 			var name = RandomPlayerNameUtil.randomPlayerName(random);
 			playerPool.add(name);
 		}

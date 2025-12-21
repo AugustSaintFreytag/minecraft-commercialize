@@ -30,9 +30,9 @@ public final class MarketPlayerUtil {
 		return playerProfile.getName();
 	}
 
-	// Player Id
+	// Player Entity
 
-	public static ServerPlayerEntity getPlayerEntityForId(MinecraftServer server, UUID playerId) {
+	public static ServerPlayerEntity getOnlinePlayerEntityForId(MinecraftServer server, UUID playerId) {
 		if (playerId == null) {
 			return null;
 		}

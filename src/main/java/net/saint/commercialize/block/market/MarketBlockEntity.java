@@ -30,6 +30,12 @@ public class MarketBlockEntity extends BlockEntity {
 
 	public static final Identifier ID = new Identifier(Commercialize.MOD_ID, "market_block_entity");
 
+	private static final String SEARCH_TERM_NBT_KEY = "SearchTerm";
+	private static final String SORT_MODE_NBT_KEY = "SortMode";
+	private static final String SORT_ORDER_NBT_KEY = "SortOrder";
+	private static final String FILTER_MODE_NBT_KEY = "FilterMode";
+	private static final String PAYMENT_METHOD_NBT_KEY = "PaymentMethod";
+
 	// Properties
 
 	private MarketScreenState state = new MarketScreenState();
@@ -59,20 +65,20 @@ public class MarketBlockEntity extends BlockEntity {
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 
-		state.searchTerm = nbt.getString("searchTerm");
-		state.sortMode = returnIfPresentAsString(nbt, "sortMode", value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
-		state.sortOrder = returnIfPresentAsString(nbt, "sortOrder", OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
-		state.filterMode = returnIfPresentAsString(nbt, "filterMode", OfferFilterMode::valueOf, OfferFilterMode.ALL);
-		state.paymentMethod = returnIfPresentAsString(nbt, "paymentMethod", PaymentMethod::valueOf, PaymentMethod.INVENTORY);
+		state.searchTerm = nbt.getString(SEARCH_TERM_NBT_KEY);
+		state.sortMode = returnIfPresentAsString(nbt, SORT_MODE_NBT_KEY, value -> OfferSortMode.valueOf(value), OfferSortMode.ITEM_NAME);
+		state.sortOrder = returnIfPresentAsString(nbt, SORT_ORDER_NBT_KEY, OfferSortOrder::valueOf, OfferSortOrder.ASCENDING);
+		state.filterMode = returnIfPresentAsString(nbt, FILTER_MODE_NBT_KEY, OfferFilterMode::valueOf, OfferFilterMode.ALL);
+		state.paymentMethod = returnIfPresentAsString(nbt, PAYMENT_METHOD_NBT_KEY, PaymentMethod::valueOf, PaymentMethod.INVENTORY);
 	}
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
-		nbt.putString("searchTerm", state.searchTerm);
-		nbt.putString("sortMode", state.sortMode.name());
-		nbt.putString("sortOrder", state.sortOrder.name());
-		nbt.putString("filterMode", state.filterMode.name());
-		nbt.putString("paymentMethod", state.paymentMethod.name());
+		nbt.putString(SEARCH_TERM_NBT_KEY, state.searchTerm);
+		nbt.putString(SORT_MODE_NBT_KEY, state.sortMode.name());
+		nbt.putString(SORT_ORDER_NBT_KEY, state.sortOrder.name());
+		nbt.putString(FILTER_MODE_NBT_KEY, state.filterMode.name());
+		nbt.putString(PAYMENT_METHOD_NBT_KEY, state.paymentMethod.name());
 
 		super.writeNbt(nbt);
 	}

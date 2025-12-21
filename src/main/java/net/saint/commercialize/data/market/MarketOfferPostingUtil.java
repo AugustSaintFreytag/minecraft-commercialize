@@ -61,13 +61,13 @@ public final class MarketOfferPostingUtil {
 
 	private static List<Offer> makeOffersFromDraft(ServerPlayerEntity player, OfferDraft draft) {
 		switch (draft.strategy()) {
-			case AS_STACK:
-				return List.of(makeIndividualOfferFromDraft(player, draft));
-			case AS_ITEMS:
-				return makeBatchOffersFromDraft(player, draft);
-			default:
-				Commercialize.LOGGER.error("Can not make offers for market posting with invalid posting strategy '{}'.", draft.strategy());
-				return List.of();
+		case AS_STACK:
+			return List.of(makeIndividualOfferFromDraft(player, draft));
+		case AS_ITEMS:
+			return makeBatchOffersFromDraft(player, draft);
+		default:
+			Commercialize.LOGGER.error("Can not make offers for market posting with invalid posting strategy '{}'.", draft.strategy());
+			return List.of();
 		}
 	}
 
@@ -104,6 +104,7 @@ public final class MarketOfferPostingUtil {
 
 		offer.stack = draft.stack();
 		offer.price = draft.price();
+		offer.fees = draft.fees();
 
 		return offer;
 	}
@@ -152,7 +153,8 @@ public final class MarketOfferPostingUtil {
 	}
 
 	private static void writePostingToAnalytics(ServerPlayerEntity player, OfferDraft draft) {
-		MarketAnalyticsUtil.writeMarketPostingToAnalytics(player.getGameProfile(), draft);
+		// Posting is not currently logged.
+		// Only sales and expirations are logged to analytics.
 	}
 
 	private static boolean validateOfferDraft(OfferDraft draft) {
@@ -160,8 +162,8 @@ public final class MarketOfferPostingUtil {
 			var isDurationValid = draft.duration() > 0 && draft.duration() <= TimePreset.twoWeeks();
 			var isPriceValid = draft.price() > 0 && draft.price() < Integer.MAX_VALUE;
 
-			var calculatedFees = MarketPostingFeeUtils
-					.calculatePostingFees(draft.stack(), draft.price(), draft.duration(), draft.strategy());
+			var calculatedFees = MarketPostingFeeUtils.calculatePostingFees(draft.stack(), draft.price(), draft.duration(),
+					draft.strategy());
 			var areFeesValid = draft.fees() == calculatedFees;
 
 			return isDurationValid && isPriceValid && areFeesValid;
