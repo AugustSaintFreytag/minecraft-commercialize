@@ -17,6 +17,8 @@ import net.saint.commercialize.data.common.StackSizeRange;
 import net.saint.commercialize.data.offer.Offer;
 import net.saint.commercialize.data.offer.OfferTemplate;
 import net.saint.commercialize.data.player.RandomPlayerNameUtil;
+import net.saint.commercialize.data.text.TimePreset;
+import net.saint.commercialize.util.RandomUtil;
 
 public final class MarketOfferGenerator {
 
@@ -64,7 +66,7 @@ public final class MarketOfferGenerator {
 		offer.sellerId = sellerId;
 		offer.sellerName = sellerName;
 		offer.timestamp = world.getTimeOfDay();
-		offer.duration = Commercialize.CONFIG.offerDuration;
+		offer.duration = getOfferDurationForOffer(random, offerTemplate);
 		offer.stack = itemStack;
 		offer.price = price;
 		offer.fees = 0;
@@ -142,6 +144,25 @@ public final class MarketOfferGenerator {
 			}
 		} else {
 			return value; // For values below 10, return as is
+		}
+	}
+
+	// Duration
+
+	private static long getOfferDurationForOffer(Random random, OfferTemplate offerTemplate) {
+		switch (offerTemplate.availability) {
+		case EXTREMELY_COMMON:
+		case VERY_COMMON:
+		case COMMON:
+			return RandomUtil.getFromArray(random, new Long[] { TimePreset.oneDay(), TimePreset.threeDays(), TimePreset.fiveDays() });
+		case UNCOMMON:
+		case RARE:
+		case VERY_RARE:
+			return RandomUtil.getFromArray(random, new Long[] { TimePreset.threeDays(), TimePreset.fiveDays() });
+		case EXTREMELY_RARE:
+			return RandomUtil.getFromArray(random, new Long[] { TimePreset.threeDays(), TimePreset.fiveDays(), TimePreset.oneWeek() });
+		default:
+			return TimePreset.oneDay();
 		}
 	}
 
