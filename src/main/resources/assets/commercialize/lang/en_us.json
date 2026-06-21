@@ -48,6 +48,8 @@
 	"text.autoconfig.commercialize.category.reports": "Reports",
 	"text.autoconfig.commercialize.category.gui": "User Interface",
 	"text.autoconfig.commercialize.category.debug": "Debug",
+	"text.autoconfig.commercialize.option.enableLogging": "Enable Logging",
+	"text.autoconfig.commercialize.option.enableLogging.@Tooltip": "Enable Commercialize log output. (Default: true)",
 	"text.autoconfig.commercialize.option.generateOffers": "Generate Offers",
 	"text.autoconfig.commercialize.option.requireCardForMarketPayment": "Require Card for Market Payment",
 	"text.autoconfig.commercialize.option.requireCardForMarketPayment.@Tooltip": "Forces the player to have a bound payment card in their inventory for paying from account in the market. (Default: true)",
