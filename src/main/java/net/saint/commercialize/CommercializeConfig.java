@@ -185,6 +185,11 @@ public final class CommercializeConfig implements ConfigData {
 
 	@ConfigEntry.Category("debug")
 	@ConfigEntry.Gui.Tooltip
+	@Comment("Enable Commercialize log output. (Default: true)")
+	public boolean enableLogging = true;
+
+	@ConfigEntry.Category("debug")
+	@ConfigEntry.Gui.Tooltip
 	@Comment("Write stats on registered, discovered, and unknown item and fluid values when processing configs. (Default: false)")
 	public boolean writeValueDiscoveryStats = false;
 
